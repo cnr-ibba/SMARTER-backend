@@ -1,0 +1,40 @@
+
+# User/password credentials are stored in .env file
+version: '3.8'
+
+services:
+
+  mongo:
+    image: mongo:4.4.4
+
+    container_name: smarter-backend-mongo
+
+    expose:
+      - 27017
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASS}
+      MONGO_INITDB_DATABASE: 'smarter'
+      MONGODB_SMARTER_USER: ${MONGODB_SMARTER_USER}
+      MONGODB_SMARTER_PASS: ${MONGODB_SMARTER_PASS}
+
+    # to export volume, as recommeded in https://registry.hub.docker.com/u/library/mysql/
+    volumes:
+      - type: bind
+        source: ./mongodb-data
+        target: /data/db
+
+      - type: bind
+        source: ./mongodb-home
+        target: /home/mongodb
+
+      - type: bind
+        source: ./docker-entrypoint-initdb.d
+        target: /docker-entrypoint-initdb.d
+
+    networks:
+      - smarter-backend
+
+networks:
+  smarter-backend:
