@@ -36,5 +36,37 @@ services:
     networks:
       - smarter-backend
 
+  uwsgi:
+    # a custom image for django
+    build: ./uwsgi
+
+    container_name: smarter-backend-uwsgi
+
+    # You can pass multiple environment variables from an external file through
+    # to a service’s containers with the ‘env_file’ option
+    env_file:
+      - .env
+
+    # exec a different command from image
+    command: uwsgi --ini /var/uwsgi/smarter_uwsgi.ini --memory-report
+
+    # set working dir for uwsgi
+    working_dir: /var/uwsgi/smarter/
+
+    # define volumes
+    volumes:
+      - type: bind
+        source: ./flask-data/
+        target: /var/uwsgi/
+
+    # Expose the default port
+
+    # link container to database
+    links:
+      - mongo
+
+    networks:
+      - smarter-backend
+
 networks:
   smarter-backend:
