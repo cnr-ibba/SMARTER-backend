@@ -37,7 +37,7 @@ services:
       - smarter-backend
 
   uwsgi:
-    # a custom image for django
+    # a custom image for flask
     build: ./uwsgi
 
     container_name: smarter-backend-uwsgi
@@ -67,6 +67,32 @@ services:
 
     networks:
       - smarter-backend
+
+  nginx:
+    # a custom image for NGINX
+    build: ./nginx
+
+    container_name: smarter-backend-nginx
+
+    volumes:
+      - type: bind
+        source: ./nginx/conf.d/
+        target: /etc/nginx/conf.d/
+
+      - type: bind
+        source: ./flask-data/
+        target: /var/uwsgi/
+
+    ports:
+      - "27080:80"
+
+    # link container uwsgi
+    links:
+      - uwsgi
+
+    networks:
+      - smarter-backend
+
 
 networks:
   smarter-backend:
