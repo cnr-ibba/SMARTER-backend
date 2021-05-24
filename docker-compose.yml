@@ -5,9 +5,9 @@ version: '3.8'
 services:
 
   mongo:
-    image: mongo:4.4.4
+    image: mongo:4.4
 
-    container_name: smarter-backend-mongo
+    container_name: smarter-backend_mongo
 
     expose:
       - 27017
@@ -40,7 +40,7 @@ services:
     # a custom image for flask
     build: ./uwsgi
 
-    container_name: smarter-backend-uwsgi
+    container_name: smarter-backend_uwsgi
 
     # You can pass multiple environment variables from an external file through
     # to a service’s containers with the ‘env_file’ option
@@ -72,7 +72,7 @@ services:
     # a custom image for NGINX
     build: ./nginx
 
-    container_name: smarter-backend-nginx
+    container_name: smarter-backend_nginx
 
     volumes:
       - type: bind

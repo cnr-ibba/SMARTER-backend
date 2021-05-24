@@ -7,7 +7,7 @@
 #
 
 # start from a python base image
-FROM python:3.9.5
+FROM python:3.9
 
 MAINTAINER Paolo Cozzi <cozzi@ibba.cnr.it>
 

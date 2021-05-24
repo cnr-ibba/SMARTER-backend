@@ -26,6 +26,20 @@ class HelloWorld(Resource):
 
 # https://stackoverflow.com/a/56474420/4385116
 def create_app(config=None):
+    """This function create Flask app. Is required by wsgi because it need to
+    be called after service is started and forked, not when importing the
+    module during initialization. To start the flask app, first import
+    the module and then create all the stuff by invoking this function
+    You need call the run method on the returned values to start acception
+    requests
+
+    Args:
+        config (None): pass parameters to this app (not yet defined)
+
+    Returns:
+        Flask: a flask initialized application
+    """
+
     app = Flask(__name__)
     api = Api(app)
 
@@ -43,6 +57,7 @@ def create_app(config=None):
     # connect to database
     initialize_db(app)
 
+    # add resources
     api.add_resource(HelloWorld, '/')
 
     return app

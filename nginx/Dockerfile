@@ -7,7 +7,7 @@
 #
 
 # Get the last stable nginx image
-FROM nginx:1.20.0
+FROM nginx:1.20
 
 MAINTAINER Paolo Cozzi <cozzi@ibba.cnr.it>
 
