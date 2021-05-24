@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon May 24 11:16:39 2021
+Created on Mon May 24 15:50:50 2021
 
 @author: Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
 """
@@ -10,10 +10,10 @@ from flask import jsonify, url_for, request
 from flask_restful import Resource
 from werkzeug.urls import url_encode
 
-from database.models import Breed
+from database.models import Dataset
 
 
-class BreedsApi(Resource):
+class DatasetsApi(Resource):
     def get(self):
         page = int(request.args.get('page', 1))
         size = int(request.args.get('size', 10))
@@ -22,7 +22,7 @@ class BreedsApi(Resource):
             'species': request.args.get('species')
         }
 
-        paginated = self.view_breeds(page, size, **params)
+        paginated = self.view_datasets(page, size, **params)
 
         next_ = None
         prev = None
@@ -30,12 +30,12 @@ class BreedsApi(Resource):
         if paginated.has_next:
             params['size'] = size
             params['page'] = page + 1
-            next_ = url_for('breedsapi') + '?' + url_encode(params)
+            next_ = url_for('datasetsapi') + '?' + url_encode(params)
 
         if paginated.has_prev:
             params['size'] = size
             params['page'] = page - 1
-            prev = url_for('breedsapi') + '?' + url_encode(params)
+            prev = url_for('datasetsapi') + '?' + url_encode(params)
 
         return jsonify(
             items=paginated.items,
@@ -47,8 +47,8 @@ class BreedsApi(Resource):
             prev=prev
         )
 
-    def view_breeds(self, page=1, size=10, **kwargs):
-        qs = Breed.objects.all()
+    def view_datasets(self, page=1, size=10, **kwargs):
+        qs = Dataset.objects.all()
 
         if 'species' in kwargs and kwargs['species']:
             qs = qs.filter(species=kwargs['species'])
@@ -56,7 +56,7 @@ class BreedsApi(Resource):
         return qs.paginate(page=page, per_page=size)
 
 
-class BreedApi(Resource):
+class DatasetApi(Resource):
     def get(self, id_):
-        breed = Breed.objects(id=id_).get()
-        return jsonify(breed)
+        dataset = Dataset.objects(id=id_).get()
+        return jsonify(dataset)
