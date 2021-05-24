@@ -8,20 +8,11 @@ Created on Fri May 21 17:50:23 2021
 
 import os
 
-from flask import Flask, Response
-from flask_restful import Resource, Api
+from flask import Flask
+from flask_restful import Api
 
-from database.db import initialize_db
-from database.models import User
-
-
-class HelloWorld(Resource):
-    def get(self):
-        users = User.objects.to_json()
-        return Response(
-            users,
-            mimetype="application/json",
-            status=200)
+from database.db import initialize_db, DB_ALIAS
+from resources.routes import initialize_routes
 
 
 # https://stackoverflow.com/a/56474420/4385116
@@ -49,6 +40,7 @@ def create_app(config=None):
         'username': os.getenv("MONGODB_SMARTER_USER"),
         'password': os.getenv("MONGODB_SMARTER_PASS"),
         'authentication_source': 'admin',
+        'alias': DB_ALIAS,
         # NOTE: This fixes "UserWarning: MongoClient opened before fork."
         # I'm not aware of side effects yet. Default value is/was "True"
         'connect': False
@@ -58,7 +50,7 @@ def create_app(config=None):
     initialize_db(app)
 
     # add resources
-    api.add_resource(HelloWorld, '/')
+    initialize_routes(api)
 
     return app
 

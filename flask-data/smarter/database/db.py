@@ -10,6 +10,8 @@ from flask_mongoengine import MongoEngine
 
 db = MongoEngine()
 
+DB_ALIAS = "smarterdb"
+
 
 def initialize_db(app):
     db.init_app(app)
