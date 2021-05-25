@@ -5,3 +5,4 @@ flask-mongoengine==1.0.0
 pytest==6.2.4
 ipython==7.23.1
 coverage==5.5
+flake8==3.9.2
