@@ -5,6 +5,12 @@ branches:
   only:
   - master
   - devel
+# https://docs.travis-ci.com/user/docker/#using-docker-compose
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
 install:
   - env | grep 'MONGODB' >> .env
   - docker-compose pull
@@ -24,3 +30,4 @@ env:
   - MONGODB_ROOT_PASS=password1
   - MONGODB_SMARTER_USER=smarter
   - MONGODB_SMARTER_PASS=password2
+  - DOCKER_COMPOSE_VERSION=1.27.4
