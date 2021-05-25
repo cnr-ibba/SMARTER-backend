@@ -1,0 +1,26 @@
+
+services:
+  - docker
+branches:
+  only:
+  - master
+  - devel
+install:
+  - env | grep 'MONGODB' >> .env
+  - docker-compose pull
+  - docker-compose build
+  - docker-compose up -d mongo
+  - docker-compose run --no-deps --rm uwsgi sh -c 'chgrp -R www-data .'
+  - docker-compose ps
+script:
+  - docker-compose run --no-deps --rm uwsgi sh -c 'coverage run --source='.' -m py.test && flake8'
+# after_script:
+#   - docker-compose run --rm uwsgi coveralls
+#   - docker-compose run --rm uwsgi ocular
+env:
+  global:
+  - DEBUG=False
+  - MONGODB_ROOT_USER=root
+  - MONGODB_ROOT_PASS=password1
+  - MONGODB_SMARTER_USER=smarter
+  - MONGODB_SMARTER_PASS=password2
