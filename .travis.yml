@@ -14,7 +14,7 @@ before_install:
   - sudo apt-get install docker-compose
   - docker-compose --version
 install:
-  - env | grep 'MONGODB' >> .env
+  - env | grep 'MONGODB\|TRAVIS\|COVERALLS' >> .env
   - docker-compose pull
   - docker-compose build
   - docker-compose up -d mongo
@@ -22,8 +22,8 @@ install:
   - docker-compose ps
 script:
   - docker-compose run --no-deps --rm uwsgi sh -c 'coverage run --source='.' -m py.test && flake8'
-# after_script:
-#   - docker-compose run --rm uwsgi coveralls
+after_script:
+  - docker-compose run --rm uwsgi coveralls
 #   - docker-compose run --rm uwsgi ocular
 env:
   global:
