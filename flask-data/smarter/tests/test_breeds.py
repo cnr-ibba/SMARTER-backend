@@ -6,8 +6,6 @@ Created on Tue May 25 14:47:24 2021
 @author: Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
 """
 
-import json
-
 from .base import BaseCase
 
 

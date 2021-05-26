@@ -1,6 +1,8 @@
 # SMARTER-backend
 SMARTER Backend API
 
+[![Build Status](https://www.travis-ci.com/cnr-ibba/SMARTER-backend.svg?branch=master)](https://www.travis-ci.com/cnr-ibba/SMARTER-backend)
+
 Setting the `.env` file
 -----------------------
 

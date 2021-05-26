@@ -1,4 +1,7 @@
 
+os: linux
+arch:
+  - arm64
 services:
   - docker
 branches:
