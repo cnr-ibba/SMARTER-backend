@@ -9,11 +9,9 @@ branches:
   - master
   - devel
 # https://docs.travis-ci.com/user/docker/#using-docker-compose
+# https://docs.docker.com/compose/install/#alternative-install-options
 before_install:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
+  - sudo pip install docker-compose
 install:
   - env | grep 'MONGODB' >> .env
   - docker-compose pull
