@@ -1,6 +1,6 @@
 
 # User/password credentials are stored in .env file
-version: '3.8'
+version: '3.3'
 
 services:
 
