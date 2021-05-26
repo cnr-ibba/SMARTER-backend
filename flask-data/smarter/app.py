@@ -11,9 +11,11 @@ import logging
 
 from flask import Flask
 from flask_restful import Api
+from flask_bcrypt import Bcrypt
 
 from database.db import initialize_db, DB_ALIAS
 from resources.routes import initialize_routes
+from commands import usersbp
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -37,6 +39,7 @@ def create_app(config={}):
 
     app = Flask(__name__)
     api = Api(app)
+    Bcrypt(app)
 
     # http://docs.mongoengine.org/projects/flask-mongoengine/en/latest/#configuration
     app.config['MONGODB_SETTINGS'] = {
@@ -57,6 +60,9 @@ def create_app(config={}):
 
     # connect to database
     initialize_db(app)
+
+    # you MUST register the blueprint
+    app.register_blueprint(usersbp)
 
     # add resources
     initialize_routes(api)

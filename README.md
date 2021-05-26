@@ -32,3 +32,19 @@ Set `mongodb-home` folder permissions with:
 $ chmod 777 mongodb-home/
 $ chmod o+t mongodb-home/
 ```
+
+Add a smarter user
+------------------
+
+Add a smarter user by calling a *flask script*:
+
+```
+$ docker-compose run --rm uwsgi flask users create smarter
+```
+
+Connect to mongodb
+------------------
+
+```
+$ docker-compose run --rm --user mongodb mongo sh -c 'mongo --host mongo --username="${MONGO_INITDB_ROOT_USERNAME}" --password="${MONGO_INITDB_ROOT_PASSWORD}"'
+```

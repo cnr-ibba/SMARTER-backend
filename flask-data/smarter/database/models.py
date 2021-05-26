@@ -6,12 +6,22 @@ Created on Fri May 21 18:09:30 2021
 @author: Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
 """
 
+import logging
+
+from flask_bcrypt import check_password_hash
+
 from .db import db, DB_ALIAS
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 class User(db.Document):
     username = db.StringField(required=True, unique=True)
     password = db.StringField(required=True, min_length=6)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 
 class Dataset(db.Document):
