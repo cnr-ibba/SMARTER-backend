@@ -7,10 +7,9 @@ Created on Thu May 27 11:16:46 2021
 """
 
 import json
-import logging
 import datetime
 
-from flask import Response, request
+from flask import Response, request, current_app
 from flask_jwt_extended import create_access_token
 from flask_restful import Resource
 from mongoengine.errors import DoesNotExist
@@ -18,9 +17,6 @@ from mongoengine.errors import DoesNotExist
 from database.models import User
 from resources.errors import (
     UnauthorizedError, InternalServerError, SchemaValidationError)
-
-# Get an instance of a logger
-logger = logging.getLogger(__name__)
 
 
 class LoginApi(Resource):
@@ -49,6 +45,8 @@ class LoginApi(Resource):
                 identity=str(user.id),
                 expires_delta=expires)
 
+            current_app.logger.info(f"New token generated for '{username}'")
+
             return Response(
                 json.dumps({
                     'token': access_token,
@@ -56,12 +54,14 @@ class LoginApi(Resource):
                 mimetype="application/json",
                 status=200)
 
-        except (UnauthorizedError, DoesNotExist):
+        except (UnauthorizedError, DoesNotExist) as e:
+            current_app.logger.error(e)
             raise UnauthorizedError
 
-        except SchemaValidationError:
+        except SchemaValidationError as e:
+            current_app.logger.error(e)
             raise SchemaValidationError
 
         except Exception as e:
-            logger.error(e)
+            current_app.logger.error(e)
             raise InternalServerError
