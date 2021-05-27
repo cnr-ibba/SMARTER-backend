@@ -7,14 +7,48 @@ Created on Fri May 21 15:06:11 2021
 """
 
 import json
+import logging
 import unittest
 import pathlib
 
+from bson.objectid import ObjectId
 from app import create_app
 from database.db import db, DB_ALIAS
 
 # start application with custom values
 app = create_app(config={'host': 'mongodb://mongo/test'})
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
+
+def sanitize_record(record):
+    """Remove $oid values from data and replace with bson ObjectId"""
+
+    for key, value in record.items():
+        if isinstance(value, dict):
+            if "$oid" in value:
+                record[key] = ObjectId(value["$oid"])
+
+            else:
+                # call recursively this function
+                record[key] = sanitize_record(record)
+
+        elif isinstance(value, list):
+            record[key] = sanitize_data(value)
+
+    return record
+
+
+def sanitize_data(data):
+    """Process a list of records"""
+
+    sanitized = list()
+
+    for record in data:
+        sanitized.append(sanitize_record(record))
+
+    return sanitized
 
 
 class BaseCase(unittest.TestCase):
@@ -25,11 +59,22 @@ class BaseCase(unittest.TestCase):
         cls.app = app.test_client()
         cls.db = db.get_db(alias=DB_ALIAS)
 
+        if cls.db.list_collection_names():
+            logger.error(
+                f"Database has data: {cls.db.list_collection_names()}")
+            logger.error("Please drop data from it before applying tests")
+
         # try to upload data into database
         for fixture in cls.fixtures:
+            logger.debug(f"Search for {fixture}")
             data_file = next(pathlib.Path('tests').glob(f"**/{fixture}.json"))
+
+            logger.debug(f"Found {data_file}")
+
             with open(data_file) as handle:
                 data = json.load(handle)
+                data = sanitize_data(data)
+
                 collection = cls.db[fixture]
                 collection.insert_many(data)
 
