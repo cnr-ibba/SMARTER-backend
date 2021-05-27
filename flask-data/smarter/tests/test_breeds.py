@@ -39,7 +39,7 @@ class TestGetBreeds(AuthMixin, BaseCase):
                 cls.goats_data.append(item)
 
     def test_get_breeds(self):
-        response = self.app.get(
+        response = self.client.get(
             self.test_endpoint,
             headers=self.headers
         )
@@ -55,7 +55,7 @@ class TestGetBreeds(AuthMixin, BaseCase):
     def test_get_breeds_pagination(self):
         payload = {'page': 1, 'size': 2}
 
-        response = self.app.get(
+        response = self.client.get(
             "?".join([self.test_endpoint, url_encode(payload)]),
             headers=self.headers
         )
@@ -71,7 +71,7 @@ class TestGetBreeds(AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 200)
 
         # get next page
-        response = self.app.get(
+        response = self.client.get(
             test['next'],
             headers=self.headers
         )
@@ -89,7 +89,7 @@ class TestGetBreeds(AuthMixin, BaseCase):
     def test_get_breeds_by_species(self):
         payload = {'species': 'Goat'}
 
-        response = self.app.get(
+        response = self.client.get(
             "?".join([self.test_endpoint, url_encode(payload)]),
             headers=self.headers
         )
@@ -105,7 +105,7 @@ class TestGetBreeds(AuthMixin, BaseCase):
     def test_get_breeds_by_species_pagination(self):
         payload = {'species': 'Goat', 'size': 1}
 
-        response = self.app.get(
+        response = self.client.get(
             "?".join([self.test_endpoint, url_encode(payload)]),
             headers=self.headers
         )
@@ -121,7 +121,7 @@ class TestGetBreeds(AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 200)
 
         # get next page
-        response = self.app.get(
+        response = self.client.get(
             test['next'],
             headers=self.headers
         )
@@ -153,7 +153,7 @@ class TestGetBreed(AuthMixin, BaseCase):
             cls.data = json.load(handle)[0]
 
     def test_get_breed(self):
-        response = self.app.get(
+        response = self.client.get(
             self.test_endpoint,
             headers=self.headers
         )

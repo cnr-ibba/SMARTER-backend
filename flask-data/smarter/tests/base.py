@@ -60,7 +60,8 @@ class BaseCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.app = app.test_client()
+        cls.app = app
+        cls.client = app.test_client()
         cls.db = db.get_db(alias=DB_ALIAS)
 
         if cls.db.list_collection_names():
@@ -104,7 +105,7 @@ class AuthMixin():
         })
 
         # authenticate to database
-        response = cls.app.post(
+        response = cls.client.post(
             cls.auth_endpoint,
             headers={"Content-Type": "application/json"},
             data=payload)
@@ -117,7 +118,7 @@ class AuthMixin():
         }
 
     def test_without_login(self, method='get', data=None):
-        method = getattr(self.app, method)
+        method = getattr(self.client, method)
 
         response = method(
             self.test_endpoint,

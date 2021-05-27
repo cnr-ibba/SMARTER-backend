@@ -16,7 +16,7 @@ class TestUserLogin(BaseCase):
         })
 
         # When
-        response = self.app.post(
+        response = self.client.post(
             '/api/auth/login',
             headers={"Content-Type": "application/json"},
             data=payload)
@@ -35,7 +35,7 @@ class TestUserLogin(BaseCase):
         })
 
         # When
-        response = self.app.post(
+        response = self.client.post(
             '/api/auth/login',
             headers={"Content-Type": "application/json"},
             data=payload)
@@ -55,7 +55,7 @@ class TestUserLogin(BaseCase):
         })
 
         # When
-        response = self.app.post(
+        response = self.client.post(
             '/api/auth/login',
             headers={"Content-Type": "application/json"},
             data=payload)
@@ -73,7 +73,7 @@ class TestUserLogin(BaseCase):
         })
 
         # When
-        response = self.app.post(
+        response = self.client.post(
             '/api/auth/login',
             headers={"Content-Type": "application/json"},
             data=payload)
