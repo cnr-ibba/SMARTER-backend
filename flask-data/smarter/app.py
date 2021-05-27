@@ -60,7 +60,7 @@ def create_app(config={}):
     Bcrypt(app)
     JWTManager(app)
 
-    app.logger.info("App initialized")
+    app.logger.debug("App initialized")
 
     # http://docs.mongoengine.org/projects/flask-mongoengine/en/latest/#configuration
     app.config['MONGODB_SETTINGS'] = {
@@ -85,7 +85,7 @@ def create_app(config={}):
     # connect to database
     initialize_db(app)
 
-    app.logger.info("Database initialized")
+    app.logger.debug("Database initialized")
 
     # you MUST register the blueprint
     app.register_blueprint(usersbp)
@@ -93,7 +93,7 @@ def create_app(config={}):
     # add resources
     initialize_routes(api)
 
-    app.logger.info("Routes initialized")
+    app.logger.debug("Routes initialized")
 
     return app
 

@@ -22,14 +22,14 @@ usersbp.cli.short_help = "Manage users"
 
 @usersbp.cli.command('create')
 @click.argument('name')
-def create(name):
+def create_user(name):
     """ Creates a user """
 
     pass1 = getpass.getpass("Please enter a password: ")
     pass2 = getpass.getpass("Please confirm your password: ")
 
     if pass1 != pass2:
-        raise Exception("Password doens't match")
+        raise Exception("Password doesn't match")
 
     # generate password hash
     password = generate_password_hash(pass1).decode('utf8')
