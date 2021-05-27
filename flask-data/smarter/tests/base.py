@@ -46,7 +46,11 @@ def sanitize_data(data):
     sanitized = list()
 
     for record in data:
-        sanitized.append(sanitize_record(record))
+        if isinstance(record, dict):
+            sanitized.append(sanitize_record(record))
+
+        else:
+            sanitized.append(record)
 
     return sanitized
 

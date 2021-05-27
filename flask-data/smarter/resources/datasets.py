@@ -8,12 +8,14 @@ Created on Mon May 24 15:50:50 2021
 
 from flask import jsonify, url_for, request
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required
 from werkzeug.urls import url_encode
 
 from database.models import Dataset
 
 
 class DatasetsApi(Resource):
+    @jwt_required()
     def get(self):
         page = int(request.args.get('page', 1))
         size = int(request.args.get('size', 10))
@@ -57,6 +59,7 @@ class DatasetsApi(Resource):
 
 
 class DatasetApi(Resource):
+    @jwt_required()
     def get(self, id_):
         dataset = Dataset.objects(id=id_).get()
         return jsonify(dataset)

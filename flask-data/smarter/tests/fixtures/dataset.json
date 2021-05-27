@@ -1,0 +1,45 @@
+[{
+	"_id": {
+		"$oid": "604f75a61a08c53cebd09b58"
+	},
+	"breed": "2 Breeds",
+	"country": "Italy",
+	"file": "test_file.zip",
+	"gene_array": "Plink text files",
+	"n_of_individuals": 289,
+	"partner": "Test",
+	"size": "2MB",
+	"species": "Sheep",
+	"type": [
+		"genotypes",
+		"background"
+	],
+	"uploader": "Test",
+	"contents": [
+		"archive/",
+		"archive/test.map",
+		"archive/test.ped"
+	]
+},
+{
+	"_id": {
+		"$oid": "604f75a61a08c53cebd09b5b"
+	},
+	"file": "another_file.zip",
+	"breed": "2 Breeds",
+	"country": "France",
+	"gene_array": "Goat Array",
+	"n_of_individuals": 83,
+	"partner": "Test",
+	"size": "5MB",
+	"species": "Goat",
+	"type": [
+		"genotypes",
+		"background"
+	],
+	"uploader": "Test",
+	"contents": [
+		"finalreport.txt",
+		"snplist.txt"
+	]
+}]
