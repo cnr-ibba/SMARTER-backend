@@ -17,11 +17,23 @@ MONGODB_ROOT_USER=<root user>
 MONGODB_ROOT_PASS=<root pass>
 MONGODB_SMARTER_USER=<smarter user>
 MONGODB_SMARTER_PASS=<smarter pass>
+JWT_SECRET_KEY=<secret key>
 ```
 
 > *TODO*: manage sensitive data using secret in docker-compose, as described
 [here](https://docs.docker.com/engine/swarm/secrets/#use-secrets-in-compose) and
 [here](https://docs.docker.com/compose/compose-file/#secrets)
+
+### Genereate the JWT secret key
+
+[Here](https://stackoverflow.com/a/23728630/4385116) you can find hints on
+how to define a secret key with python: 
+
+```python
+import string
+import secrets
+print(''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(50)))
+```
 
 Setting the proper permissions
 ------------------------------

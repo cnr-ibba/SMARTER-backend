@@ -12,6 +12,7 @@ import logging
 from flask import Flask
 from flask_restful import Api
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
 
 from database.db import initialize_db, DB_ALIAS
 from resources.errors import errors
@@ -41,6 +42,7 @@ def create_app(config={}):
     app = Flask(__name__)
     api = Api(app, errors=errors)
     Bcrypt(app)
+    JWTManager(app)
 
     # http://docs.mongoengine.org/projects/flask-mongoengine/en/latest/#configuration
     app.config['MONGODB_SETTINGS'] = {
@@ -58,6 +60,9 @@ def create_app(config={}):
     if 'host' in config:
         logger.error(f"Setting custom host: {config['host']}")
         app.config['MONGODB_SETTINGS']['host'] = config['host']
+
+    # https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
+    app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY')
 
     # connect to database
     initialize_db(app)
