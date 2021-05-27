@@ -38,3 +38,44 @@ class BaseCase(unittest.TestCase):
         # Delete Database collections after the test is complete
         for collection in cls.db.list_collection_names():
             cls.db.drop_collection(collection)
+
+
+class AuthMixin():
+    test_endpoint = None
+    auth_endpoint = "/api/auth/login"
+
+    @classmethod
+    def setUpClass(cls):
+        # need to call other methods (for example, load fixture for auth)
+        super().setUpClass()
+
+        payload = json.dumps({
+            'username': 'test',
+            'password': 'password'
+        })
+
+        # authenticate to database
+        response = cls.app.post(
+            cls.auth_endpoint,
+            headers={"Content-Type": "application/json"},
+            data=payload)
+
+        # read token and prepare headers
+        cls.token = response.json['token']
+        cls.headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {cls.token}"
+        }
+
+    def test_without_login(self, method='get', data=None):
+        method = getattr(self.app, method)
+
+        response = method(
+            self.test_endpoint,
+            headers={"Content-Type": "application/json"},
+            data=data
+        )
+
+        self.assertEqual(
+            "Missing Authorization Header", response.json['message'])
+        self.assertEqual(401, response.status_code)

@@ -8,6 +8,7 @@ Created on Mon May 24 11:16:39 2021
 
 from flask import jsonify, request
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required
 
 from database.models import Breed
 from common.views import ListView
@@ -29,6 +30,7 @@ class BreedsApi(ListView):
 
         return qs
 
+    @jwt_required()
     def get(self):
         self.object_list = self.get_queryset()
         data = self.get_context_data()
@@ -37,6 +39,7 @@ class BreedsApi(ListView):
 
 
 class BreedApi(Resource):
+    @jwt_required()
     def get(self, id_):
         breed = Breed.objects(id=id_).get()
         return jsonify(breed)
