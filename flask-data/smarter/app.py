@@ -14,6 +14,7 @@ from flask_restful import Api
 from flask_bcrypt import Bcrypt
 
 from database.db import initialize_db, DB_ALIAS
+from resources.errors import errors
 from resources.routes import initialize_routes
 from commands import usersbp
 
@@ -38,7 +39,7 @@ def create_app(config={}):
     """
 
     app = Flask(__name__)
-    api = Api(app)
+    api = Api(app, errors=errors)
     Bcrypt(app)
 
     # http://docs.mongoengine.org/projects/flask-mongoengine/en/latest/#configuration
