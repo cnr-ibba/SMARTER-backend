@@ -23,6 +23,11 @@ class User(db.Document):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
+    meta = {
+        'db_alias': DB_ALIAS,
+        'collection': 'user'
+    }
+
 
 class Dataset(db.Document):
     """Describe a dataset instace with fields owned by data types"""
