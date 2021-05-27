@@ -14,7 +14,7 @@ before_install:
   - sudo apt-get install docker-compose
   - docker-compose --version
 install:
-  - env | grep 'MONGODB\|TRAVIS\|COVERALLS' >> .env
+  - env | grep 'MONGODB\|JWT\|TRAVIS\|COVERALLS' >> .env
   - docker-compose pull
   - docker-compose build
   - docker-compose up -d mongo
@@ -32,4 +32,4 @@ env:
   - MONGODB_ROOT_PASS=password1
   - MONGODB_SMARTER_USER=smarter
   - MONGODB_SMARTER_PASS=password2
-  - DOCKER_COMPOSE_VERSION=1.27.4
+  - JWT_SECRET_KEY=test_secret_key

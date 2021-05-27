@@ -7,6 +7,7 @@ Created on Thu May 27 11:16:46 2021
 """
 
 import json
+import logging
 import datetime
 
 from flask import Response, request
@@ -15,17 +16,29 @@ from flask_restful import Resource
 from mongoengine.errors import DoesNotExist
 
 from database.models import User
-from resources.errors import UnauthorizedError, InternalServerError
+from resources.errors import (
+    UnauthorizedError, InternalServerError, SchemaValidationError)
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 class LoginApi(Resource):
     def post(self):
         try:
             body = request.get_json()
-            user = User.objects.get(username=body.get('username'))
+
+            username = body.get('username')
+            password = body.get('password')
+
+            # TODO: use a flask_restful method
+            if not username or not password:
+                raise SchemaValidationError
+
+            user = User.objects.get(username=username)
 
             # calling custom user function (which uses bcrypt)
-            authorized = user.check_password(body.get('password'))
+            authorized = user.check_password(password)
 
             if not authorized:
                 raise UnauthorizedError
@@ -46,5 +59,9 @@ class LoginApi(Resource):
         except (UnauthorizedError, DoesNotExist):
             raise UnauthorizedError
 
-        except Exception:
+        except SchemaValidationError:
+            raise SchemaValidationError
+
+        except Exception as e:
+            logger.error(e)
             raise InternalServerError
