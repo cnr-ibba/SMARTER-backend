@@ -1,0 +1,68 @@
+[{
+	"_id": {
+		"$oid": "608ab46e1031c98150016dbd"
+	},
+	"species": "Sheep",
+	"name": "Texel",
+	"code": "TEX",
+	"aliases": [
+		{
+			"fid": "TEX",
+			"dataset_id": {
+				"$oid": "604f75a61a08c53cebd09b58"
+			}
+		}
+	],
+	"n_individuals": 193
+},
+{
+	"_id": {
+		"$oid": "608ab470d91de5308e005577"
+	},
+	"species": "Sheep",
+	"name": "Merino",
+	"code": "MER",
+	"aliases": [
+		{
+			"fid": "MERINO_UY",
+			"dataset_id": {
+				"$oid": "604f75a61a08c53cebd09b58"
+			}
+		}
+	],
+	"n_individuals": 96
+},
+{
+	"_id": {
+		"$oid": "60929400bbc7ef928cf400ec"
+	},
+	"species": "Goat",
+	"name": "Cashmere",
+	"code": "CAS",
+	"aliases": [
+		{
+			"fid": "CAS",
+			"dataset_id": {
+				"$oid": "604f75a61a08c53cebd09b5b"
+			}
+		}
+	],
+	"n_individuals": 48
+},
+{
+	"_id": {
+		"$oid": "60929400bbc7ef928cf400ba"
+	},
+	"species": "Goat",
+	"name": "Bari",
+	"code": "BRI",
+	"aliases": [
+		{
+			"fid": "BRI",
+			"dataset_id": {
+				"$oid": "604f75a61a08c53cebd09b5b"
+			}
+		}
+	],
+	"n_individuals": 35
+}]
