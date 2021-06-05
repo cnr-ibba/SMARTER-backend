@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue May 25 14:47:24 2021
+Created on Thu May 27 16:39:27 2021
 
 @author: Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
 """
@@ -16,19 +16,19 @@ from .base import BaseCase, AuthMixin
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
 
 
-class TestGetBreeds(AuthMixin, BaseCase):
+class TestGetDatasets(AuthMixin, BaseCase):
     fixtures = [
         'user',
-        'breeds'
+        'dataset'
     ]
 
-    test_endpoint = '/api/breeds'
+    test_endpoint = '/api/datasets'
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-        with open(f"{FIXTURES_DIR}/breeds.json") as handle:
+        with open(f"{FIXTURES_DIR}/dataset.json") as handle:
             cls.data = json.load(handle)
 
         # get goat items
@@ -38,55 +38,23 @@ class TestGetBreeds(AuthMixin, BaseCase):
             if item['species'] == 'Goat':
                 cls.goats_data.append(item)
 
-    def test_get_breeds(self):
+    def test_get_datasets(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers
         )
 
+        print(response.json)
+
         test = response.json
 
-        self.assertEqual(test['total'], 4)
+        self.assertEqual(test['total'], 2)
         self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 4)
+        self.assertEqual(len(test['items']), 2)
         self.assertListEqual(test['items'], self.data)
         self.assertEqual(response.status_code, 200)
 
-    def test_get_breeds_pagination(self):
-        payload = {'page': 1, 'size': 2}
-
-        response = self.client.get(
-            "?".join([self.test_endpoint, url_encode(payload)]),
-            headers=self.headers
-        )
-
-        test = response.json
-
-        self.assertEqual(test['total'], 4)
-        self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 2)
-        self.assertListEqual(test['items'], self.data[:2])
-        self.assertIsNone(test['prev'])
-        self.assertIsNotNone(test['next'])
-        self.assertEqual(response.status_code, 200)
-
-        # get next page
-        response = self.client.get(
-            test['next'],
-            headers=self.headers
-        )
-
-        test = response.json
-
-        self.assertEqual(test['total'], 4)
-        self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 2)
-        self.assertListEqual(test['items'], self.data[2:])
-        self.assertIsNone(test['next'])
-        self.assertIsNotNone(test['prev'])
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_breeds_by_species(self):
+    def test_get_datasets_by_species(self):
         payload = {'species': 'Goat'}
 
         response = self.client.get(
@@ -96,14 +64,14 @@ class TestGetBreeds(AuthMixin, BaseCase):
 
         test = response.json
 
-        self.assertEqual(test['total'], 2)
+        self.assertEqual(test['total'], 1)
         self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 2)
+        self.assertEqual(len(test['items']), 1)
         self.assertListEqual(test['items'], self.goats_data)
         self.assertEqual(response.status_code, 200)
 
-    def test_get_breeds_by_species_pagination(self):
-        payload = {'species': 'Goat', 'size': 1}
+    def test_get_datasets_pagination(self):
+        payload = {'page': 1, 'size': 1}
 
         response = self.client.get(
             "?".join([self.test_endpoint, url_encode(payload)]),
@@ -115,7 +83,7 @@ class TestGetBreeds(AuthMixin, BaseCase):
         self.assertEqual(test['total'], 2)
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 1)
-        self.assertListEqual(test['items'], self.goats_data[:1])
+        self.assertListEqual(test['items'], self.data[:1])
         self.assertIsNone(test['prev'])
         self.assertIsNotNone(test['next'])
         self.assertEqual(response.status_code, 200)
@@ -131,28 +99,47 @@ class TestGetBreeds(AuthMixin, BaseCase):
         self.assertEqual(test['total'], 2)
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 1)
-        self.assertListEqual(test['items'], self.goats_data[1:])
+        self.assertListEqual(test['items'], self.data[1:])
         self.assertIsNone(test['next'])
         self.assertIsNotNone(test['prev'])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_datasets_by_species_pagination(self):
+        payload = {'species': 'Goat', 'size': 1}
 
-class TestGetBreed(AuthMixin, BaseCase):
+        response = self.client.get(
+            "?".join([self.test_endpoint, url_encode(payload)]),
+            headers=self.headers
+        )
+
+        test = response.json
+
+        # only one result for goats
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], self.goats_data)
+        self.assertIsNone(test['prev'])
+        self.assertIsNone(test['next'])
+        self.assertEqual(response.status_code, 200)
+
+
+class TestGetDataset(AuthMixin, BaseCase):
     fixtures = [
         'user',
-        'breeds'
+        'dataset'
     ]
 
-    test_endpoint = '/api/breeds/608ab46e1031c98150016dbd'
+    test_endpoint = '/api/datasets/604f75a61a08c53cebd09b58'
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-        with open(f"{FIXTURES_DIR}/breeds.json") as handle:
+        with open(f"{FIXTURES_DIR}/dataset.json") as handle:
             cls.data = json.load(handle)[0]
 
-    def test_get_breed(self):
+    def test_get_dataset(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers

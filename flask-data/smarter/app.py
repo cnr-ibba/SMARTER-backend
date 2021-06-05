@@ -7,16 +7,36 @@ Created on Fri May 21 17:50:23 2021
 """
 
 import os
-import logging
+
+from logging.config import dictConfig
 
 from flask import Flask
 from flask_restful import Api
+from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
 
 from database.db import initialize_db, DB_ALIAS
+from resources.errors import errors
 from resources.routes import initialize_routes
+from commands import usersbp
 
-# Get an instance of a logger
-logger = logging.getLogger(__name__)
+
+# https://flask.palletsprojects.com/en/2.0.x/logging/#basic-configuration
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://sys.stdout',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
 
 
 # https://stackoverflow.com/a/56474420/4385116
@@ -36,7 +56,11 @@ def create_app(config={}):
     """
 
     app = Flask(__name__)
-    api = Api(app)
+    api = Api(app, errors=errors)
+    Bcrypt(app)
+    JWTManager(app)
+
+    app.logger.debug("App initialized")
 
     # http://docs.mongoengine.org/projects/flask-mongoengine/en/latest/#configuration
     app.config['MONGODB_SETTINGS'] = {
@@ -52,14 +76,24 @@ def create_app(config={}):
 
     # override configuration with custom values
     if 'host' in config:
-        logger.error(f"Setting custom host: {config['host']}")
+        app.logger.error(f"Setting custom host: {config['host']}")
         app.config['MONGODB_SETTINGS']['host'] = config['host']
+
+    # https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
+    app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY')
 
     # connect to database
     initialize_db(app)
 
+    app.logger.debug("Database initialized")
+
+    # you MUST register the blueprint
+    app.register_blueprint(usersbp)
+
     # add resources
     initialize_routes(api)
+
+    app.logger.debug("Routes initialized")
 
     return app
 
