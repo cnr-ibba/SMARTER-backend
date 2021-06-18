@@ -6,9 +6,20 @@ Created on Fri May 21 18:09:30 2021
 @author: Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
 """
 
+import logging
+
+from enum import Enum
+
 from flask_bcrypt import check_password_hash
 
 from .db import db, DB_ALIAS
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
+
+class SmarterDBException(Exception):
+    pass
 
 
 class User(db.Document):
@@ -101,3 +112,141 @@ class Breed(db.Document):
 
     def __str__(self):
         return f"{self.name} ({self.code}) {self.species}"
+
+
+class SEX(bytes, Enum):
+    UNKNOWN = (0, "Unknown")
+    MALE = (1, "Male")
+    FEMALE = (2, "Female")
+
+    def __new__(cls, value, label):
+        obj = bytes.__new__(cls, [value])
+        obj._value_ = value
+        obj.label = label
+        return obj
+
+    def __str__(self):
+        return self.label
+
+    @classmethod
+    def from_string(cls, value: str):
+        """Get proper type relying on input string
+
+        Args:
+            value (str): required sex as string
+
+        Returns:
+            SEX: A sex instance (MALE, FEMALE, UNKNOWN)
+        """
+
+        if type(value) != str:
+            raise SmarterDBException("Provided value should be a 'str' type")
+
+        value = value.upper()
+
+        if value in ['M', 'MALE', "1"]:
+            return cls.MALE
+
+        elif value in ['F', 'FEMALE', "2"]:
+            return cls.FEMALE
+
+        else:
+            logger.debug(
+                f"Unmanaged sex '{value}': return '{cls.UNKNOWN}'")
+            return cls.UNKNOWN
+
+
+class Phenotype(db.DynamicEmbeddedDocument):
+    """A class to deal with Phenotype. A dynamic document and not a generic
+    DictField since that there can be attributes which could be enforced to
+    have certain values. All other attributes could be set without any
+    assumptions
+    """
+
+    purpose = db.StringField()
+    chest_girth = db.FloatField()
+    height = db.FloatField()
+    length = db.FloatField()
+
+    def __str__(self):
+        return f"{self.to_json()}"
+
+
+class SampleSpecies(db.Document):
+    original_id = db.StringField(required=True)
+    smarter_id = db.StringField(required=True, unique=True)
+
+    country = db.StringField(required=True)
+    species = db.StringField(required=True)
+    breed = db.StringField(required=True)
+    breed_code = db.StringField(min_length=3)
+
+    # required to search a sample relying only on original ID
+    dataset = db.ReferenceField(
+        Dataset,
+        db_field="dataset_id",
+        reverse_delete_rule=db.DENY
+    )
+
+    # track the original chip_name with sample
+    chip_name = db.StringField()
+
+    # define enum types for sex
+    sex = db.EnumField(SEX)
+
+    # GPS location
+    # NOTE: X, Y where X is longitude, Y latitude
+    location = db.PointField()
+
+    # additional (not modelled) metadata
+    metadata = db.DictField(default=None)
+
+    # for phenotypes
+    phenotype = db.EmbeddedDocumentField(Phenotype, default=None)
+
+    meta = {
+        'abstract': True,
+    }
+
+    def __str__(self):
+        return f"{self.smarter_id} ({self.breed})"
+
+
+class SampleSheep(SampleSpecies):
+    # try to model relationship between samples
+    father_id = db.LazyReferenceField(
+        'SampleSheep',
+        passthrough=True,
+        reverse_delete_rule=db.NULLIFY
+    )
+
+    mother_id = db.LazyReferenceField(
+        'SampleSheep',
+        passthrough=True,
+        reverse_delete_rule=db.NULLIFY
+    )
+
+    meta = {
+        'db_alias': DB_ALIAS,
+        'collection': 'sampleSheep'
+    }
+
+
+class SampleGoat(SampleSpecies):
+    # try to model relationship between samples
+    father_id = db.LazyReferenceField(
+        'SampleGoat',
+        passthrough=True,
+        reverse_delete_rule=db.NULLIFY
+    )
+
+    mother_id = db.LazyReferenceField(
+        'SampleGoat',
+        passthrough=True,
+        reverse_delete_rule=db.NULLIFY
+    )
+
+    meta = {
+        'db_alias': DB_ALIAS,
+        'collection': 'sampleGoat'
+    }
