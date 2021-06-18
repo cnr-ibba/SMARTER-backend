@@ -12,6 +12,8 @@ import unittest
 import pathlib
 
 from bson.objectid import ObjectId
+from pymongo.errors import BulkWriteError
+
 from app import create_app
 from database.db import db, DB_ALIAS
 
@@ -32,7 +34,7 @@ def sanitize_record(record):
 
             else:
                 # call recursively this function
-                record[key] = sanitize_record(record)
+                record[key] = sanitize_record(value)
 
         elif isinstance(value, list):
             record[key] = sanitize_data(value)
@@ -81,7 +83,11 @@ class BaseCase(unittest.TestCase):
                 data = sanitize_data(data)
 
                 collection = cls.db[fixture]
-                collection.insert_many(data)
+                try:
+                    collection.insert_many(data)
+
+                except BulkWriteError as e:
+                    logger.error(f"Cannot insert data: {e}")
 
     @classmethod
     def tearDownClass(cls):
