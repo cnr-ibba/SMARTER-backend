@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jun 18 16:26:29 2021
+Created on Mon Jun 21 15:53:51 2021
 
 @author: Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
 """
@@ -14,22 +14,22 @@ from .base import BaseCase, AuthMixin
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
 
 
-class SampleSheepTest(AuthMixin, BaseCase):
+class VariantSheepTest(AuthMixin, BaseCase):
     fixtures = [
         'user',
-        'sampleSheep'
+        'variantSheep'
     ]
 
-    test_endpoint = '/api/samples/sheep/608ab4b191a0d06725bc0938'
+    test_endpoint = '/api/variants/sheep/60ca279a8025a403796f644a'
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-        with open(f"{FIXTURES_DIR}/sampleSheep.json") as handle:
+        with open(f"{FIXTURES_DIR}/variantSheep.json") as handle:
             cls.data = json.load(handle)[0]
 
-    def test_get_sample(self):
+    def test_get_variant(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers
@@ -41,22 +41,22 @@ class SampleSheepTest(AuthMixin, BaseCase):
         self.assertEqual(test, self.data)
 
 
-class SampleSheepListTest(AuthMixin, BaseCase):
+class VariantSheepListTest(AuthMixin, BaseCase):
     fixtures = [
         'user',
-        'sampleSheep'
+        'variantSheep'
     ]
 
-    test_endpoint = '/api/samples/sheep'
+    test_endpoint = '/api/variants/sheep'
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-        with open(f"{FIXTURES_DIR}/sampleSheep.json") as handle:
+        with open(f"{FIXTURES_DIR}/variantSheep.json") as handle:
             cls.data = json.load(handle)
 
-    def test_get_samples(self):
+    def test_get_variants(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers
@@ -71,22 +71,22 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 200)
 
 
-class SampleGoatTest(AuthMixin, BaseCase):
+class VariantGoatTest(AuthMixin, BaseCase):
     fixtures = [
         'user',
-        'sampleGoat'
+        'variantGoat'
     ]
 
-    test_endpoint = '/api/samples/goat/6092940199215a3814492195'
+    test_endpoint = '/api/variants/goat/60ca4dabd8f09cfd319da0f8'
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-        with open(f"{FIXTURES_DIR}/sampleGoat.json") as handle:
+        with open(f"{FIXTURES_DIR}/variantGoat.json") as handle:
             cls.data = json.load(handle)[0]
 
-    def test_get_sample(self):
+    def test_get_variant(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers
@@ -98,22 +98,22 @@ class SampleGoatTest(AuthMixin, BaseCase):
         self.assertEqual(test, self.data)
 
 
-class SampleGoatListTest(AuthMixin, BaseCase):
+class VariantGoatListTest(AuthMixin, BaseCase):
     fixtures = [
         'user',
-        'sampleGoat'
+        'variantGoat'
     ]
 
-    test_endpoint = '/api/samples/goat'
+    test_endpoint = '/api/variants/goat'
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-        with open(f"{FIXTURES_DIR}/sampleGoat.json") as handle:
+        with open(f"{FIXTURES_DIR}/variantGoat.json") as handle:
             cls.data = json.load(handle)
 
-    def test_get_samples(self):
+    def test_get_variants(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers

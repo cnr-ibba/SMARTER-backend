@@ -1,0 +1,60 @@
+[
+  {
+    "_id": {
+      "$oid": "60ca4dabd8f09cfd319da0f8"
+    },
+    "chip_name": [
+      "IlluminaGoatSNP50"
+    ],
+    "locations": [
+      {
+        "chrom": "1",
+        "consequences": [],
+        "date": {
+          "$date": "2021-01-08T00:00:00Z"
+        },
+        "illumina": "A/G",
+        "illumina_strand": "TOP",
+        "imported_from": "manifest",
+        "position": 101941444,
+        "strand": "BOT",
+        "version": "ARS1"
+      }
+    ],
+    "name": "1_101941444_AF-PAKI",
+    "probeset_id": [],
+    "sender": "IGGC",
+    "sequence": {
+      "manifest": "ACTCTTGCCTGGAGAATCCCATGGACAGAGGAGCCTGGTAAGCTACAGTCCATGAGGTCT[T/C]AAAGAGTCGGGCATGACGGAGCGAATTCACTTTCACTTTTCACTTTCATGCATTGGAGAA"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "60ca4dabd8f09cfd319da0f9"
+    },
+    "chip_name": [
+      "IlluminaGoatSNP50"
+    ],
+    "locations": [
+      {
+        "chrom": "1",
+        "consequences": [],
+        "date": {
+          "$date": "2021-01-08T00:00:00Z"
+        },
+        "illumina": "A/G",
+        "illumina_strand": "TOP",
+        "imported_from": "manifest",
+        "position": 10408764,
+        "strand": "BOT",
+        "version": "ARS1"
+      }
+    ],
+    "name": "1_10408764_AF-PAKI",
+    "probeset_id": [],
+    "sender": "IGGC",
+    "sequence": {
+      "manifest": "TCTGGATACTCCTGGACACTCACAGACAAGTCTGGGTCAGTCTCTTGTGGGATCACTGCT[T/C]CTTTCTCCTGAGTCCTGGTGCAAACAAGTTTTTGTTTGTGCCCTCCAAGAATCTGTTTCT"
+    }
+  }
+]

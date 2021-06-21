@@ -13,6 +13,7 @@ import pathlib
 
 from bson.objectid import ObjectId
 from pymongo.errors import BulkWriteError
+from dateutil.parser import parse as parse_date
 
 from app import create_app
 from database.db import db, DB_ALIAS
@@ -31,6 +32,10 @@ def sanitize_record(record):
         if isinstance(value, dict):
             if "$oid" in value:
                 record[key] = ObjectId(value["$oid"])
+
+            elif '$date' in value:
+                logger.debug(f"fix '{key}': {value['$date']}")
+                record[key] = parse_date(value['$date'])
 
             else:
                 # call recursively this function

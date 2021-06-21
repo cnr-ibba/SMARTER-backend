@@ -11,6 +11,8 @@ from .breeds import BreedsApi, BreedApi
 from .datasets import DatasetsApi, DatasetApi
 from .samples import (
     SampleSheepApi, SampleSheepListApi, SampleGoatApi, SampleGoatListApi)
+from .variants import (
+    VariantSheepApi, VariantSheepListApi, VariantGoatApi, VariantGoatListApi)
 
 
 def initialize_routes(api):
@@ -27,3 +29,9 @@ def initialize_routes(api):
 
     api.add_resource(SampleGoatListApi, '/api/samples/goat')
     api.add_resource(SampleGoatApi, '/api/samples/goat/<string:id_>')
+
+    api.add_resource(VariantSheepListApi, '/api/variants/sheep')
+    api.add_resource(VariantSheepApi, '/api/variants/sheep/<string:id_>')
+
+    api.add_resource(VariantGoatListApi, '/api/variants/goat')
+    api.add_resource(VariantGoatApi, '/api/variants/goat/<string:id_>')
