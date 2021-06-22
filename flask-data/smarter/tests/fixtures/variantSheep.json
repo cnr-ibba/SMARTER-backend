@@ -131,7 +131,9 @@
       }
     ],
     "name": "250506CS3900140500001_312.1",
-    "probeset_id": [],
+    "probeset_id": [
+      "Test-Affy"
+    ],
     "rs_id": "rs55630642",
     "sender": "AGR_BS",
     "sequence": {

@@ -87,6 +87,66 @@ class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
         self.assertListEqual(test['items'], self.data)
         self.assertEqual(response.status_code, 200)
 
+    def test_get_variant_by_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'name': '250506CS3900140500001_312.1'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_by_rs_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'rs_id': 'rs55630642'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_by_chip_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'chip_name': 'IlluminaOvineHDSNP'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_by_probeset_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'probeset_id': 'Test-Affy'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
 
 class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
     fixtures = [
@@ -122,6 +182,36 @@ class VariantGoatListTest(DateMixin, AuthMixin, BaseCase):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_by_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'name': '1_10408764_AF-PAKI'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_by_chip_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'chip_name': 'IlluminaGoatSNP50'}
         )
 
         test = response.json

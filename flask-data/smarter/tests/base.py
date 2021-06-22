@@ -123,8 +123,10 @@ class AuthMixin():
 
         # read token and prepare headers
         cls.token = response.json['token']
+
+        # don't set content-type: application/json if you aren't posting JSON
+        # https://stackoverflow.com/a/47286909/4385116
         cls.headers = {
-            "Content-Type": "application/json",
             "Authorization": f"Bearer {cls.token}"
         }
 
@@ -133,7 +135,7 @@ class AuthMixin():
 
         response = method(
             self.test_endpoint,
-            headers={"Content-Type": "application/json"},
+            headers={},
             data=data
         )
 
