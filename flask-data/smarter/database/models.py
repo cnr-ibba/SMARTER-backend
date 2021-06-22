@@ -519,6 +519,18 @@ class VariantSpecies(db.Document):
     def __str__(self):
         return (f"name='{self.name}', rs_id='{self.rs_id}'")
 
+    def to_mongo(self, *args, **kwargs):
+        """Override flask-mongoengine method"""
+
+        data = super().to_mongo(*args, **kwargs)
+
+        # add illumina_top property to locations
+        for i, location in enumerate(data['locations']):
+            data['locations'][i]['illumina_top'] = \
+                self.locations[i].illumina_top
+
+        return data
+
     def save(self, *args, **kwargs):
         """Custom save method. Deal with variant name before save"""
 
