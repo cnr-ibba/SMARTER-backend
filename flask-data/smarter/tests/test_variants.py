@@ -147,6 +147,59 @@ class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_variant_by_cust_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'cust_id': '250506CS3900140500001_312_01'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_by_region(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'imported_from': 'manifest',
+                'version': 'Oar_v3.1',
+                'region': '23:26298007-26298027'
+            }
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+        # quering for the same position for a different assembly doesn't
+        # return anything
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'imported_from': 'manifest',
+                'version': 'Oar_v4.0',
+                'region': '23:26298007-26298027'
+            }
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 0)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 0)
+        self.assertEqual(response.status_code, 200)
+
 
 class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
     fixtures = [
@@ -220,4 +273,23 @@ class VariantGoatListTest(DateMixin, AuthMixin, BaseCase):
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 2)
         self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_by_region(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'imported_from': 'manifest',
+                'version': 'ARS1',
+                'region': '1:10408754-10408774'
+            }
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
