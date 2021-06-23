@@ -7,18 +7,22 @@ Created on Fri Jun 18 16:04:11 2021
 """
 
 from flask import jsonify
-from flask_restful import Resource
+from flask_restful import reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import SampleGoat, SampleSheep
-from common.views import ListView
+from common.views import ListView, ModelView
 
 
-class SampleSheepApi(Resource):
+class SampleMixin():
     @jwt_required()
     def get(self, id_):
-        sample = SampleSheep.objects(id=id_).get()
+        sample = self.get_object(id_)
         return jsonify(sample)
+
+
+class SampleSheepApi(SampleMixin, ModelView):
+    model = SampleSheep
 
 
 class SampleSheepListApi(ListView):
@@ -33,11 +37,8 @@ class SampleSheepListApi(ListView):
         return jsonify(**data)
 
 
-class SampleGoatApi(Resource):
-    @jwt_required()
-    def get(self, id_):
-        sample = SampleGoat.objects(id=id_).get()
-        return jsonify(sample)
+class SampleGoatApi(SampleMixin, ModelView):
+    model = SampleGoat
 
 
 class SampleGoatListApi(ListView):
