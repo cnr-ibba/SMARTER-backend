@@ -85,6 +85,21 @@ class Dataset(db.Document):
         return f"file={self.file}, uploader={self.uploader}"
 
 
+class SupportedChip(db.Document):
+    name = db.StringField(required=True, unique=True)
+    species = db.StringField(required=True)
+    manifacturer = db.StringField()
+    n_of_snps = db.IntField(default=0)
+
+    meta = {
+        'db_alias': DB_ALIAS,
+        'collection': 'supportedChips'
+    }
+
+    def __str__(self):
+        return f"'{self.name}' ({self.species})"
+
+
 class BreedAlias(db.EmbeddedDocument):
     fid = db.StringField(required=True)
     dataset = db.ReferenceField(

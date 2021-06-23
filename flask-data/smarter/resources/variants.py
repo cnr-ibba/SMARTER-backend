@@ -11,7 +11,7 @@ import re
 from urllib.parse import unquote
 
 from flask import jsonify, current_app
-from flask_restful import Resource, reqparse
+from flask_restful import reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import VariantGoat, VariantSheep
