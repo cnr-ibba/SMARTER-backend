@@ -94,6 +94,96 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], self.data)
         self.assertEqual(response.status_code, 200)
 
+    def test_get_samples_by_breed(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'breed': 'Texel'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_breed_code(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'breed_code': 'TEX'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_chip_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'chip_name': 'IlluminaOvineSNP50'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_country(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'country': 'Italy'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_original_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'original_id': 'sheep1'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_smarter_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'smarter_id': 'ITOA-TEX-000000001'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
 
 class SampleGoatTest(AuthMixin, BaseCase):
     fixtures = [
@@ -173,4 +263,94 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 2)
         self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_breed(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'breed': 'Cashmere'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_breed_code(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'breed_code': 'CAS'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_chip_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'chip_name': 'IlluminaGoatSNP50'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_country(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'country': 'France'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_original_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'original_id': 'ES_MAL0001'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_smarter_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'smarter_id': 'ESCH-MAL-000000001'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
