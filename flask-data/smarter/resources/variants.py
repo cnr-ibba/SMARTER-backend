@@ -15,9 +15,16 @@ from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import VariantGoat, VariantSheep
-from common.views import ListView
+from common.views import ListView, ModelView
 
 location_pattern = re.compile(r'(?P<chrom>\w+):(?P<start>\d+)-(?P<end>\d+)')
+
+
+class VariantMixin():
+    @jwt_required()
+    def get(self, id_):
+        variant = self.get_object(id_)
+        return jsonify(variant)
 
 
 class VariantListMixin():
@@ -88,11 +95,8 @@ class VariantListMixin():
         return jsonify(**data)
 
 
-class VariantSheepApi(Resource):
-    @jwt_required()
-    def get(self, id_):
-        variant = VariantSheep.objects(id=id_).get()
-        return jsonify(variant)
+class VariantSheepApi(VariantMixin, ModelView):
+    model = VariantSheep
 
 
 class VariantSheepListApi(VariantListMixin, ListView):
@@ -100,11 +104,8 @@ class VariantSheepListApi(VariantListMixin, ListView):
     model = VariantSheep
 
 
-class VariantGoatApi(Resource):
-    @jwt_required()
-    def get(self, id_):
-        variant = VariantGoat.objects(id=id_).get()
-        return jsonify(variant)
+class VariantGoatApi(VariantMixin, ModelView):
+    model = VariantGoat
 
 
 class VariantGoatListApi(VariantListMixin, ListView):

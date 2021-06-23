@@ -62,6 +62,31 @@ class VariantSheepTest(DateMixin, AuthMixin, BaseCase):
 
         self.assertIsInstance(test, dict)
         self.assertEqual(test, self.data[0])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_invalid(self):
+        response = self.client.get(
+            "/api/variants/sheep/foo",
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertIsInstance(test, dict)
+        self.assertIn("not a valid ObjectId", test["message"])
+        self.assertEqual(response.status_code, 400)
+
+    def test_get_variant_not_found(self):
+        response = self.client.get(
+            "/api/variants/sheep/604f75a61a08c53cebd09b58",
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertIsInstance(test, dict)
+        self.assertIn("Object does not exist", test["message"])
+        self.assertEqual(response.status_code, 404)
 
 
 class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
@@ -239,6 +264,31 @@ class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
 
         self.assertIsInstance(test, dict)
         self.assertEqual(test, self.data[0])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_invalid(self):
+        response = self.client.get(
+            "/api/variants/goat/foo",
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertIsInstance(test, dict)
+        self.assertIn("not a valid ObjectId", test["message"])
+        self.assertEqual(response.status_code, 400)
+
+    def test_get_variant_not_found(self):
+        response = self.client.get(
+            "/api/variants/goat/604f75a61a08c53cebd09b58",
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertIsInstance(test, dict)
+        self.assertIn("Object does not exist", test["message"])
+        self.assertEqual(response.status_code, 404)
 
 
 class VariantGoatListTest(DateMixin, AuthMixin, BaseCase):
