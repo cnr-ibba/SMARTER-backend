@@ -8,6 +8,8 @@ Created on Mon Jun 21 15:10:51 2021
 
 import re
 
+from urllib.parse import unquote
+
 from flask import jsonify, current_app
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required
@@ -65,7 +67,10 @@ class VariantListMixin():
                 elemMatch['version'] = args.pop('version')
 
             if 'region' in args:
-                match = re.search(location_pattern, args.pop('region'))
+                match = re.search(
+                    location_pattern,
+                    unquote(args.pop('region'))
+                )
 
                 if match:
                     elemMatch['chrom'] = match.group("chrom")
