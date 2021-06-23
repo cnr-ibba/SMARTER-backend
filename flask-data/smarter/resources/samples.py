@@ -30,6 +30,14 @@ class SampleListMixin():
     parser.add_argument(
         'original_id', help="Sample name in original data source")
     parser.add_argument('smarter_id', help="Smarter id")
+    parser.add_argument(
+        'location__exists',
+        help="Get data with GPS coordinates",
+        type=bool)
+    parser.add_argument(
+        'phenotype__exists',
+        help="Get data with phenotype",
+        type=bool)
 
     def get_queryset(self):
         # reading request parameters

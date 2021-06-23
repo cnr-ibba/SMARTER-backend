@@ -184,6 +184,34 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_samples_by_location__exists(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'location__exists': 'True'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 0)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 0)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_phenotype__exists(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'phenotype__exists': 'True'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 0)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 0)
+        self.assertEqual(response.status_code, 200)
+
 
 class SampleGoatTest(AuthMixin, BaseCase):
     fixtures = [
@@ -353,4 +381,34 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 1)
         self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_location__exists(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'location__exists': 'True'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_phenotype__exists(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'phenotype__exists': 'True'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
         self.assertEqual(response.status_code, 200)
