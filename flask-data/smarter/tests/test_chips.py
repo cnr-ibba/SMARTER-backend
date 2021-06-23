@@ -96,3 +96,48 @@ class SupportedChipListTest(AuthMixin, BaseCase):
         self.assertEqual(len(test['items']), 4)
         self.assertListEqual(test['items'], self.data)
         self.assertEqual(response.status_code, 200)
+
+    def test_get_chips_by_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'name': 'AffymetrixAxiomOviCan'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[-1]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_chips_by_species(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'species': 'Goat'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[-2]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_chips_by_manifacturer(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'manifacturer': 'affymetrix'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[-1]])
+        self.assertEqual(response.status_code, 200)

@@ -27,6 +27,28 @@ class SupportedChipListApi(ListView):
     model = SupportedChip
     endpoint = "supportedchiplistapi"
 
+    parser = reqparse.RequestParser()
+    parser.add_argument('species', help="Species name")
+    parser.add_argument('manifacturer', help="Chip manifacturer")
+    parser.add_argument('name', help="Chip name")
+
+    def get_queryset(self):
+        # reading request parameters
+        args = self.parser.parse_args()
+
+        # filter args
+        args = {key: val for key, val in args.items() if val}
+
+        current_app.logger.info(args)
+
+        if args:
+            queryset = self.model.objects.filter(**args)
+
+        else:
+            queryset = self.model.objects.all()
+
+        return queryset
+
     @jwt_required()
     def get(self):
         self.object_list = self.get_queryset()
