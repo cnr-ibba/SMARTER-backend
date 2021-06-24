@@ -7,7 +7,7 @@ Created on Mon May 24 11:22:59 2021
 """
 
 from .auth import LoginApi
-from .breeds import BreedsApi, BreedApi
+from .breeds import BreedApiList, BreedApi
 from .chips import SupportedChipApi, SupportedChipListApi
 from .datasets import DatasetsApi, DatasetApi
 from .samples import (
@@ -19,7 +19,7 @@ from .variants import (
 def initialize_routes(api):
     api.add_resource(LoginApi, '/api/auth/login')
 
-    api.add_resource(BreedsApi, '/api/breeds')
+    api.add_resource(BreedApiList, '/api/breeds')
     api.add_resource(BreedApi, '/api/breeds/<string:id_>')
 
     api.add_resource(SupportedChipListApi, '/api/supported-chips')

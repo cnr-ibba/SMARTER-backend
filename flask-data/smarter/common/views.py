@@ -40,9 +40,10 @@ class ModelView(Resource):
         if pk is not None:
             try:
                 obj = queryset.get(pk=pk)
+                current_app.logger.debug(f"Got {obj}")
 
             except DoesNotExist as e:
-                current_app.logger.debug(e)
+                current_app.logger.warning(e)
                 raise ObjectsNotExistsError
 
             except ValidationError as e:
@@ -102,6 +103,8 @@ class ListView(Resource):
 
     def get_context_data(self):
         qs = self.object_list
+
+        current_app.logger.debug(f"Got {qs}")
 
         page = int(request.args.get('page', 1))
         size = int(request.args.get('size', 10))

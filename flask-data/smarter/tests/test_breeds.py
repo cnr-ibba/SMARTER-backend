@@ -16,7 +16,7 @@ from .base import BaseCase, AuthMixin
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
 
 
-class TestGetBreeds(AuthMixin, BaseCase):
+class TestGetBreedList(AuthMixin, BaseCase):
     fixtures = [
         'user',
         'breeds'
@@ -136,6 +136,51 @@ class TestGetBreeds(AuthMixin, BaseCase):
         self.assertIsNotNone(test['prev'])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_breed_by_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'name': 'Texel'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_breed_by_breed_code(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'code': 'TEX'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_breed_by_species(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'species': 'Sheep'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data[:2])
+        self.assertEqual(response.status_code, 200)
+
 
 class TestGetBreed(AuthMixin, BaseCase):
     fixtures = [
@@ -162,3 +207,27 @@ class TestGetBreed(AuthMixin, BaseCase):
 
         self.assertIsInstance(test, dict)
         self.assertEqual(test, self.data)
+
+    def test_get_breed_invalid(self):
+        response = self.client.get(
+            "/api/breeds/foo",
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertIsInstance(test, dict)
+        self.assertIn("not a valid ObjectId", test["message"])
+        self.assertEqual(response.status_code, 400)
+
+    def test_get_breed_not_found(self):
+        response = self.client.get(
+            "/api/breeds/604f75a61a08c53cebd09b58",
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertIsInstance(test, dict)
+        self.assertIn("Object does not exist", test["message"])
+        self.assertEqual(response.status_code, 404)
