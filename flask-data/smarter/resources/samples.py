@@ -30,6 +30,7 @@ class SampleListMixin():
     parser.add_argument(
         'original_id', help="Sample name in original data source")
     parser.add_argument('smarter_id', help="Smarter id")
+    parser.add_argument('dataset', help="The dataset id")
     parser.add_argument(
         'location__exists',
         help="Get data with GPS coordinates",

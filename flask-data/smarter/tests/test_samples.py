@@ -184,6 +184,35 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_samples_by_dataset_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'dataset': '604f75a61a08c53cebd09b58'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+        # this query doesn't return results
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'dataset': '604f75a61a08c53cebd09b5b'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 0)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 0)
+        self.assertEqual(response.status_code, 200)
+
     def test_get_samples_by_location__exists(self):
         response = self.client.get(
             self.test_endpoint,
@@ -381,6 +410,35 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 1)
         self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_dataset_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'dataset': '604f75a61a08c53cebd09b5b'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+        # this query doesn't return results
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'dataset': '604f75a61a08c53cebd09b58'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 0)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 0)
         self.assertEqual(response.status_code, 200)
 
     def test_get_samples_by_location__exists(self):
