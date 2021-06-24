@@ -16,7 +16,7 @@ from .base import BaseCase, AuthMixin
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
 
 
-class TestGetDatasets(AuthMixin, BaseCase):
+class TestGetDatasetList(AuthMixin, BaseCase):
     fixtures = [
         'user',
         'dataset'
@@ -123,6 +123,36 @@ class TestGetDatasets(AuthMixin, BaseCase):
         self.assertIsNone(test['next'])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_datasets_by_type(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'type': 'foreground'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_datasets_by_search(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'search': 'test.map'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
 
 class TestGetDataset(AuthMixin, BaseCase):
     fixtures = [
@@ -149,3 +179,27 @@ class TestGetDataset(AuthMixin, BaseCase):
 
         self.assertIsInstance(test, dict)
         self.assertEqual(test, self.data)
+
+    def test_get_breed_invalid(self):
+        response = self.client.get(
+            "/api/datasets/foo",
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertIsInstance(test, dict)
+        self.assertIn("not a valid ObjectId", test["message"])
+        self.assertEqual(response.status_code, 400)
+
+    def test_get_breed_not_found(self):
+        response = self.client.get(
+            "/api/datasets/608ab46e1031c98150016dbd",
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertIsInstance(test, dict)
+        self.assertIn("Object does not exist", test["message"])
+        self.assertEqual(response.status_code, 404)
