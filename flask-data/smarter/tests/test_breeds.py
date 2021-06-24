@@ -181,6 +181,38 @@ class TestGetBreedList(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], self.data[:2])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_breed_by_search(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'search': 'merino'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+        # the same query in goat species return no results
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'search': 'merino',
+                'species': 'Goat'
+            }
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 0)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 0)
+        self.assertEqual(response.status_code, 200)
+
 
 class TestGetBreed(AuthMixin, BaseCase):
     fixtures = [

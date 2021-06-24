@@ -6,6 +6,9 @@ Created on Mon May 24 11:16:39 2021
 @author: Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
 """
 
+import re
+
+from mongoengine.queryset import Q
 from flask import jsonify, current_app
 from flask_restful import reqparse
 from flask_jwt_extended import jwt_required
@@ -14,26 +17,39 @@ from database.models import Breed
 from common.views import ListView, ModelView
 
 
-class BreedApiList(ListView):
-    endpoint = 'breedapilist'
+class BreedListApi(ListView):
+    endpoint = 'breedlistapi'
     model = Breed
 
     parser = reqparse.RequestParser()
     parser.add_argument('species', help="Species name")
     parser.add_argument('name', help="Breed name")
     parser.add_argument('code', help="Breed code name")
+    parser.add_argument(
+        'search', help="Search breed name and aliases by pattern")
 
     def get_queryset(self):
         # reading request parameters
-        args = self.parser.parse_args()
+        kwargs = self.parser.parse_args()
+        args = []
 
         # filter args
-        args = {key: val for key, val in args.items() if val}
+        kwargs = {key: val for key, val in kwargs.items() if val}
 
-        current_app.logger.info(args)
+        # deal with search fields
+        if 'search' in kwargs:
+            pattern = kwargs.pop("search")
+            pattern = re.compile(pattern, re.IGNORECASE)
+            args = [Q(name=pattern) | Q(aliases__fid=pattern)]
 
-        if args:
-            queryset = self.model.objects.filter(**args)
+            # remove name from args if exists (i'm searching against it)
+            if 'name' in kwargs:
+                del(kwargs['name'])
+
+        current_app.logger.info(f"{args}, {kwargs}")
+
+        if args or kwargs:
+            queryset = self.model.objects.filter(*args, **kwargs)
 
         else:
             queryset = self.model.objects.all()
@@ -52,5 +68,5 @@ class BreedApi(ModelView):
 
     @jwt_required()
     def get(self, id_):
-        sample = self.get_object(id_)
-        return jsonify(sample)
+        breed = self.get_object(id_)
+        return jsonify(breed)
