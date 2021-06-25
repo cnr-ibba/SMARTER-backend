@@ -1,0 +1,32 @@
+[
+  {
+    "_id": {
+      "$oid": "608ab4b191a0d06725bc0938"
+    },
+    "original_id": "sheep1",
+    "smarter_id": "ITOA-TEX-000000001",
+    "country": "Italy",
+    "species": "Sheep",
+    "breed": "Texel",
+    "breed_code": "TEX",
+    "dataset_id": {
+      "$oid": "604f75a61a08c53cebd09b58"
+    },
+    "chip_name": "IlluminaOvineSNP50"
+  },
+  {
+    "_id": {
+      "$oid": "608ab4b191a0d06725bc0939"
+    },
+    "original_id": "sheep2",
+    "smarter_id": "ITOA-MER-000000002",
+    "country": "Italy",
+    "species": "Sheep",
+    "breed": "Merino",
+    "breed_code": "MER",
+    "dataset_id": {
+      "$oid": "604f75a61a08c53cebd09b58"
+    },
+    "chip_name": "IlluminaOvineSNP50"
+  }
+]

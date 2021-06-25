@@ -12,6 +12,9 @@ import unittest
 import pathlib
 
 from bson.objectid import ObjectId
+from pymongo.errors import BulkWriteError
+from dateutil.parser import parse as parse_date
+
 from app import create_app
 from database.db import db, DB_ALIAS
 
@@ -30,9 +33,13 @@ def sanitize_record(record):
             if "$oid" in value:
                 record[key] = ObjectId(value["$oid"])
 
+            elif '$date' in value:
+                logger.debug(f"fix '{key}': {value['$date']}")
+                record[key] = parse_date(value['$date'])
+
             else:
                 # call recursively this function
-                record[key] = sanitize_record(record)
+                record[key] = sanitize_record(value)
 
         elif isinstance(value, list):
             record[key] = sanitize_data(value)
@@ -81,7 +88,11 @@ class BaseCase(unittest.TestCase):
                 data = sanitize_data(data)
 
                 collection = cls.db[fixture]
-                collection.insert_many(data)
+                try:
+                    collection.insert_many(data)
+
+                except BulkWriteError as e:
+                    logger.error(f"Cannot insert data: {e}")
 
     @classmethod
     def tearDownClass(cls):
@@ -112,8 +123,10 @@ class AuthMixin():
 
         # read token and prepare headers
         cls.token = response.json['token']
+
+        # don't set content-type: application/json if you aren't posting JSON
+        # https://stackoverflow.com/a/47286909/4385116
         cls.headers = {
-            "Content-Type": "application/json",
             "Authorization": f"Bearer {cls.token}"
         }
 
@@ -122,7 +135,7 @@ class AuthMixin():
 
         response = method(
             self.test_endpoint,
-            headers={"Content-Type": "application/json"},
+            headers={},
             data=data
         )
 

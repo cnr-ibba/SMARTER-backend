@@ -6,40 +6,67 @@ Created on Mon May 24 11:16:39 2021
 @author: Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
 """
 
-from flask import jsonify, request
-from flask_restful import Resource
+import re
+
+from mongoengine.queryset import Q
+from flask import jsonify, current_app
+from flask_restful import reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import Breed
-from common.views import ListView
+from common.views import ListView, ModelView
 
 
-class BreedsApi(ListView):
-    endpoint = 'breedsapi'
+class BreedListApi(ListView):
+    endpoint = 'breedlistapi'
     model = Breed
 
+    parser = reqparse.RequestParser()
+    parser.add_argument('species', help="Species name")
+    parser.add_argument('name', help="Breed name")
+    parser.add_argument('code', help="Breed code name")
+    parser.add_argument(
+        'search', help="Search breed name and aliases by pattern")
+
     def get_queryset(self):
-        # read additional arguments from URL
-        species = request.args.get('species')
+        # reading request parameters
+        kwargs = self.parser.parse_args()
+        args = []
 
-        # get queryset from base class
-        qs = super().get_queryset()
+        # filter args
+        kwargs = {key: val for key, val in kwargs.items() if val}
 
-        if species:
-            qs = qs.filter(species=species)
+        # deal with search fields
+        if 'search' in kwargs:
+            pattern = kwargs.pop("search")
+            pattern = re.compile(pattern, re.IGNORECASE)
+            args = [Q(name=pattern) | Q(aliases__fid=pattern)]
 
-        return qs
+            # remove name from args if exists (i'm searching against it)
+            if 'name' in kwargs:
+                del(kwargs['name'])
+
+        current_app.logger.info(f"{args}, {kwargs}")
+
+        if args or kwargs:
+            queryset = self.model.objects.filter(*args, **kwargs)
+
+        else:
+            queryset = self.model.objects.all()
+
+        return queryset
 
     @jwt_required()
     def get(self):
         self.object_list = self.get_queryset()
         data = self.get_context_data()
-
         return jsonify(**data)
 
 
-class BreedApi(Resource):
+class BreedApi(ModelView):
+    model = Breed
+
     @jwt_required()
     def get(self, id_):
-        breed = Breed.objects(id=id_).get()
+        breed = self.get_object(id_)
         return jsonify(breed)

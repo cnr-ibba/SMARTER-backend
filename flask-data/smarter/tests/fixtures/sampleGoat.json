@@ -1,0 +1,72 @@
+[
+  {
+    "_id": {
+      "$oid": "6092940199215a3814492195"
+    },
+    "original_id": "ES_MAL0001",
+    "smarter_id": "ESCH-MAL-000000001",
+    "country": "France",
+    "species": "Goat",
+    "breed": "Cashmere",
+    "breed_code": "CAS",
+    "dataset_id": {
+      "$oid": "604f75a61a08c53cebd09b5b"
+    },
+    "chip_name": "IlluminaGoatSNP50",
+    "sex": 2,
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        3.19558,
+        39.4603
+      ]
+    },
+    "metadata": {
+      "sampling_info": "test info",
+      "dob": "01/01/10",
+      "notes": "No photo profile jaw"
+    },
+    "phenotype": {
+      "köppen_group": "Temperate",
+      "chest_girth": 82.0,
+      "height": 58.0,
+      "length": 66.0,
+      "widthofpinbones": 16.5
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6092940199215a3814492196"
+    },
+    "original_id": "ES_MAL0002",
+    "smarter_id": "ESCH-MAL-000000002",
+    "country": "France",
+    "species": "Goat",
+    "breed": "Bari",
+    "breed_code": "BRI",
+    "dataset_id": {
+      "$oid": "604f75a61a08c53cebd09b5b"
+    },
+    "chip_name": "IlluminaGoatSNP50",
+    "sex": 2,
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        3.19558,
+        39.4603
+      ]
+    },
+    "metadata": {
+      "sampling_info": "test info",
+      "dob": "01/01/11",
+      "notes": "No photo profile jaw"
+    },
+    "phenotype": {
+      "köppen_group": "Temperate",
+      "chest_girth": 75.0,
+      "height": 59.0,
+      "length": 56.0,
+      "widthofpinbones": 14.5
+    }
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "_id": {
+      "$oid": "60c8c3a74c265e1880b28334"
+    },
+    "name": "IlluminaOvineSNP50",
+    "species": "Sheep",
+    "manifacturer": "illumina",
+    "n_of_snps": 54241
+  },
+  {
+    "_id": {
+      "$oid": "60c8c3a74c265e1880b28335"
+    },
+    "name": "IlluminaOvineHDSNP",
+    "species": "Sheep",
+    "manifacturer": "illumina",
+    "n_of_snps": 606006
+  },
+  {
+    "_id": {
+      "$oid": "60c8c3a74c265e1880b28336"
+    },
+    "name": "IlluminaGoatSNP50",
+    "species": "Goat",
+    "manifacturer": "illumina",
+    "n_of_snps": 59727
+  },
+  {
+    "_id": {
+      "$oid": "60c8c3a74c265e1880b28337"
+    },
+    "name": "AffymetrixAxiomOviCan",
+    "species": "Sheep",
+    "manifacturer": "affymetrix",
+    "n_of_snps": 56793
+  }
+]

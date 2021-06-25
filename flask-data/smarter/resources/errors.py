@@ -21,6 +21,14 @@ class UnauthorizedError(HTTPException):
     pass
 
 
+class MongoEngineValidationError(HTTPException):
+    pass
+
+
+class ObjectsNotExistsError(HTTPException):
+    pass
+
+
 errors = {
     "InternalServerError": {
         "message": "Something went wrong",
@@ -38,5 +46,14 @@ errors = {
     "UnauthorizedError": {
         "message": "Invalid username or password",
         "status": 401
+    },
+    "MongoEngineValidationError": {
+        "message": ("This is not a valid ObjectId, it must be a 12-byte "
+                    "input or a 24-character hex string"),
+        "status": 400
+    },
+    "ObjectsNotExistsError": {
+        "message": "Object does not exist",
+        "status": 404
     },
 }
