@@ -56,4 +56,8 @@ errors = {
         "message": "Object does not exist",
         "status": 404
     },
+    "ExpiredSignatureError": {
+        "message": "Your token is expired",
+        "status": 401
+    }
 }
