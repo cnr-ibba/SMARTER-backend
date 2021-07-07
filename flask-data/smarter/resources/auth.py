@@ -10,7 +10,7 @@ import json
 import datetime
 
 from flask import Response, request, current_app
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, decode_token
 from flask_restful import Resource
 from mongoengine.errors import DoesNotExist
 
@@ -45,11 +45,16 @@ class LoginApi(Resource):
                 identity=str(user.id),
                 expires_delta=expires)
 
+            # read token data
+            claims = decode_token(access_token)
+
             current_app.logger.info(f"New token generated for '{username}'")
 
             return Response(
                 json.dumps({
                     'token': access_token,
+                    'expires': str(
+                        datetime.datetime.fromtimestamp(claims['exp']))
                 }),
                 mimetype="application/json",
                 status=200)
