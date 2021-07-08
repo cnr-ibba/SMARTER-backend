@@ -7,8 +7,6 @@ services:
   mongo:
     image: mongo:4.4
 
-    container_name: smarter-backend_mongo
-
     expose:
       - 27017
 
@@ -34,13 +32,11 @@ services:
         target: /docker-entrypoint-initdb.d
 
     networks:
-      - smarter-backend
+      - default
 
   uwsgi:
     # a custom image for flask
     build: ./uwsgi
-
-    container_name: smarter-backend_uwsgi
 
     # You can pass multiple environment variables from an external file through
     # to a service’s containers with the ‘env_file’ option
@@ -72,13 +68,11 @@ services:
       - mongo
 
     networks:
-      - smarter-backend
+      - default
 
   nginx:
     # a custom image for NGINX
     build: ./nginx
-
-    container_name: smarter-backend_nginx
 
     volumes:
       - type: bind
@@ -97,8 +91,8 @@ services:
       - uwsgi
 
     networks:
-      - smarter-backend
+      - default
 
 
 networks:
-  smarter-backend:
+  default:
