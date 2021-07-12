@@ -153,6 +153,37 @@ class TestGetDatasetList(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_datasets_sort_by_file(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'file',
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[1])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_datasets_sort_by_file_desc(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'file',
+                'order': 'desc'
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[0])
+        self.assertEqual(response.status_code, 200)
+
 
 class TestGetDataset(AuthMixin, BaseCase):
     fixtures = [
