@@ -26,6 +26,8 @@ class DatasetListApi(ListView):
     parser.add_argument('type', dest="type_", help="Dataset type")
     parser.add_argument(
         'search', help="Search by dataset contents")
+    parser.add_argument('sort', help="Sort results by this key")
+    parser.add_argument('order', help="Sort key order")
 
     def get_queryset(self):
         # reading request parameters
@@ -34,6 +36,19 @@ class DatasetListApi(ListView):
 
         # filter args
         kwargs = {key: val for key, val in kwargs.items() if val}
+
+        # deal with ordering stuff
+        # HINT should this be placed in a mixin?
+        sort = None
+
+        if 'sort' in kwargs:
+            sort = kwargs.pop('sort')
+
+        if 'order' in kwargs:
+            order = kwargs.pop('order')
+
+            if sort and order == 'desc':
+                sort = f"-{sort}"
 
         # deal with search fields
         if 'search' in kwargs:
@@ -48,6 +63,9 @@ class DatasetListApi(ListView):
 
         else:
             queryset = self.model.objects.all()
+
+        if sort:
+            queryset = queryset.order_by(sort)
 
         return queryset
 
