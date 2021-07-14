@@ -7,11 +7,13 @@ Created on Mon May 24 11:16:39 2021
 """
 
 import re
+import json
 
 from mongoengine.queryset import Q
-from flask import jsonify, current_app
+from flask import jsonify, current_app, request
 from flask_restful import reqparse
 from flask_jwt_extended import jwt_required
+from flask_csv import send_csv
 
 from database.models import Breed
 from common.views import ListView, ModelView
@@ -76,9 +78,18 @@ class BreedListApi(ListView):
 
     @jwt_required()
     def get(self):
+        content_type = request.headers.get("Accept")
         self.object_list = self.get_queryset()
-        data = self.get_context_data()
-        return jsonify(**data)
+
+        if content_type == 'text/csv':
+            return send_csv(
+                [breed.to_dict() for breed in self.object_list],
+                "test.csv",
+                ["name", "species", "code", "n_individuals"])
+
+        else:
+            data = self.get_context_data()
+            return jsonify(**data)
 
 
 class BreedApi(ModelView):

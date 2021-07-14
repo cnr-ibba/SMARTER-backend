@@ -145,6 +145,14 @@ class Breed(db.Document):
     def __str__(self):
         return f"{self.name} ({self.code}) {self.species}"
 
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "code": self.code,
+            "species": self.species,
+            "n_individuals": self.n_individuals
+        }
+
 
 class SEX(bytes, Enum):
     UNKNOWN = (0, "Unknown")
