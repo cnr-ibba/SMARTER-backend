@@ -60,3 +60,34 @@ Connect to mongodb
 ```
 $ docker-compose run --rm --user mongodb mongo sh -c 'mongo --host mongo --username="${MONGO_INITDB_ROOT_USERNAME}" --password="${MONGO_INITDB_ROOT_PASSWORD}"'
 ```
+
+Import data into database
+-------------------------
+
+Execute a `mongodump` of an instance of the 
+[SMARTER-database](https://github.com/cnr-ibba/SMARTER-database) project, for 
+example:
+
+```
+$ docker-compose run --rm --user mongodb mongo sh -c 'DATE=$(date +%Y-%m-%d); mongodump --host mongo --username="${MONGO_INITDB_ROOT_USERNAME}" --password="${MONGO_INITDB_ROOT_PASSWORD}" --authenticationDatabase admin --db=smarter --gzip --archive=/home/mongodb/${DATE}\_smarter.archive.gz'
+```
+
+Then copy (or move) the dump file into `mongodb-home` folder of this project. You
+can restore the database using `mongorestore`, for example:
+
+```
+$ docker-compose run --rm --user mongodb mongo sh -c 'mongorestore --host mongo --username="${MONGO_INITDB_ROOT_USERNAME}" --password="${MONGO_INITDB_ROOT_PASSWORD}" --authenticationDatabase admin --db=smarter --drop --preserveUUID --gzip --archive=/home/mongodb/2021-06-18_smarter.archive.gz'
+```
+
+Monitoring UWSGI processes
+--------------------------
+
+Enter inside uwsgi container (with `docker-compose exec`), then monitor uwsgi with 
+[uwsgitop](https://github.com/xrmx/uwsgitop):
+
+```
+$ docker-compose exec uwsgi bash
+# uwsgitop /tmp/smarter-stats.sock
+```
+
+Type `q` to exit from monitoring process
