@@ -9,7 +9,9 @@
 # Get the last stable nginx image
 FROM nginx:1.20
 
-MAINTAINER Paolo Cozzi <cozzi@ibba.cnr.it>
+LABEL maintainer="Paolo Cozzi <paolo.cozzi@ibba.cnr.it>" \
+      description="A nginx container to work with flask" \
+      version="0.1"
 
 # synchronize timezone for container
 # https://forums.docker.com/t/synchronize-timezone-from-host-to-container/39116
