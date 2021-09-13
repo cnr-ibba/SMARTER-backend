@@ -76,6 +76,9 @@ class Dataset(db.Document):
     # file contents
     contents = db.ListField(db.StringField())
 
+    # track the original chip_name with dataset
+    chip_name = db.StringField()
+
     meta = {
         'db_alias': DB_ALIAS,
         'collection': 'dataset'
@@ -185,6 +188,10 @@ class SampleSpecies(db.Document):
     species = db.StringField(required=True)
     breed = db.StringField(required=True)
     breed_code = db.StringField(min_length=3)
+
+    # this will be a original_id alias (a different sample name in original
+    # data file)
+    alias = db.StringField()
 
     # required to search a sample relying only on original ID
     dataset = db.ReferenceField(
