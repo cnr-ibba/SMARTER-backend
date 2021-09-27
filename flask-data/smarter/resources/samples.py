@@ -32,7 +32,7 @@ class SampleListMixin():
     parser.add_argument('smarter_id', help="Smarter id")
     parser.add_argument('dataset', help="The dataset id")
     parser.add_argument(
-        'location__exists',
+        'locations__exists',
         help="Get data with GPS coordinates",
         type=bool)
     parser.add_argument(

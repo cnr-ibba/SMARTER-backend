@@ -208,7 +208,7 @@ class SampleSpecies(db.Document):
 
     # GPS location
     # NOTE: X, Y where X is longitude, Y latitude
-    location = db.PointField()
+    locations = db.ListField(db.PointField(), default=None)
 
     # additional (not modelled) metadata
     metadata = db.DictField(default=None)
@@ -285,7 +285,7 @@ class Location(db.EmbeddedDocument):
     date = db.DateTimeField()
 
     consequences = db.ListField(
-        db.EmbeddedDocumentField(Consequence))
+        db.EmbeddedDocumentField(Consequence), default=None)
 
     def __init__(self, *args, **kwargs):
         illumina_top = None
