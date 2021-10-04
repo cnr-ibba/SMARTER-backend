@@ -1,10 +1,9 @@
-.. SMARTER-backend documentation master file, created by
-   sphinx-quickstart on Mon Sep 27 13:41:20 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
 
-Welcome to SMARTER-backend's documentation!
-===========================================
+Accessing data using R
+======================
+
+.. toctree::
+   :maxdepth: 4
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam semper, urna non 
 tincidunt accumsan, metus tortor vehicula arcu, ac ultrices mauris dolor id lacus. 
@@ -16,25 +15,3 @@ Quisque erat enim, scelerisque vitae augue id, commodo accumsan neque. Praesent
 egestas finibus mauris, rutrum pharetra orci. Quisque ullamcorper enim et mauris 
 interdum, et scelerisque nunc molestie. Pellentesque id turpis id nibh rhoncus
 imperdiet vitae porta lorem.
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-Documentation Contents
-----------------------
-
-.. toctree::
-   :maxdepth: 2
-
-   introduction
-   installing
-   accessing
-   modules
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
