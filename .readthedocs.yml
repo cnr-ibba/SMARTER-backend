@@ -7,14 +7,15 @@ version: 2
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
-   configuration: flask-data/smarter/docs/source/conf.py
+  configuration: flask-data/smarter/docs/source/conf.py
 
 # Optionally build your docs in additional formats such as PDF
 formats:
-   - all
+  - epub
+  - pdf
 
 # Optionally set the version of Python and requirements required to build your docs
 python:
-   version: "3.7"
-   install:
-   - requirements: uwsgi/requirements.txt
+  version: "3.7"
+  install:
+  - requirements: uwsgi/requirements.txt
