@@ -2,6 +2,9 @@
 Accessing SMARTER-backend
 =========================
 
+Authentication
+--------------
+
 In the following sections you will find examples on how to interact with the 
 SMARTER-backend in different ways. Regardless the method your prefer, you are 
 required to generate a :ref:`JWT Token <JWT Authentication>` before accessing data.
