@@ -12,7 +12,8 @@
     "dataset_id": {
       "$oid": "604f75a61a08c53cebd09b58"
     },
-    "chip_name": "IlluminaOvineSNP50"
+    "chip_name": "IlluminaOvineSNP50",
+    "alias": "sheep-one"
   },
   {
     "_id": {

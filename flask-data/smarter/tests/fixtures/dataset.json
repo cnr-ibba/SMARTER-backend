@@ -19,7 +19,8 @@
 		"archive/",
 		"archive/test.map",
 		"archive/test.ped"
-	]
+	],
+	"chip_name": "IlluminaOvineSNP50"
 },
 {
 	"_id": {
@@ -41,5 +42,6 @@
 	"contents": [
 		"finalreport.txt",
 		"snplist.txt"
-	]
+	],
+	"chip_name": "AffymetrixAxiomOviCan"
 }]

@@ -3,6 +3,7 @@ SMARTER Backend API
 
 [![Build Status](https://www.travis-ci.com/cnr-ibba/SMARTER-backend.svg?branch=master)](https://www.travis-ci.com/cnr-ibba/SMARTER-backend)
 [![Coverage Status](https://coveralls.io/repos/github/cnr-ibba/SMARTER-backend/badge.svg?branch=master)](https://coveralls.io/github/cnr-ibba/SMARTER-backend?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/smarter-backend/badge/?version=latest)](https://smarter-backend.readthedocs.io/en/latest/)
 
 Setting the `.env` file
 -----------------------

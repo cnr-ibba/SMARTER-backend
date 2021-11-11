@@ -213,11 +213,11 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertEqual(len(test['items']), 0)
         self.assertEqual(response.status_code, 200)
 
-    def test_get_samples_by_location__exists(self):
+    def test_get_samples_by_locations__exists(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
-            query_string={'location__exists': 'True'}
+            query_string={'locations__exists': 'True'}
         )
 
         test = response.json
@@ -441,11 +441,11 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         self.assertEqual(len(test['items']), 0)
         self.assertEqual(response.status_code, 200)
 
-    def test_get_samples_by_location__exists(self):
+    def test_get_samples_by_locations__exists(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
-            query_string={'location__exists': 'True'}
+            query_string={'locations__exists': 'True'}
         )
 
         test = response.json
