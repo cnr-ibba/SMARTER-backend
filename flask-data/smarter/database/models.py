@@ -52,40 +52,22 @@ class User(db.Document):
     }
 
 
-class Dataset(db.Document):
-    """Describe a dataset instace with fields owned by data types"""
+class SmarterInfo(db.Document):
+    """A class to track database status informations"""
 
-    file = db.StringField(required=True, unique=True)
-    uploader = db.StringField()
-    size_ = db.StringField(db_field="size")
-    partner = db.StringField()
-
-    # HINT: should country, species and breeds be a list of items?
-    country = db.StringField()
-    species = db.StringField()
-    breed = db.StringField()
-
-    n_of_individuals = db.IntField()
-    n_of_records = db.IntField()
-    trait = db.StringField()
-    gene_array = db.StringField()
-
-    # add type tag
-    type_ = db.ListField(db.StringField(), db_field="type")
-
-    # file contents
-    contents = db.ListField(db.StringField())
-
-    # track the original chip_name with dataset
-    chip_name = db.StringField()
+    id = db.StringField(primary_key=True)
+    version = db.StringField(required=True)
+    working_assemblies = db.DictField()
+    plink_specie_opt = db.DictField()
+    last_updated = db.DateTimeField()
 
     meta = {
         'db_alias': DB_ALIAS,
-        'collection': 'dataset'
+        'collection': 'smarterInfo'
     }
 
     def __str__(self):
-        return f"file={self.file}, uploader={self.uploader}"
+        return f"{self.id}: {self.version}"
 
 
 class SupportedChip(db.Document):
@@ -149,6 +131,42 @@ class Breed(db.Document):
         return f"{self.name} ({self.code}) {self.species}"
 
 
+class Dataset(db.Document):
+    """Describe a dataset instace with fields owned by data types"""
+
+    file = db.StringField(required=True, unique=True)
+    uploader = db.StringField()
+    size_ = db.StringField(db_field="size")
+    partner = db.StringField()
+
+    # HINT: should country, species and breeds be a list of items?
+    country = db.StringField()
+    species = db.StringField()
+    breed = db.StringField()
+
+    n_of_individuals = db.IntField()
+    n_of_records = db.IntField()
+    trait = db.StringField()
+    gene_array = db.StringField()
+
+    # add type tag
+    type_ = db.ListField(db.StringField(), db_field="type")
+
+    # file contents
+    contents = db.ListField(db.StringField())
+
+    # track the original chip_name with dataset
+    chip_name = db.StringField()
+
+    meta = {
+        'db_alias': DB_ALIAS,
+        'collection': 'dataset'
+    }
+
+    def __str__(self):
+        return f"file={self.file}, uploader={self.uploader}"
+
+
 class SEX(bytes, Enum):
     UNKNOWN = (0, "Unknown")
     MALE = (1, "Male")
@@ -180,6 +198,11 @@ class Phenotype(db.DynamicEmbeddedDocument):
         return f"{self.to_json()}"
 
 
+class SAMPLETYPE(Enum):
+    FOREGROUND = 'foreground'
+    BACKGROUND = 'background'
+
+
 class SampleSpecies(db.Document):
     original_id = db.StringField(required=True)
     smarter_id = db.StringField(required=True, unique=True)
@@ -199,6 +222,9 @@ class SampleSpecies(db.Document):
         db_field="dataset_id",
         reverse_delete_rule=db.DENY
     )
+
+    # add type tag
+    type_ = db.EnumField(SAMPLETYPE, db_field="type", required=True)
 
     # track the original chip_name with sample
     chip_name = db.StringField()
