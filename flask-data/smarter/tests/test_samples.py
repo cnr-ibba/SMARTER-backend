@@ -241,6 +241,20 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertEqual(len(test['items']), 0)
         self.assertEqual(response.status_code, 200)
 
+    def test_get_samples_by_type(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'type': 'background'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertEqual(response.status_code, 200)
+
 
 class SampleGoatTest(AuthMixin, BaseCase):
     fixtures = [
@@ -469,4 +483,18 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 2)
         self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_type(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'type': 'foreground'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
         self.assertEqual(response.status_code, 200)

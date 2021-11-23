@@ -32,6 +32,10 @@ class SampleListMixin():
     parser.add_argument('smarter_id', help="Smarter id")
     parser.add_argument('dataset', help="The dataset id")
     parser.add_argument(
+        'type',
+        dest="type_",
+        help="The sample type (background/foreground)")
+    parser.add_argument(
         'locations__exists',
         help="Get data with GPS coordinates",
         type=bool)

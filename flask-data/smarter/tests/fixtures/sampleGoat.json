@@ -34,7 +34,8 @@
       "height": 58.0,
       "length": 66.0,
       "widthofpinbones": 16.5
-    }
+    },
+    "type": "background"
   },
   {
     "_id": {
@@ -71,6 +72,7 @@
       "height": 59.0,
       "length": 56.0,
       "widthofpinbones": 14.5
-    }
+    },
+    "type": "foreground"
   }
 ]
