@@ -23,7 +23,11 @@ class DatasetListApi(ListView):
 
     parser = reqparse.RequestParser()
     parser.add_argument('species', help="Species name")
-    parser.add_argument('type', dest="type_", help="Dataset type")
+    parser.add_argument(
+        'type',
+        dest="type_",
+        action='append',
+        help="Dataset type")
     parser.add_argument(
         'search', help="Search by dataset contents")
     parser.add_argument('sort', help="Sort results by this key")
@@ -49,6 +53,13 @@ class DatasetListApi(ListView):
 
             if sort and order == 'desc':
                 sort = f"-{sort}"
+
+        # mind to the _type arguments
+        if 'type_' in kwargs:
+            type_ = kwargs.pop('type_')
+
+            # add a new key to kwargs dictionary
+            kwargs['type___all'] = type_
 
         # deal with search fields
         if 'search' in kwargs:

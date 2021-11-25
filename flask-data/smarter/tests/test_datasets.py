@@ -138,6 +138,20 @@ class TestGetDatasetList(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_datasets_by_multiple_types(self):
+        response = self.client.get(
+            self.test_endpoint + "?type=genotypes&type=background",
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
     def test_get_datasets_by_search(self):
         response = self.client.get(
             self.test_endpoint,
