@@ -38,6 +38,9 @@ services:
     # a custom image for flask
     build: ./uwsgi
 
+    environment:
+      PYTHONPATH: "/var/uwsgi/smarter/"
+
     # You can pass multiple environment variables from an external file through
     # to a service’s containers with the ‘env_file’ option
     env_file:
