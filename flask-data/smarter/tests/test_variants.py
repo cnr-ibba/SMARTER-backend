@@ -307,6 +307,21 @@ class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
         self.assertEqual(
             "Unknown arguments: foo", response.json['message'])
 
+    def test_get_samples_by_multiple_chips(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?chip_name=IlluminaOvineSNP50&chip_name=IlluminaOvineHDSNP"),
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
 
 class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
     fixtures = [

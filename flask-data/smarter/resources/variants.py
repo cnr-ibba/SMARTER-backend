@@ -31,7 +31,10 @@ class VariantListMixin():
     parser = reqparse.RequestParser()
     parser.add_argument('name', help="Variant name")
     parser.add_argument('rs_id', help="rsID identifier")
-    parser.add_argument('chip_name', help="Chip name")
+    parser.add_argument(
+        'chip_name',
+        action='append',
+        help="Chip name")
     parser.add_argument('probeset_id', help="Affymetrix probeset id")
     parser.add_argument('cust_id', help="Affymetrix cust_id (illumina name)")
     parser.add_argument(
@@ -43,6 +46,13 @@ class VariantListMixin():
     def get_queryset(self):
         # parse request arguments and deal with generic arguments
         args, kwargs = self.parse_args()
+
+        # mind to the _type arguments
+        if 'chip_name' in kwargs:
+            chip_name = kwargs.pop('chip_name')
+
+            # add a new key to kwargs dictionary
+            kwargs['chip_name__all'] = chip_name
 
         # add the $elemMatch clause if necessary
         kwargs = self.__prepare_match(kwargs)
