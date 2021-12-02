@@ -198,6 +198,19 @@ class TestGetDatasetList(AuthMixin, BaseCase):
         self.assertEqual(test, self.data[0])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_datasets_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])
+
 
 class TestGetDataset(AuthMixin, BaseCase):
     fixtures = [

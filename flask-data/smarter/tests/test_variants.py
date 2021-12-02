@@ -244,6 +244,69 @@ class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_variant_pagination(self):
+        payload = {'page': 1, 'size': 1}
+
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string=payload,
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], self.data[:1])
+        self.assertIsNone(test['prev'])
+        self.assertIsNotNone(test['next'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_sort_by_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'name',
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[0])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_sort_by_name_desc(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'name',
+                'order': 'desc'
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[-1])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])
+
 
 class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
     fixtures = [
@@ -362,3 +425,66 @@ class VariantGoatListTest(DateMixin, AuthMixin, BaseCase):
         self.assertEqual(len(test['items']), 1)
         self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_pagination(self):
+        payload = {'page': 1, 'size': 1}
+
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string=payload,
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], self.data[:1])
+        self.assertIsNone(test['prev'])
+        self.assertIsNotNone(test['next'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_sort_by_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'name',
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[0])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_sort_by_name_desc(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'name',
+                'order': 'desc'
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[-1])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])
