@@ -9,6 +9,8 @@ Created on Wed Jun 23 15:37:31 2021
 import json
 import pathlib
 
+from werkzeug.urls import url_encode
+
 from .base import BaseCase, AuthMixin
 
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
@@ -141,3 +143,65 @@ class SupportedChipListTest(AuthMixin, BaseCase):
         self.assertEqual(len(test['items']), 1)
         self.assertListEqual(test['items'], [self.data[-1]])
         self.assertEqual(response.status_code, 200)
+
+    def test_get_chips_pagination(self):
+        payload = {'page': 1, 'size': 2}
+
+        response = self.client.get(
+            "?".join([self.test_endpoint, url_encode(payload)]),
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 4)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data[:2])
+        self.assertIsNone(test['prev'])
+        self.assertIsNotNone(test['next'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_chips_sort_by_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'name',
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[-1])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_chips_sort_by_name_desc(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'name',
+                'order': 'desc'
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[0])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_chips_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])

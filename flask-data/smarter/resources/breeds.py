@@ -27,29 +27,10 @@ class BreedListApi(ListView):
     parser.add_argument('code', help="Breed code name")
     parser.add_argument(
         'search', help="Search breed name and aliases by pattern")
-    parser.add_argument('sort', help="Sort results by this key")
-    parser.add_argument('order', help="Sort key order")
 
     def get_queryset(self):
-        # reading request parameters
-        kwargs = self.parser.parse_args()
-        args = []
-
-        # filter args
-        kwargs = {key: val for key, val in kwargs.items() if val}
-
-        # deal with ordering stuff
-        # HINT should this be placed in a mixin?
-        sort = None
-
-        if 'sort' in kwargs:
-            sort = kwargs.pop('sort')
-
-        if 'order' in kwargs:
-            order = kwargs.pop('order')
-
-            if sort and order == 'desc':
-                sort = f"-{sort}"
+        # parse request arguments and deal with generic arguments
+        args, kwargs = self.parse_args()
 
         # deal with search fields
         if 'search' in kwargs:
@@ -69,8 +50,8 @@ class BreedListApi(ListView):
         else:
             queryset = self.model.objects.all()
 
-        if sort:
-            queryset = queryset.order_by(sort)
+        if self.order_by:
+            queryset = queryset.order_by(self.order_by)
 
         return queryset
 

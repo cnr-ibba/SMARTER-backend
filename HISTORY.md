@@ -6,7 +6,6 @@ TODO
 ----
 
 * query with multiple parameters [#23](https://github.com/cnr-ibba/SMARTER-backend/issues/23)
-* return 4xx error when querying with wrong parameters [#22](https://github.com/cnr-ibba/SMARTER-backend/issues/22)
 * add endpoint for supported assemblies variants [#11](https://github.com/cnr-ibba/SMARTER-backend/issues/11)
 * support for GIS search in sample endpoints [#13](https://github.com/cnr-ibba/SMARTER-backend/issues/13)
 * configure MongoDB memory usage [#12](https://github.com/cnr-ibba/SMARTER-backend/issues/12)
@@ -16,6 +15,7 @@ TODO
 0.2.0.dev0
 ----------
 
+* return 4xx error when querying with wrong parameters [#22](https://github.com/cnr-ibba/SMARTER-backend/issues/22)
 * Support `type` argument when searching samples
 * Track version with bump2version
 

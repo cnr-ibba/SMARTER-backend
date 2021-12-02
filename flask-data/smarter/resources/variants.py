@@ -41,42 +41,45 @@ class VariantListMixin():
     parser.add_argument('region', help="Sequence location (ex 1:1-10000")
 
     def get_queryset(self):
-        # reading request parameters
-        args = self.parser.parse_args()
-
-        # filter args
-        args = {key: val for key, val in args.items() if val}
+        # parse request arguments and deal with generic arguments
+        args, kwargs = self.parse_args()
 
         # add the $elemMatch clause if necessary
-        args = self.__prepare_match(args)
+        kwargs = self.__prepare_match(kwargs)
 
-        current_app.logger.info(args)
+        current_app.logger.info(f"{args}, {kwargs}")
 
-        if args:
-            queryset = self.model.objects.filter(**args)
+        if args or kwargs:
+            queryset = self.model.objects.filter(*args, **kwargs)
 
         else:
             queryset = self.model.objects.all()
 
+        if self.order_by:
+            queryset = queryset.order_by(self.order_by)
+
         return queryset
 
-    def __prepare_match(self, args):
-        """Transform the args RequestParser dictionary and add a $elemMatch
+    def __prepare_match(self, kwargs):
+        """Transform the kwargs RequestParser dictionary and add a $elemMatch
         clause"""
 
-        if any(['imported_from' in args, 'version' in args, 'region' in args]):
+        if any([
+                'imported_from' in kwargs,
+                'version' in kwargs,
+                'region' in kwargs]):
             elemMatch = {}
 
-            if 'imported_from' in args:
-                elemMatch['imported_from'] = args.pop('imported_from')
+            if 'imported_from' in kwargs:
+                elemMatch['imported_from'] = kwargs.pop('imported_from')
 
-            if 'version' in args:
-                elemMatch['version'] = args.pop('version')
+            if 'version' in kwargs:
+                elemMatch['version'] = kwargs.pop('version')
 
-            if 'region' in args:
+            if 'region' in kwargs:
                 match = re.search(
                     location_pattern,
-                    unquote(args.pop('region'))
+                    unquote(kwargs.pop('region'))
                 )
 
                 if match:
@@ -84,9 +87,9 @@ class VariantListMixin():
                     elemMatch['position__gte'] = match.group("start")
                     elemMatch['position__lte'] = match.group("end")
 
-            args['locations__match'] = elemMatch
+            kwargs['locations__match'] = elemMatch
 
-        return args
+        return kwargs
 
     @jwt_required()
     def get(self):

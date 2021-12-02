@@ -255,6 +255,69 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertEqual(len(test['items']), 1)
         self.assertEqual(response.status_code, 200)
 
+    def test_get_samples_pagination(self):
+        payload = {'page': 1, 'size': 1}
+
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string=payload,
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], self.data[:1])
+        self.assertIsNone(test['prev'])
+        self.assertIsNotNone(test['next'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_sort_by_smarter_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'smarter_id',
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[-1])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_sort_by_smarter_id_desc(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'smarter_id',
+                'order': 'desc'
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[0])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])
+
 
 class SampleGoatTest(AuthMixin, BaseCase):
     fixtures = [
@@ -498,3 +561,66 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 1)
         self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_pagination(self):
+        payload = {'page': 1, 'size': 1}
+
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string=payload,
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], self.data[:1])
+        self.assertIsNone(test['prev'])
+        self.assertIsNotNone(test['next'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_sort_by_breed(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'breed',
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[-1])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_sort_by_breed_desc(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'breed',
+                'order': 'desc'
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[0])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])
