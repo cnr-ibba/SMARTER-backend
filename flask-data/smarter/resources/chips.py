@@ -33,19 +33,19 @@ class SupportedChipListApi(ListView):
     parser.add_argument('name', help="Chip name")
 
     def get_queryset(self):
-        # reading request parameters
-        args = self.parser.parse_args()
+        # parse request arguments and deal with generic arguments
+        args, kwargs = self.parse_args()
 
-        # filter args
-        args = {key: val for key, val in args.items() if val}
+        current_app.logger.info(f"{args}, {kwargs}")
 
-        current_app.logger.info(args)
-
-        if args:
-            queryset = self.model.objects.filter(**args)
+        if args or kwargs:
+            queryset = self.model.objects.filter(*args, **kwargs)
 
         else:
             queryset = self.model.objects.all()
+
+        if self.order_by:
+            queryset = queryset.order_by(self.order_by)
 
         return queryset
 
