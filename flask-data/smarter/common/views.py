@@ -156,8 +156,8 @@ class ListView(Resource):
 
         current_app.logger.debug(f"Got {qs}")
 
-        # convert an immutable dict to a dictionary object
-        params = request.args.to_dict()
+        # get a shallow copy of an immutable dict
+        params = request.args.copy()
 
         paginated = qs.paginate(page=self.page, per_page=self.size)
 
