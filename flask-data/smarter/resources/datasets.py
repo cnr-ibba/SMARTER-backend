@@ -30,17 +30,27 @@ class DatasetListApi(ListView):
         help="Dataset type")
     parser.add_argument(
         'search', help="Search by dataset contents")
+    parser.add_argument(
+        'chip_name',
+        action='append',
+        help="Chip name")
 
     def get_queryset(self):
         # parse request arguments and deal with generic arguments
         args, kwargs = self.parse_args()
 
-        # mind to the _type arguments
+        # mind to the multiple arguments
         if 'type_' in kwargs:
             type_ = kwargs.pop('type_')
 
             # add a new key to kwargs dictionary
             kwargs['type___all'] = type_
+
+        if 'chip_name' in kwargs:
+            chip_name = kwargs.pop('chip_name')
+
+            # add a new key to kwargs dictionary
+            kwargs['chip_name__in'] = chip_name
 
         # deal with search fields
         if 'search' in kwargs:

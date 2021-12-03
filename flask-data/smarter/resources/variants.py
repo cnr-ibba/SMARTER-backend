@@ -47,7 +47,7 @@ class VariantListMixin():
         # parse request arguments and deal with generic arguments
         args, kwargs = self.parse_args()
 
-        # mind to the _type arguments
+        # mind to the multiple arguments
         if 'chip_name' in kwargs:
             chip_name = kwargs.pop('chip_name')
 

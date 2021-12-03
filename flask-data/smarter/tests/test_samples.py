@@ -133,6 +133,22 @@ class SampleSheepListTest(AuthMixin, BaseCase):
 
         test = response.json
 
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_multiple_chip_names(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?chip_name=IlluminaOvineSNP50&"
+                "chip_name=AffymetrixAxiomOviCan"),
+            headers=self.headers
+        )
+
+        test = response.json
+
         self.assertEqual(test['total'], 2)
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 2)
