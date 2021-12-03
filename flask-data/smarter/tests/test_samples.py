@@ -109,6 +109,22 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_samples_by_multiple_breeds(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?breed=Texel&"
+                "breed=Merino"),
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
     def test_get_samples_by_breed_code(self):
         response = self.client.get(
             self.test_endpoint,
@@ -122,6 +138,22 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 1)
         self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_multiple_breed_codes(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?breed_code=TEX&"
+                "breed_code=MER"),
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
         self.assertEqual(response.status_code, 200)
 
     def test_get_samples_by_chip_name(self):
@@ -160,6 +192,22 @@ class SampleSheepListTest(AuthMixin, BaseCase):
             self.test_endpoint,
             headers=self.headers,
             query_string={'country': 'Italy'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_multiple_countries(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?country=Italy&"
+                "country=France"),
+            headers=self.headers
         )
 
         test = response.json

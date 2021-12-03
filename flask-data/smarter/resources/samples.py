@@ -23,13 +23,22 @@ class SampleMixin():
 
 class SampleListMixin():
     parser = reqparse.RequestParser()
-    parser.add_argument('breed', help="Breed name")
-    parser.add_argument('breed_code', help="Breed code name")
+    parser.add_argument(
+        'breed',
+        action='append',
+        help="Breed name")
+    parser.add_argument(
+        'breed_code',
+        action='append',
+        help="Breed code name")
     parser.add_argument(
         'chip_name',
         action='append',
         help="Chip name")
-    parser.add_argument('country', help="Country name")
+    parser.add_argument(
+        'country',
+        action='append',
+        help="Country name")
     parser.add_argument(
         'original_id', help="Sample name in original data source")
     parser.add_argument('smarter_id', help="Smarter id")
@@ -51,11 +60,13 @@ class SampleListMixin():
         # parse request arguments and deal with generic arguments
         args, kwargs = self.parse_args()
 
-        if 'chip_name' in kwargs:
-            chip_name = kwargs.pop('chip_name')
+        # mind to list arguments
+        for key in ['breed', 'breed_code', 'chip_name', 'country']:
+            if key in kwargs:
+                value = kwargs.pop(key)
 
-            # add a new key to kwargs dictionary
-            kwargs['chip_name__in'] = chip_name
+                # add a new key to kwargs dictionary
+                kwargs[f'{key}__in'] = value
 
         current_app.logger.info(f"{args}, {kwargs}")
 
