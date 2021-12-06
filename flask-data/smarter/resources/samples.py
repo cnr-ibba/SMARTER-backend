@@ -42,7 +42,10 @@ class SampleListMixin():
     parser.add_argument(
         'original_id', help="Sample name in original data source")
     parser.add_argument('smarter_id', help="Smarter id")
-    parser.add_argument('dataset', help="The dataset id")
+    parser.add_argument(
+        'dataset',
+        action='append',
+        help="The dataset id")
     parser.add_argument(
         'type',
         dest="type_",
@@ -61,7 +64,7 @@ class SampleListMixin():
         args, kwargs = self.parse_args()
 
         # mind to list arguments
-        for key in ['breed', 'breed_code', 'chip_name', 'country']:
+        for key in ['breed', 'breed_code', 'chip_name', 'country', 'dataset']:
             if key in kwargs:
                 value = kwargs.pop(key)
 

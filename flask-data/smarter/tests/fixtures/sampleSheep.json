@@ -27,7 +27,7 @@
     "breed": "Merino",
     "breed_code": "MER",
     "dataset_id": {
-      "$oid": "604f75a61a08c53cebd09b58"
+      "$oid": "604f75a61a08c53cebd09b5b"
     },
     "chip_name": "AffymetrixAxiomOviCan",
     "type": "foreground"
