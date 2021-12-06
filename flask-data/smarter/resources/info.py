@@ -1,0 +1,15 @@
+# -*- coding: utf-8 -*-
+from flask import jsonify
+from flask_jwt_extended import jwt_required
+
+from database.models import SmarterInfo
+from common.views import ModelView
+
+
+class SmarterInfoApi(ModelView):
+    model = SmarterInfo
+
+    @jwt_required()
+    def get(self):
+        info = self.get_object(pk='smarter')
+        return jsonify(info)

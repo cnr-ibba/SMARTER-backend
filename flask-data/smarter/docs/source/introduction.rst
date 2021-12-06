@@ -46,12 +46,14 @@ available by SMARTER-backend:
 +-------------------+----------------+--------------------------------------------+
 | /datasets         | Dataset        | returns a list of the available datasets   |
 +-------------------+----------------+--------------------------------------------+
-|| /supported-chips || SupportedChip || returns a list of chip which provide SNPs |
-||                  ||               || to the SMARTER dataset                    |
+| /info             | SmarterInfo    | A dictionary of smarter information        |
 +-------------------+----------------+--------------------------------------------+
 | /samples/sheep    | SampleSheep    | returns a list of the sheep samples        |
 +-------------------+----------------+--------------------------------------------+
 | /samples/goat     | SampleGoat     | returns a list of goat samples             |
++-------------------+----------------+--------------------------------------------+
+|| /supported-chips || SupportedChip || returns a list of chip which provide SNPs |
+||                  ||               || to the SMARTER dataset                    |
 +-------------------+----------------+--------------------------------------------+
 | /variants/sheep   | VariantSheep   | returns a list of sheep SNPs               |
 +-------------------+----------------+--------------------------------------------+

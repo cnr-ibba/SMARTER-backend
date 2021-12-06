@@ -10,6 +10,7 @@ from .auth import LoginApi
 from .breeds import BreedListApi, BreedApi
 from .chips import SupportedChipApi, SupportedChipListApi
 from .datasets import DatasetListApi, DatasetApi
+from .info import SmarterInfoApi
 from .samples import (
     SampleSheepApi, SampleSheepListApi, SampleGoatApi, SampleGoatListApi)
 from .variants import (
@@ -18,6 +19,8 @@ from .variants import (
 
 def initialize_routes(api):
     api.add_resource(LoginApi, '/api/auth/login')
+
+    api.add_resource(SmarterInfoApi, '/api/info')
 
     api.add_resource(BreedListApi, '/api/breeds')
     api.add_resource(BreedApi, '/api/breeds/<string:id_>')
