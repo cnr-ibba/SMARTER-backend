@@ -323,6 +323,54 @@ class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 200)
 
 
+class VariantSheepOAR3Test(DateMixin, AuthMixin, BaseCase):
+    fixtures = [
+        'user',
+        'smarterInfo',
+        'variantSheep'
+    ]
+
+    data_file = f"{FIXTURES_DIR}/variantSheep.json"
+    test_endpoint = '/api/variants/sheep/OAR3'
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # need to drop unwanted information from location
+        OAR3 = {
+            'version': 'Oar_v3.1',
+            'imported_from': 'SNPchiMp v.3'
+        }
+
+        for i, variant in enumerate(cls.data):
+            for j, location in enumerate(variant['locations']):
+                if (location['version'] == OAR3['version'] and
+                        location['imported_from'] == OAR3['imported_from']):
+                    break
+
+            variant['locations'] = [location]
+
+            # drop unwanted keys
+            del variant['sender']
+
+            cls.data[i] = variant
+
+    def test_get_variants(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+
 class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
     fixtures = [
         'user',

@@ -14,7 +14,8 @@ from .info import SmarterInfoApi
 from .samples import (
     SampleSheepApi, SampleSheepListApi, SampleGoatApi, SampleGoatListApi)
 from .variants import (
-    VariantSheepApi, VariantSheepListApi, VariantGoatApi, VariantGoatListApi)
+    VariantSheepApi, VariantSheepListApi, VariantGoatApi, VariantGoatListApi,
+    VariantSheepOAR3Api)
 
 
 def initialize_routes(api):
@@ -38,6 +39,7 @@ def initialize_routes(api):
     api.add_resource(SampleGoatApi, '/api/samples/goat/<string:id_>')
 
     api.add_resource(VariantSheepListApi, '/api/variants/sheep')
+    api.add_resource(VariantSheepOAR3Api, '/api/variants/sheep/OAR3')
     api.add_resource(VariantSheepApi, '/api/variants/sheep/<string:id_>')
 
     api.add_resource(VariantGoatListApi, '/api/variants/goat')

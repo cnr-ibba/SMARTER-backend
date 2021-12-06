@@ -14,7 +14,7 @@ from flask import jsonify, current_app
 from flask_restful import reqparse
 from flask_jwt_extended import jwt_required
 
-from database.models import VariantGoat, VariantSheep
+from database.models import VariantGoat, VariantSheep, SmarterInfo
 from common.views import ListView, ModelView
 
 location_pattern = re.compile(r'(?P<chrom>\w+):(?P<start>\d+)-(?P<end>\d+)')
@@ -115,6 +115,71 @@ class VariantSheepApi(VariantMixin, ModelView):
 class VariantSheepListApi(VariantListMixin, ListView):
     endpoint = 'variantsheeplistapi'
     model = VariantSheep
+
+
+class VariantSheepOAR3Api(VariantListMixin, ListView):
+    endpoint = 'variantsheepoar3api'
+    model = VariantSheep
+
+    parser = reqparse.RequestParser()
+    parser.add_argument('name', help="Variant name")
+    parser.add_argument('rs_id', help="rsID identifier")
+    parser.add_argument(
+        'chip_name',
+        action='append',
+        help="Chip name")
+    parser.add_argument('probeset_id', help="Affymetrix probeset id")
+    parser.add_argument('cust_id', help="Affymetrix cust_id (illumina name)")
+    parser.add_argument('region', help="Sequence location (ex 1:1-10000")
+
+    coordinate_system = {}
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        # get supported assemblies from database
+        info = SmarterInfo.objects.get(pk="smarter")
+        working_assemblies = info["working_assemblies"]
+        self.coordinate_system = {
+            'version': working_assemblies['OAR3'][0],
+            'imported_from': working_assemblies['OAR3'][1]
+        }
+
+    def __prepare_match(self, kwargs):
+        """Transform the kwargs RequestParser dictionary and add a $elemMatch
+        clause"""
+
+        elemMatch = self.coordinate_system.copy()
+
+        if 'region' in kwargs:
+            match = re.search(
+                location_pattern,
+                unquote(kwargs.pop('region'))
+            )
+
+            if match:
+                elemMatch['chrom'] = match.group("chrom")
+                elemMatch['position__gte'] = match.group("start")
+                elemMatch['position__lte'] = match.group("end")
+
+        kwargs['locations__match'] = elemMatch
+
+        return kwargs
+
+    def get_queryset(self):
+        # override default method
+        qs = super().get_queryset()
+
+        # limit to certain fields
+        return qs.fields(
+            elemMatch__locations=self.coordinate_system.copy(),
+            name=1,
+            rs_id=1,
+            chip_name=1,
+            probeset_id=1,
+            sequence=1,
+            cust_id=1
+        )
 
 
 class VariantGoatApi(VariantMixin, ModelView):
