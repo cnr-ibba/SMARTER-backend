@@ -28,6 +28,9 @@ class VariantMixin():
 
 
 class VariantListMixin():
+    assembly = None
+    coordinate_system = {}
+
     parser = reqparse.RequestParser()
     parser.add_argument('name', help="Variant name")
     parser.add_argument('rs_id', help="rsID identifier")
@@ -37,11 +40,18 @@ class VariantListMixin():
         help="Chip name")
     parser.add_argument('probeset_id', help="Affymetrix probeset id")
     parser.add_argument('cust_id', help="Affymetrix cust_id (illumina name)")
-    parser.add_argument(
-        'imported_from', help="Data source type")
-    parser.add_argument(
-        'version', help="Genome version")
     parser.add_argument('region', help="Sequence location (ex 1:1-10000")
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        # get supported assemblies from database
+        info = SmarterInfo.objects.get(pk="smarter")
+        working_assemblies = info["working_assemblies"]
+        self.coordinate_system = {
+            'version': working_assemblies[self.assembly][0],
+            'imported_from': working_assemblies[self.assembly][1]
+        }
 
     def get_queryset(self):
         # parse request arguments and deal with generic arguments
@@ -68,82 +78,16 @@ class VariantListMixin():
         if self.order_by:
             queryset = queryset.order_by(self.order_by)
 
-        return queryset
-
-    def __prepare_match(self, kwargs):
-        """Transform the kwargs RequestParser dictionary and add a $elemMatch
-        clause"""
-
-        if any([
-                'imported_from' in kwargs,
-                'version' in kwargs,
-                'region' in kwargs]):
-            elemMatch = {}
-
-            if 'imported_from' in kwargs:
-                elemMatch['imported_from'] = kwargs.pop('imported_from')
-
-            if 'version' in kwargs:
-                elemMatch['version'] = kwargs.pop('version')
-
-            if 'region' in kwargs:
-                match = re.search(
-                    location_pattern,
-                    unquote(kwargs.pop('region'))
-                )
-
-                if match:
-                    elemMatch['chrom'] = match.group("chrom")
-                    elemMatch['position__gte'] = match.group("start")
-                    elemMatch['position__lte'] = match.group("end")
-
-            kwargs['locations__match'] = elemMatch
-
-        return kwargs
-
-    @jwt_required()
-    def get(self):
-        self.object_list = self.get_queryset()
-        data = self.get_context_data()
-        return jsonify(**data)
-
-
-class VariantSheepApi(VariantMixin, ModelView):
-    model = VariantSheep
-
-
-class VariantSheepListApi(VariantListMixin, ListView):
-    endpoint = 'variantsheeplistapi'
-    model = VariantSheep
-
-
-class VariantSheepOAR3Api(VariantListMixin, ListView):
-    endpoint = 'variantsheepoar3api'
-    model = VariantSheep
-
-    parser = reqparse.RequestParser()
-    parser.add_argument('name', help="Variant name")
-    parser.add_argument('rs_id', help="rsID identifier")
-    parser.add_argument(
-        'chip_name',
-        action='append',
-        help="Chip name")
-    parser.add_argument('probeset_id', help="Affymetrix probeset id")
-    parser.add_argument('cust_id', help="Affymetrix cust_id (illumina name)")
-    parser.add_argument('region', help="Sequence location (ex 1:1-10000")
-
-    coordinate_system = {}
-
-    def __init__(self) -> None:
-        super().__init__()
-
-        # get supported assemblies from database
-        info = SmarterInfo.objects.get(pk="smarter")
-        working_assemblies = info["working_assemblies"]
-        self.coordinate_system = {
-            'version': working_assemblies['OAR3'][0],
-            'imported_from': working_assemblies['OAR3'][1]
-        }
+        # limit to certain fields
+        return queryset.fields(
+            elemMatch__locations=self.coordinate_system.copy(),
+            name=1,
+            rs_id=1,
+            chip_name=1,
+            probeset_id=1,
+            sequence=1,
+            cust_id=1
+        )
 
     def __prepare_match(self, kwargs):
         """Transform the kwargs RequestParser dictionary and add a $elemMatch
@@ -166,20 +110,27 @@ class VariantSheepOAR3Api(VariantListMixin, ListView):
 
         return kwargs
 
-    def get_queryset(self):
-        # override default method
-        qs = super().get_queryset()
+    @jwt_required()
+    def get(self):
+        self.object_list = self.get_queryset()
+        data = self.get_context_data()
+        return jsonify(**data)
 
-        # limit to certain fields
-        return qs.fields(
-            elemMatch__locations=self.coordinate_system.copy(),
-            name=1,
-            rs_id=1,
-            chip_name=1,
-            probeset_id=1,
-            sequence=1,
-            cust_id=1
-        )
+
+class VariantSheepApi(VariantMixin, ModelView):
+    model = VariantSheep
+
+
+class VariantSheepOAR3Api(VariantListMixin, ListView):
+    endpoint = 'variantsheepoar3api'
+    model = VariantSheep
+    assembly = "OAR3"
+
+
+class VariantSheepOAR4Api(VariantListMixin, ListView):
+    endpoint = 'variantsheepoar4api'
+    model = VariantSheep
+    assembly = "OAR4"
 
 
 class VariantGoatApi(VariantMixin, ModelView):
@@ -189,3 +140,15 @@ class VariantGoatApi(VariantMixin, ModelView):
 class VariantGoatListApi(VariantListMixin, ListView):
     endpoint = 'variantgoatlistapi'
     model = VariantGoat
+
+
+class VariantGoatCHI1Api(VariantListMixin, ListView):
+    endpoint = 'variantgoatchi1api'
+    model = VariantGoat
+    assembly = "CHI1"
+
+
+class VariantGoatARS1Api(VariantListMixin, ListView):
+    endpoint = 'variantgoatars1api'
+    model = VariantGoat
+    assembly = "ARS1"
