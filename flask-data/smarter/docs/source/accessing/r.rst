@@ -310,9 +310,14 @@ variants. In the following example we will select the goat variants on chromosom
    get_smarter_variations <- function(token, species, query = list()) {
       # mind that species is lowercase in endpoint url
       species <- tolower(species)
+      assembly <- toupper(assembly)
 
-      url <-
-         modify_url(base_url, path = sprintf("%s/variants/%s", base_endpoint, species))
+      url <- modify_url(base_url, path = sprintf(
+         "%s/variants/%s/%s", 
+         base_endpoint, 
+         species,
+         assembly)
+      )
 
       data <- get_smarter_data(url, token, query)
 
@@ -323,19 +328,18 @@ variants. In the following example we will select the goat variants on chromosom
    selected_goat_variations <- get_smarter_variations(
       token,
       species = "Goat",
+      assembly = "ARS1",
       query = list(
-         size = 100, 
-         region = "1:1-1000000", 
-         version = "ARS1", 
-         imported_from = "manifest"
+         size = 100,
+         region = "1:1-1000000"
       )
    )
 
 .. hint:: 
 
-   We are planning to simplify the variants response by returning only the coordinates
-   used within SMARTER. We are planning also to return a SNP list of the selected 
-   SNPs only, in order to be used when subsetting a genotype file using plink
+   We are planning to simplify the variants response by returning a SNP list of
+   the selected SNPs only, in order to be used when subsetting a genotype file 
+   using plink
 
 .. warning:: 
 

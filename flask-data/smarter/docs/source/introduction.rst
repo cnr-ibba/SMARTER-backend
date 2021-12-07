@@ -39,30 +39,37 @@ a prefix in common (``https://webserver.ibba.cnr.it/smarter-api``), while the la
 part of the URL changes relying on the data they provide. There are a few endpoints 
 available by SMARTER-backend:
 
-+-------------------+----------------+--------------------------------------------+
-| Suffix            | Data type      | Description                                |
-+===================+================+============================================+
-| /breeds           | Breeds         | returns a list of the available breeds     |
-+-------------------+----------------+--------------------------------------------+
-| /datasets         | Dataset        | returns a list of the available datasets   |
-+-------------------+----------------+--------------------------------------------+
-|| /supported-chips || SupportedChip || returns a list of chip which provide SNPs |
-||                  ||               || to the SMARTER dataset                    |
-+-------------------+----------------+--------------------------------------------+
-| /samples/sheep    | SampleSheep    | returns a list of the sheep samples        |
-+-------------------+----------------+--------------------------------------------+
-| /samples/goat     | SampleGoat     | returns a list of goat samples             |
-+-------------------+----------------+--------------------------------------------+
-| /variants/sheep   | VariantSheep   | returns a list of sheep SNPs               |
-+-------------------+----------------+--------------------------------------------+
-| /variants/goat    | VariantGoat    | returns a list of goat SNPs                |
-+-------------------+----------------+--------------------------------------------+
++------------------------+----------------+-----------------------------------------------+
+| Suffix                 | Data type      | Description                                   |
++========================+================+===============================================+
+| /breeds                | Breeds         | returns a list of the available breeds        |
++------------------------+----------------+-----------------------------------------------+
+| /datasets              | Dataset        | returns a list of the available datasets      |
++------------------------+----------------+-----------------------------------------------+
+| /info                  | SmarterInfo    | A dictionary of smarter information           |
++------------------------+----------------+-----------------------------------------------+
+| /samples/sheep         | SampleSheep    | returns a list of the sheep samples           |
++------------------------+----------------+-----------------------------------------------+
+| /samples/goat          | SampleGoat     | returns a list of goat samples                |
++------------------------+----------------+-----------------------------------------------+
+|| /supported-chips      || SupportedChip || returns a list of chip which provide SNPs    |
+||                       ||               || to the SMARTER dataset                       |
++------------------------+----------------+-----------------------------------------------+
+| /variants/sheep/OAR3   | VariantSheep   | returns a list of sheep SNPs in OAR3 assembly |
++------------------------+----------------+-----------------------------------------------+
+| /variants/sheep/OAR4   | VariantSheep   | returns a list of sheep SNPs in OAR4 assembly |
++------------------------+----------------+-----------------------------------------------+
+| /variants/goat/ARS1    | VariantGoat    | returns a list of goat SNPs in ARS1 assembly  |
++------------------------+----------------+-----------------------------------------------+
+| /variants/goat/CHI1    | VariantGoat    | returns a list of goat SNPs in CHI1 assembly  |
++------------------------+----------------+-----------------------------------------------+
 
-So if you require to retrieve all the sheep SNPs, you can append the suffix ``/variants/sheep``
+So if you require to retrieve all the sheep SNPs in OAR3 assembly, 
+you can append the suffix ``/variants/sheep/OAR3``
 to the common prefix ``https://webserver.ibba.cnr.it/smarter-api`` to obtain the 
 final endpoint::
 
-   https://webserver.ibba.cnr.it/smarter-api/variants/sheep
+   https://webserver.ibba.cnr.it/smarter-api/variants/sheep/OAR3
 
 Every endpoint described provide a list of results, however you could retrieve a 
 specific object by appending the proper ObjectId to the endpoint, for example::
@@ -74,7 +81,7 @@ will retrieve the dataset with ObjectId ``604f75a61a08c53cebd09b5b``.
 .. warning:: 
    
    Please note that ObjectId could change over time, since they rely on the time 
-   they are added into database. If you require a particolular data, 
+   they are added into database. If you require a particular data, 
    you should use the proper API endpoint by providing the appropriate parameters
    as arguments, for example ``file=<file name>`` to retrieve the dataset relying 
    on provided file name.

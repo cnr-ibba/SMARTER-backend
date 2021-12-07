@@ -89,15 +89,7 @@ class VariantSheepTest(DateMixin, AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 404)
 
 
-class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
-    fixtures = [
-        'user',
-        'variantSheep'
-    ]
-
-    data_file = f"{FIXTURES_DIR}/variantSheep.json"
-    test_endpoint = '/api/variants/sheep'
-
+class VariantSheepListMixin(DateMixin, AuthMixin):
     def test_get_variants(self):
         response = self.client.get(
             self.test_endpoint,
@@ -192,8 +184,6 @@ class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
             self.test_endpoint,
             headers=self.headers,
             query_string={
-                'imported_from': 'manifest',
-                'version': 'Oar_v3.1',
                 'region': '23:26298007-26298027'
             }
         )
@@ -206,32 +196,11 @@ class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
 
-        # quering for the same position for a different assembly doesn't
-        # return anything
-        response = self.client.get(
-            self.test_endpoint,
-            headers=self.headers,
-            query_string={
-                'imported_from': 'manifest',
-                'version': 'Oar_v4.0',
-                'region': '23:26298007-26298027'
-            }
-        )
-
-        test = response.json
-
-        self.assertEqual(test['total'], 0)
-        self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 0)
-        self.assertEqual(response.status_code, 200)
-
     def test_get_variant_by_region_quote(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
             query_string={
-                'imported_from': 'manifest',
-                'version': 'Oar_v3.1',
                 'region': '23%3A26298007-26298027'
             }
         )
@@ -323,6 +292,40 @@ class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 200)
 
 
+class VariantSheepOAR3Test(VariantSheepListMixin, BaseCase):
+    fixtures = [
+        'user',
+        'smarterInfo',
+        'variantSheep'
+    ]
+
+    data_file = f"{FIXTURES_DIR}/variantSheep.json"
+    test_endpoint = '/api/variants/sheep/OAR3'
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # need to drop unwanted information from location
+        OAR3 = {
+            'version': 'Oar_v3.1',
+            'imported_from': 'SNPchiMp v.3'
+        }
+
+        for i, variant in enumerate(cls.data):
+            for j, location in enumerate(variant['locations']):
+                if (location['version'] == OAR3['version'] and
+                        location['imported_from'] == OAR3['imported_from']):
+                    break
+
+            variant['locations'] = [location]
+
+            # drop unwanted keys
+            del variant['sender']
+
+            cls.data[i] = variant
+
+
 class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
     fixtures = [
         'user',
@@ -369,15 +372,7 @@ class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 404)
 
 
-class VariantGoatListTest(DateMixin, AuthMixin, BaseCase):
-    fixtures = [
-        'user',
-        'variantGoat'
-    ]
-
-    data_file = f"{FIXTURES_DIR}/variantGoat.json"
-    test_endpoint = '/api/variants/goat'
-
+class VariantGoatListMixin(DateMixin, AuthMixin):
     def test_get_variants(self):
         response = self.client.get(
             self.test_endpoint,
@@ -427,8 +422,6 @@ class VariantGoatListTest(DateMixin, AuthMixin, BaseCase):
             self.test_endpoint,
             headers=self.headers,
             query_string={
-                'imported_from': 'manifest',
-                'version': 'ARS1',
                 'region': '1:10408754-10408774'
             }
         )
@@ -503,3 +496,37 @@ class VariantGoatListTest(DateMixin, AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             "Unknown arguments: foo", response.json['message'])
+
+
+class VariantGoatARS1Test(VariantGoatListMixin, BaseCase):
+    fixtures = [
+        'user',
+        'smarterInfo',
+        'variantGoat'
+    ]
+
+    data_file = f"{FIXTURES_DIR}/variantGoat.json"
+    test_endpoint = '/api/variants/goat/ARS1'
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # need to drop unwanted information from location
+        ARS1 = {
+            'version': 'ARS1',
+            'imported_from': 'manifest'
+        }
+
+        for i, variant in enumerate(cls.data):
+            for j, location in enumerate(variant['locations']):
+                if (location['version'] == ARS1['version'] and
+                        location['imported_from'] == ARS1['imported_from']):
+                    break
+
+            variant['locations'] = [location]
+
+            # drop unwanted keys
+            del variant['sender']
+
+            cls.data[i] = variant

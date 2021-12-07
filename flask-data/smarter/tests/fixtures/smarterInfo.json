@@ -1,0 +1,40 @@
+[{
+	"_id": "smarter",
+	"version": "0.4.4.dev0",
+	"working_assemblies": {
+		"OAR3": [
+			"Oar_v3.1",
+			"SNPchiMp v.3"
+		],
+		"OAR4": [
+			"Oar_v4.0",
+			"SNPchiMp v.3"
+		],
+		"ARS1": [
+			"ARS1",
+			"manifest"
+		],
+		"CHI1": [
+			"CHI1.0",
+			"SNPchiMp v.3"
+		]
+	},
+	"plink_specie_opt": {
+		"Sheep": [
+			"--chr-set",
+			"26",
+			"no-xy",
+			"no-mt",
+			"--allow-no-sex"
+		],
+		"Goat": [
+			"--chr-set",
+			"29",
+			"--allow-extra-chr"
+		]
+	},
+	"last_updated": {
+		"$date": "2021-11-19T18:59:05.821Z"
+	}
+}]
+

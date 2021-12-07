@@ -10,14 +10,18 @@ from .auth import LoginApi
 from .breeds import BreedListApi, BreedApi
 from .chips import SupportedChipApi, SupportedChipListApi
 from .datasets import DatasetListApi, DatasetApi
+from .info import SmarterInfoApi
 from .samples import (
     SampleSheepApi, SampleSheepListApi, SampleGoatApi, SampleGoatListApi)
 from .variants import (
-    VariantSheepApi, VariantSheepListApi, VariantGoatApi, VariantGoatListApi)
+    VariantSheepApi, VariantGoatApi, VariantSheepOAR3Api, VariantSheepOAR4Api,
+    VariantGoatCHI1Api, VariantGoatARS1Api)
 
 
 def initialize_routes(api):
     api.add_resource(LoginApi, '/api/auth/login')
+
+    api.add_resource(SmarterInfoApi, '/api/info')
 
     api.add_resource(BreedListApi, '/api/breeds')
     api.add_resource(BreedApi, '/api/breeds/<string:id_>')
@@ -34,8 +38,10 @@ def initialize_routes(api):
     api.add_resource(SampleGoatListApi, '/api/samples/goat')
     api.add_resource(SampleGoatApi, '/api/samples/goat/<string:id_>')
 
-    api.add_resource(VariantSheepListApi, '/api/variants/sheep')
+    api.add_resource(VariantSheepOAR3Api, '/api/variants/sheep/OAR3')
+    api.add_resource(VariantSheepOAR4Api, '/api/variants/sheep/OAR4')
     api.add_resource(VariantSheepApi, '/api/variants/sheep/<string:id_>')
 
-    api.add_resource(VariantGoatListApi, '/api/variants/goat')
+    api.add_resource(VariantGoatCHI1Api, '/api/variants/goat/CHI1')
+    api.add_resource(VariantGoatARS1Api, '/api/variants/goat/ARS1')
     api.add_resource(VariantGoatApi, '/api/variants/goat/<string:id_>')
