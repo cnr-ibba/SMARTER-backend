@@ -15,6 +15,7 @@ from flask_restful import Api
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+from flasgger import Swagger
 
 from database.db import initialize_db, DB_ALIAS
 from resources.errors import errors
@@ -61,6 +62,12 @@ def create_app(config={}):
     api = Api(app, errors=errors)
     Bcrypt(app)
     JWTManager(app)
+    
+    # workaround to make flasgger deal with jwt-token headers
+    app.config["JWT_AUTH_URL_RULE"] = True
+
+    # Swagger stuff
+    swag = Swagger(app)
 
     app.logger.debug("App initialized")
 

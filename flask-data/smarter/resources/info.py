@@ -11,5 +11,14 @@ class SmarterInfoApi(ModelView):
 
     @jwt_required()
     def get(self):
+        """
+        This is an example
+        ---
+        tags:
+          - Status
+        responses:
+          200:
+            description: SMARTER Database status
+        """
         info = self.get_object(pk='smarter')
         return jsonify(info)
