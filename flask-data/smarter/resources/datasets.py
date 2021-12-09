@@ -73,6 +73,44 @@ class DatasetListApi(ListView):
 
     @jwt_required()
     def get(self):
+        """
+        Get information on datasets
+        ---
+        tags:
+          - Datasets
+        description: Query SMARTER data about datasets
+        parameters:
+          - name: species
+            in: query
+            type: string
+            description: The desidered species (Sheep or Goat)
+          - name: type
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Dataset type (foreground, background, genotypes,
+              phenotypes)
+          - name: search
+            in: query
+            type: string
+            description: Search dataset or content using this pattern
+          - name: chip_name
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Chip name
+        responses:
+            '200':
+              description: Datasets to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
         self.object_list = self.get_queryset()
         data = self.get_context_data()
         return jsonify(**data)
@@ -83,5 +121,25 @@ class DatasetApi(ModelView):
 
     @jwt_required()
     def get(self, id_):
+        """
+        Fetch a single dataset
+        ---
+        tags:
+          - Datasets
+        description: Fetch a single dataset using ObjectID
+        parameters:
+          - in: path
+            name: id_
+            type: string
+            description: The dataset ObjectID
+            required: true
+        responses:
+            '200':
+              description: The desidered dataset
+              content:
+                application/json:
+                  schema:
+                    type: object
+        """
         dataset = self.get_object(id_)
         return jsonify(dataset)

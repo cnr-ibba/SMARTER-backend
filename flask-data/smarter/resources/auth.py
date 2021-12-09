@@ -32,6 +32,9 @@ class LoginApi(Resource):
             name: body
             description: JSON parameters.
             schema:
+              required:
+              - username
+              - password
               properties:
                 username:
                   type: string

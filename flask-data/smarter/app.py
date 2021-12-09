@@ -62,12 +62,12 @@ def create_app(config={}):
     api = Api(app, errors=errors)
     Bcrypt(app)
     JWTManager(app)
-    
+
     # workaround to make flasgger deal with jwt-token headers
     app.config["JWT_AUTH_URL_RULE"] = True
 
     # Swagger stuff
-    swag = Swagger(app)
+    Swagger(app)
 
     app.logger.debug("App initialized")
 

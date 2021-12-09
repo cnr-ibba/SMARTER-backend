@@ -12,10 +12,10 @@ class SmarterInfoApi(ModelView):
     @jwt_required()
     def get(self):
         """
-        This is an example
+        Get information on SMARTER database
         ---
         tags:
-          - Status
+          - Info
         responses:
           200:
             description: SMARTER Database status
