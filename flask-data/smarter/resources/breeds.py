@@ -67,7 +67,8 @@ class BreedListApi(ListView):
           - name: species
             in: query
             type: string
-            description: The desidered species (Sheep or Goat)
+            enum: ['Sheep', 'Goat']
+            description: The desidered species
           - name: name
             in: query
             type: string

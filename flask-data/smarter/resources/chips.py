@@ -81,7 +81,8 @@ class SupportedChipListApi(ListView):
           - name: species
             in: query
             type: string
-            description: The desidered species (Sheep or Goat)
+            enum: ['Sheep', 'Goat']
+            description: The desidered species
           - name: name
             in: query
             type: string
@@ -89,7 +90,8 @@ class SupportedChipListApi(ListView):
           - name: manifacturer
             in: query
             type: string
-            description: Chip manifacturer (affymetrix or illumina)
+            enum: ['affymetrix', 'illumina']
+            description: Chip manifacturer
         responses:
             '200':
               description: Chips to be returned

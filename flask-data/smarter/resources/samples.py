@@ -168,7 +168,8 @@ class SampleSheepListApi(SampleListMixin, ListView):
           - name: type
             in: query
             type: string
-            description: Dataset type (foreground, background)
+            enum: ['foreground', 'background']
+            description: Dataset type
           - name: locations__exists
             in: query
             type: bool
@@ -279,7 +280,8 @@ class SampleGoatListApi(SampleListMixin, ListView):
           - name: type
             in: query
             type: string
-            description: Dataset type (foreground, background)
+            enum: ['foreground', 'background']
+            description: Dataset type
           - name: locations__exists
             in: query
             type: bool

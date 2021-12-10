@@ -83,15 +83,16 @@ class DatasetListApi(ListView):
           - name: species
             in: query
             type: string
-            description: The desidered species (Sheep or Goat)
+            enum: ['Sheep', 'Goat']
+            description: The desidered species
           - name: type
             in: query
             type: array
             items:
               type: string
+              enum: ['foreground', 'background', 'genotypes', 'phenotypes']
             collectionFormat: multi
-            description: Dataset type (foreground, background, genotypes,
-              phenotypes)
+            description: Dataset type
           - name: search
             in: query
             type: string
