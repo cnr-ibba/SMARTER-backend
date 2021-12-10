@@ -20,13 +20,6 @@ from common.views import ListView, ModelView
 location_pattern = re.compile(r'(?P<chrom>\w+):(?P<start>\d+)-(?P<end>\d+)')
 
 
-class VariantMixin():
-    @jwt_required()
-    def get(self, id_):
-        variant = self.get_object(id_)
-        return jsonify(variant)
-
-
 class VariantListMixin():
     assembly = None
     coordinate_system = {}
@@ -110,15 +103,34 @@ class VariantListMixin():
 
         return kwargs
 
-    @jwt_required()
-    def get(self):
-        self.object_list = self.get_queryset()
-        data = self.get_context_data()
-        return jsonify(**data)
 
-
-class VariantSheepApi(VariantMixin, ModelView):
+class VariantSheepApi(ModelView):
     model = VariantSheep
+
+    @jwt_required()
+    def get(self, id_):
+        """
+        Fetch a single Sheep SNP
+        ---
+        tags:
+          - Variants
+        description: Fetch a single Sheep SNP using ObjectID
+        parameters:
+          - in: path
+            name: id_
+            type: string
+            description: The SNP ObjectID
+            required: true
+        responses:
+            '200':
+              description: The desidered SNP
+              content:
+                application/json:
+                  schema:
+                    type: object
+        """
+        variant = self.get_object(id_)
+        return jsonify(variant)
 
 
 class VariantSheepOAR3Api(VariantListMixin, ListView):
@@ -126,20 +138,136 @@ class VariantSheepOAR3Api(VariantListMixin, ListView):
     model = VariantSheep
     assembly = "OAR3"
 
+    @jwt_required()
+    def get(self):
+        """
+        Get get SNPs on Sheep OAR3 Assembly
+        ---
+        tags:
+          - Variants
+        description: Query SMARTER data on Sheep OAR3 Assembly
+        parameters:
+          - name: name
+            in: query
+            type: string
+            description: The SNP name
+          - name: rs_id
+            in: query
+            type: string
+            description: The SNP rsID identifier
+          - name: chip_name
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Chip name
+          - name: probeset_id
+            in: query
+            type: string
+            description: Affymetrix probeset id
+          - name: cust_id
+            in: query
+            type: string
+            description: Affymetrix cust_id (illumina name)
+          - name: region
+            in: query
+            type: string
+            description: Filter SNPs by position (chrom:start-end)
+        responses:
+            '200':
+              description: Datasets to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
+        self.object_list = self.get_queryset()
+        data = self.get_context_data()
+        return jsonify(**data)
+
 
 class VariantSheepOAR4Api(VariantListMixin, ListView):
     endpoint = 'variantsheepoar4api'
     model = VariantSheep
     assembly = "OAR4"
 
+    @jwt_required()
+    def get(self):
+        """
+        Get get SNPs on Sheep OAR4 Assembly
+        ---
+        tags:
+          - Variants
+        description: Query SMARTER data on Sheep OAR4 Assembly
+        parameters:
+          - name: name
+            in: query
+            type: string
+            description: The SNP name
+          - name: rs_id
+            in: query
+            type: string
+            description: The SNP rsID identifier
+          - name: chip_name
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Chip name
+          - name: probeset_id
+            in: query
+            type: string
+            description: Affymetrix probeset id
+          - name: cust_id
+            in: query
+            type: string
+            description: Affymetrix cust_id (illumina name)
+          - name: region
+            in: query
+            type: string
+            description: Filter SNPs by position (chrom:start-end)
+        responses:
+            '200':
+              description: Datasets to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
+        self.object_list = self.get_queryset()
+        data = self.get_context_data()
+        return jsonify(**data)
 
-class VariantGoatApi(VariantMixin, ModelView):
+
+class VariantGoatApi(ModelView):
     model = VariantGoat
 
-
-class VariantGoatListApi(VariantListMixin, ListView):
-    endpoint = 'variantgoatlistapi'
-    model = VariantGoat
+    @jwt_required()
+    def get(self, id_):
+        """
+        Fetch a single Goat SNP
+        ---
+        tags:
+          - Variants
+        description: Fetch a single Goat SNP using ObjectID
+        parameters:
+          - in: path
+            name: id_
+            type: string
+            description: The SNP ObjectID
+            required: true
+        responses:
+            '200':
+              description: The desidered SNP
+              content:
+                application/json:
+                  schema:
+                    type: object
+        """
+        variant = self.get_object(id_)
+        return jsonify(variant)
 
 
 class VariantGoatCHI1Api(VariantListMixin, ListView):
@@ -147,8 +275,104 @@ class VariantGoatCHI1Api(VariantListMixin, ListView):
     model = VariantGoat
     assembly = "CHI1"
 
+    @jwt_required()
+    def get(self):
+        """
+        Get get SNPs on Goat CHI1 Assembly
+        ---
+        tags:
+          - Variants
+        description: Query SMARTER data on Goat CHI1 Assembly
+        parameters:
+          - name: name
+            in: query
+            type: string
+            description: The SNP name
+          - name: rs_id
+            in: query
+            type: string
+            description: The SNP rsID identifier
+          - name: chip_name
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Chip name
+          - name: probeset_id
+            in: query
+            type: string
+            description: Affymetrix probeset id
+          - name: cust_id
+            in: query
+            type: string
+            description: Affymetrix cust_id (illumina name)
+          - name: region
+            in: query
+            type: string
+            description: Filter SNPs by position (chrom:start-end)
+        responses:
+            '200':
+              description: Datasets to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
+        self.object_list = self.get_queryset()
+        data = self.get_context_data()
+        return jsonify(**data)
+
 
 class VariantGoatARS1Api(VariantListMixin, ListView):
     endpoint = 'variantgoatars1api'
     model = VariantGoat
     assembly = "ARS1"
+
+    @jwt_required()
+    def get(self):
+        """
+        Get get SNPs on Goat ARS1 Assembly
+        ---
+        tags:
+          - Variants
+        description: Query SMARTER data on Goat ARS1 Assembly
+        parameters:
+          - name: name
+            in: query
+            type: string
+            description: The SNP name
+          - name: rs_id
+            in: query
+            type: string
+            description: The SNP rsID identifier
+          - name: chip_name
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Chip name
+          - name: probeset_id
+            in: query
+            type: string
+            description: Affymetrix probeset id
+          - name: cust_id
+            in: query
+            type: string
+            description: Affymetrix cust_id (illumina name)
+          - name: region
+            in: query
+            type: string
+            description: Filter SNPs by position (chrom:start-end)
+        responses:
+            '200':
+              description: Datasets to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
+        self.object_list = self.get_queryset()
+        data = self.get_context_data()
+        return jsonify(**data)
