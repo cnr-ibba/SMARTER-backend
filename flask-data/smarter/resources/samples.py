@@ -14,14 +14,9 @@ from database.models import SampleGoat, SampleSheep
 from common.views import ListView, ModelView
 
 
-class SampleMixin():
-    @jwt_required()
-    def get(self, id_):
-        sample = self.get_object(id_)
-        return jsonify(sample)
-
-
 class SampleListMixin():
+    species = None
+
     parser = reqparse.RequestParser()
     parser.add_argument(
         'breed',
@@ -84,26 +79,224 @@ class SampleListMixin():
 
         return queryset
 
-    @jwt_required()
-    def get(self):
-        self.object_list = self.get_queryset()
-        data = self.get_context_data()
-        return jsonify(**data)
 
-
-class SampleSheepApi(SampleMixin, ModelView):
+class SampleSheepApi(ModelView):
     model = SampleSheep
+
+    @jwt_required()
+    def get(self, id_):
+        """
+        Fetch a single Sheep sample
+        ---
+        tags:
+          - Samples
+        description: Fetch a single Sheep sample using ObjectID
+        parameters:
+          - in: path
+            name: id_
+            type: string
+            description: The sample ObjectID
+            required: true
+        responses:
+            '200':
+              description: The desidered sample
+              content:
+                application/json:
+                  schema:
+                    type: object
+        """
+        sample = self.get_object(id_)
+        return jsonify(sample)
 
 
 class SampleSheepListApi(SampleListMixin, ListView):
     endpoint = 'samplesheeplistapi'
     model = SampleSheep
 
+    @jwt_required()
+    def get(self):
+        """
+        Get samples information for Sheep
+        ---
+        tags:
+          - Samples
+        description: Query SMARTER data about samples
+        parameters:
+          - name: breed
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Breed name
+          - name: breed_code
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Breed code
+          - name: chip_name
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Chip name
+          - name: country
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Country where sample was collected
+          - name: original_id
+            in: query
+            type: string
+            description: The original sample name in source dataset
+          - name: smarter_id
+            in: query
+            type: string
+            description: The smarter sample name
+          - name: dataset_id
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: The dataset ObjectID
+          - name: type
+            in: query
+            type: string
+            description: Dataset type (foreground, background)
+          - name: locations__exists
+            in: query
+            type: bool
+            description: Filter samples with a physical location
+              (GPS coordinates)
+          - name: phenotype__exists
+            in: query
+            type: bool
+            description: Filter samples with a phenotype (any)
+        responses:
+            '200':
+              description: Samples to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
+        self.object_list = self.get_queryset()
+        data = self.get_context_data()
+        return jsonify(**data)
 
-class SampleGoatApi(SampleMixin, ModelView):
+
+class SampleGoatApi(ModelView):
     model = SampleGoat
+
+    @jwt_required()
+    def get(self, id_):
+        """
+        Fetch a single Goat sample
+        ---
+        tags:
+          - Samples
+        description: Fetch a single Goat sample using ObjectID
+        parameters:
+          - in: path
+            name: id_
+            type: string
+            description: The sample ObjectID
+            required: true
+        responses:
+            '200':
+              description: The desidered sample
+              content:
+                application/json:
+                  schema:
+                    type: object
+        """
+        sample = self.get_object(id_)
+        return jsonify(sample)
 
 
 class SampleGoatListApi(SampleListMixin, ListView):
     endpoint = 'samplegoatlistapi'
     model = SampleGoat
+
+    @jwt_required()
+    def get(self):
+        """
+        Get samples information for Goat
+        ---
+        tags:
+          - Samples
+        description: Query SMARTER data about samples
+        parameters:
+          - name: breed
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Breed name
+          - name: breed_code
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Breed code
+          - name: chip_name
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Chip name
+          - name: country
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Country where sample was collected
+          - name: original_id
+            in: query
+            type: string
+            description: The original sample name in source dataset
+          - name: smarter_id
+            in: query
+            type: string
+            description: The smarter sample name
+          - name: dataset_id
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: The dataset ObjectID
+          - name: type
+            in: query
+            type: string
+            description: Dataset type (foreground, background)
+          - name: locations__exists
+            in: query
+            type: bool
+            description: Filter samples with a physical location
+              (GPS coordinates)
+          - name: phenotype__exists
+            in: query
+            type: bool
+            description: Filter samples with a phenotype (any)
+        responses:
+            '200':
+              description: Samples to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
+        self.object_list = self.get_queryset()
+        data = self.get_context_data()
+        return jsonify(**data)
