@@ -76,23 +76,23 @@ def create_app(config={}):
             "termsOfService": None,
             "version": __version__
         },
-        "basePath": "/api",  # base bash for blueprint registration
+        "basePath": "/smarter-api/",  # base bash for blueprint registration
     }
 
     swagger_config = {
         "headers": [],
         "specs": [
             {
-                "endpoint": '/api/apispec_1',
-                "route": '/api/apispec_1.json',
+                "endpoint": '/smarter-api/apispec_1',
+                "route": '/smarter-api/apispec_1.json',
                 "rule_filter": lambda rule: True,  # all in
                 "model_filter": lambda tag: True,  # all in
             }
         ],
-        "static_url_path": "/api/flasgger_static",
+        "static_url_path": "/smarter-api/flasgger_static",
         # "static_folder": "static",  # must be set by user
         "swagger_ui": True,
-        "specs_route": "/api/docs/"
+        "specs_route": "/smarter-api/docs/"
     }
 
     Swagger(app, template=swagger_template, config=swagger_config)
@@ -133,7 +133,7 @@ def create_app(config={}):
     app.logger.debug("Routes initialized")
 
     # add a redirect for the index page
-    @app.route('/api/')
+    @app.route('/smarter-api/')
     def index():
         return redirect(url_for('flasgger.apidocs'))
 

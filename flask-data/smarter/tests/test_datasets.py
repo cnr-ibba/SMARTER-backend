@@ -22,7 +22,7 @@ class TestGetDatasetList(AuthMixin, BaseCase):
         'dataset'
     ]
 
-    test_endpoint = '/api/datasets'
+    test_endpoint = '/smarter-api/datasets'
 
     @classmethod
     def setUpClass(cls):
@@ -249,7 +249,7 @@ class TestGetDataset(AuthMixin, BaseCase):
         'dataset'
     ]
 
-    test_endpoint = '/api/datasets/604f75a61a08c53cebd09b58'
+    test_endpoint = '/smarter-api/datasets/604f75a61a08c53cebd09b58'
 
     @classmethod
     def setUpClass(cls):
@@ -271,7 +271,7 @@ class TestGetDataset(AuthMixin, BaseCase):
 
     def test_get_breed_invalid(self):
         response = self.client.get(
-            "/api/datasets/foo",
+            "/smarter-api/datasets/foo",
             headers=self.headers
         )
 
@@ -283,7 +283,7 @@ class TestGetDataset(AuthMixin, BaseCase):
 
     def test_get_breed_not_found(self):
         response = self.client.get(
-            "/api/datasets/608ab46e1031c98150016dbd",
+            "/smarter-api/datasets/608ab46e1031c98150016dbd",
             headers=self.headers
         )
 

@@ -23,7 +23,7 @@ class SupportedChipTest(AuthMixin, BaseCase):
     ]
 
     data_file = f"{FIXTURES_DIR}/supportedChips.json"
-    test_endpoint = '/api/supported-chips/60c8c3a74c265e1880b28334'
+    test_endpoint = '/smarter-api/supported-chips/60c8c3a74c265e1880b28334'
 
     @classmethod
     def setUpClass(cls):
@@ -46,7 +46,7 @@ class SupportedChipTest(AuthMixin, BaseCase):
 
     def test_get_chip_invalid(self):
         response = self.client.get(
-            "/api/supported-chips/foo",
+            "/smarter-api/supported-chips/foo",
             headers=self.headers
         )
 
@@ -58,7 +58,7 @@ class SupportedChipTest(AuthMixin, BaseCase):
 
     def test_get_chip_not_found(self):
         response = self.client.get(
-            "/api/supported-chips/604f75a61a08c53cebd09b58",
+            "/smarter-api/supported-chips/604f75a61a08c53cebd09b58",
             headers=self.headers
         )
 
@@ -76,7 +76,7 @@ class SupportedChipListTest(AuthMixin, BaseCase):
     ]
 
     data_file = f"{FIXTURES_DIR}/supportedChips.json"
-    test_endpoint = '/api/supported-chips'
+    test_endpoint = '/smarter-api/supported-chips'
 
     @classmethod
     def setUpClass(cls):

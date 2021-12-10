@@ -19,29 +19,31 @@ from .variants import (
 
 
 def initialize_routes(api):
-    api.add_resource(LoginApi, '/api/auth/login')
+    api.add_resource(LoginApi, '/smarter-api/auth/login')
 
-    api.add_resource(SmarterInfoApi, '/api/info')
+    api.add_resource(SmarterInfoApi, '/smarter-api/info')
 
-    api.add_resource(BreedListApi, '/api/breeds')
-    api.add_resource(BreedApi, '/api/breeds/<string:id_>')
+    api.add_resource(BreedListApi, '/smarter-api/breeds')
+    api.add_resource(BreedApi, '/smarter-api/breeds/<string:id_>')
 
-    api.add_resource(SupportedChipListApi, '/api/supported-chips')
-    api.add_resource(SupportedChipApi, '/api/supported-chips/<string:id_>')
+    api.add_resource(SupportedChipListApi, '/smarter-api/supported-chips')
+    api.add_resource(
+        SupportedChipApi, '/smarter-api/supported-chips/<string:id_>')
 
-    api.add_resource(DatasetListApi, '/api/datasets')
-    api.add_resource(DatasetApi, '/api/datasets/<string:id_>')
+    api.add_resource(DatasetListApi, '/smarter-api/datasets')
+    api.add_resource(DatasetApi, '/smarter-api/datasets/<string:id_>')
 
-    api.add_resource(SampleSheepListApi, '/api/samples/sheep')
-    api.add_resource(SampleSheepApi, '/api/samples/sheep/<string:id_>')
+    api.add_resource(SampleSheepListApi, '/smarter-api/samples/sheep')
+    api.add_resource(SampleSheepApi, '/smarter-api/samples/sheep/<string:id_>')
 
-    api.add_resource(SampleGoatListApi, '/api/samples/goat')
-    api.add_resource(SampleGoatApi, '/api/samples/goat/<string:id_>')
+    api.add_resource(SampleGoatListApi, '/smarter-api/samples/goat')
+    api.add_resource(SampleGoatApi, '/smarter-api/samples/goat/<string:id_>')
 
-    api.add_resource(VariantSheepOAR3Api, '/api/variants/sheep/OAR3')
-    api.add_resource(VariantSheepOAR4Api, '/api/variants/sheep/OAR4')
-    api.add_resource(VariantSheepApi, '/api/variants/sheep/<string:id_>')
+    api.add_resource(VariantSheepOAR3Api, '/smarter-api/variants/sheep/OAR3')
+    api.add_resource(VariantSheepOAR4Api, '/smarter-api/variants/sheep/OAR4')
+    api.add_resource(
+        VariantSheepApi, '/smarter-api/variants/sheep/<string:id_>')
 
-    api.add_resource(VariantGoatCHI1Api, '/api/variants/goat/CHI1')
-    api.add_resource(VariantGoatARS1Api, '/api/variants/goat/ARS1')
-    api.add_resource(VariantGoatApi, '/api/variants/goat/<string:id_>')
+    api.add_resource(VariantGoatCHI1Api, '/smarter-api/variants/goat/CHI1')
+    api.add_resource(VariantGoatARS1Api, '/smarter-api/variants/goat/ARS1')
+    api.add_resource(VariantGoatApi, '/smarter-api/variants/goat/<string:id_>')

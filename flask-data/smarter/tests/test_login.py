@@ -17,7 +17,7 @@ class TestUserLogin(BaseCase):
 
         # When
         response = self.client.post(
-            '/api/auth/login',
+            '/smarter-api/auth/login',
             headers={"Content-Type": "application/json"},
             data=payload)
 
@@ -36,7 +36,7 @@ class TestUserLogin(BaseCase):
 
         # When
         response = self.client.post(
-            '/api/auth/login',
+            '/smarter-api/auth/login',
             headers={"Content-Type": "application/json"},
             data=payload)
 
@@ -56,7 +56,7 @@ class TestUserLogin(BaseCase):
 
         # When
         response = self.client.post(
-            '/api/auth/login',
+            '/smarter-api/auth/login',
             headers={"Content-Type": "application/json"},
             data=payload)
 
@@ -74,7 +74,7 @@ class TestUserLogin(BaseCase):
 
         # When
         response = self.client.post(
-            '/api/auth/login',
+            '/smarter-api/auth/login',
             headers={"Content-Type": "application/json"},
             data=payload)
 

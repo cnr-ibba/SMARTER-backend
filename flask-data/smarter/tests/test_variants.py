@@ -50,7 +50,7 @@ class VariantSheepTest(DateMixin, AuthMixin, BaseCase):
     ]
 
     data_file = f"{FIXTURES_DIR}/variantSheep.json"
-    test_endpoint = '/api/variants/sheep/60ca279a8025a403796f644a'
+    test_endpoint = '/smarter-api/variants/sheep/60ca279a8025a403796f644a'
 
     def test_get_variant(self):
         response = self.client.get(
@@ -66,7 +66,7 @@ class VariantSheepTest(DateMixin, AuthMixin, BaseCase):
 
     def test_get_variant_invalid(self):
         response = self.client.get(
-            "/api/variants/sheep/foo",
+            "/smarter-api/variants/sheep/foo",
             headers=self.headers
         )
 
@@ -78,7 +78,7 @@ class VariantSheepTest(DateMixin, AuthMixin, BaseCase):
 
     def test_get_variant_not_found(self):
         response = self.client.get(
-            "/api/variants/sheep/604f75a61a08c53cebd09b58",
+            "/smarter-api/variants/sheep/604f75a61a08c53cebd09b58",
             headers=self.headers
         )
 
@@ -300,7 +300,7 @@ class VariantSheepOAR3Test(VariantSheepListMixin, BaseCase):
     ]
 
     data_file = f"{FIXTURES_DIR}/variantSheep.json"
-    test_endpoint = '/api/variants/sheep/OAR3'
+    test_endpoint = '/smarter-api/variants/sheep/OAR3'
 
     @classmethod
     def setUpClass(cls):
@@ -333,7 +333,7 @@ class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
     ]
 
     data_file = f"{FIXTURES_DIR}/variantGoat.json"
-    test_endpoint = '/api/variants/goat/60ca4dabd8f09cfd319da0f8'
+    test_endpoint = '/smarter-api/variants/goat/60ca4dabd8f09cfd319da0f8'
 
     def test_get_variant(self):
         response = self.client.get(
@@ -349,7 +349,7 @@ class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
 
     def test_get_variant_invalid(self):
         response = self.client.get(
-            "/api/variants/goat/foo",
+            "/smarter-api/variants/goat/foo",
             headers=self.headers
         )
 
@@ -361,7 +361,7 @@ class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
 
     def test_get_variant_not_found(self):
         response = self.client.get(
-            "/api/variants/goat/604f75a61a08c53cebd09b58",
+            "/smarter-api/variants/goat/604f75a61a08c53cebd09b58",
             headers=self.headers
         )
 
@@ -506,7 +506,7 @@ class VariantGoatARS1Test(VariantGoatListMixin, BaseCase):
     ]
 
     data_file = f"{FIXTURES_DIR}/variantGoat.json"
-    test_endpoint = '/api/variants/goat/ARS1'
+    test_endpoint = '/smarter-api/variants/goat/ARS1'
 
     @classmethod
     def setUpClass(cls):
