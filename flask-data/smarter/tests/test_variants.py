@@ -326,6 +326,54 @@ class VariantSheepOAR3Test(VariantSheepListMixin, BaseCase):
             cls.data[i] = variant
 
 
+class VariantSheepOAR4Test(DateMixin, AuthMixin, BaseCase):
+    fixtures = [
+        'user',
+        'smarterInfo',
+        'variantSheep'
+    ]
+
+    data_file = f"{FIXTURES_DIR}/variantSheep.json"
+    test_endpoint = '/smarter-api/variants/sheep/OAR4'
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # need to drop unwanted information from location
+        OAR4 = {
+            'version': 'Oar_v4.0',
+            'imported_from': 'SNPchiMp v.3'
+        }
+
+        for i, variant in enumerate(cls.data):
+            for j, location in enumerate(variant['locations']):
+                if (location['version'] == OAR4['version'] and
+                        location['imported_from'] == OAR4['imported_from']):
+                    break
+
+            variant['locations'] = [location]
+
+            # drop unwanted keys
+            del variant['sender']
+
+            cls.data[i] = variant
+
+    def test_get_variants(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
+
 class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
     fixtures = [
         'user',
@@ -530,3 +578,51 @@ class VariantGoatARS1Test(VariantGoatListMixin, BaseCase):
             del variant['sender']
 
             cls.data[i] = variant
+
+
+class VariantGoatCHI1Test(DateMixin, AuthMixin, BaseCase):
+    fixtures = [
+        'user',
+        'smarterInfo',
+        'variantGoat'
+    ]
+
+    data_file = f"{FIXTURES_DIR}/variantGoat.json"
+    test_endpoint = '/smarter-api/variants/goat/CHI1'
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # need to drop unwanted information from location
+        CHI1 = {
+            'version': 'CHI1',
+            'imported_from': 'manifest'
+        }
+
+        for i, variant in enumerate(cls.data):
+            for j, location in enumerate(variant['locations']):
+                if (location['version'] == CHI1['version'] and
+                        location['imported_from'] == CHI1['imported_from']):
+                    break
+
+            variant['locations'] = [location]
+
+            # drop unwanted keys
+            del variant['sender']
+
+            cls.data[i] = variant
+
+    def test_get_variants(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 0)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 0)
+        self.assertListEqual(test['items'], [])
+        self.assertEqual(response.status_code, 200)
