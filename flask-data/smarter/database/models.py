@@ -234,7 +234,8 @@ class SampleSpecies(db.Document):
 
     # GPS location
     # NOTE: X, Y where X is longitude, Y latitude
-    locations = db.ListField(db.PointField(), default=None)
+    locations = db.MultiPointField(
+        auto_index=True, default=None)
 
     # additional (not modelled) metadata
     metadata = db.DictField(default=None)
@@ -244,6 +245,9 @@ class SampleSpecies(db.Document):
 
     meta = {
         'abstract': True,
+        'indexes': [
+            [("locations", "2dsphere")]
+        ]
     }
 
     def __str__(self):
