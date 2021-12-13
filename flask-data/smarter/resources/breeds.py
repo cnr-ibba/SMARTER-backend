@@ -57,6 +57,38 @@ class BreedListApi(ListView):
 
     @jwt_required()
     def get(self):
+        """
+        Get information on breeds
+        ---
+        tags:
+          - Breeds
+        description: Query SMARTER data about breeds
+        parameters:
+          - name: species
+            in: query
+            type: string
+            enum: ['Sheep', 'Goat']
+            description: The desidered species
+          - name: name
+            in: query
+            type: string
+            description: Breed name
+          - name: code
+            in: query
+            type: string
+            description: Breed code
+          - name: search
+            in: query
+            type: string
+            description: Search breed using this pattern
+        responses:
+            '200':
+              description: Breeds to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
         self.object_list = self.get_queryset()
         data = self.get_context_data()
         return jsonify(**data)
@@ -67,5 +99,25 @@ class BreedApi(ModelView):
 
     @jwt_required()
     def get(self, id_):
+        """
+        Fetch a single breed
+        ---
+        tags:
+          - Breeds
+        description: Fetch a single breed using ObjectID
+        parameters:
+          - in: path
+            name: id_
+            type: string
+            description: The breed ObjectID
+            required: true
+        responses:
+            '200':
+              description: The desidered breed
+              content:
+                application/json:
+                  schema:
+                    type: object
+        """
         breed = self.get_object(id_)
         return jsonify(breed)

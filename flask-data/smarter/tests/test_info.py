@@ -15,7 +15,7 @@ class TestSmarterInfo(AuthMixin, BaseCase):
         'smarterInfo'
     ]
 
-    test_endpoint = '/api/info'
+    test_endpoint = '/smarter-api/info'
     maxDiff = None
 
     @classmethod

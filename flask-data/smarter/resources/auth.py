@@ -21,6 +21,33 @@ from resources.errors import (
 
 class LoginApi(Resource):
     def post(self):
+        """
+        User authenticate method.
+        ---
+        tags:
+          - Authorization
+        description: Authenticate user with supplied credentials.
+        parameters:
+          - in: body
+            name: body
+            description: JSON parameters.
+            schema:
+              required:
+              - username
+              - password
+              properties:
+                username:
+                  type: string
+                  description: Your username
+                password:
+                  type: string
+                  description: Your password
+        responses:
+          200:
+            description: User successfully logged in.
+          401:
+            description: User login failed.
+        """
         try:
             body = request.get_json()
 
@@ -50,7 +77,7 @@ class LoginApi(Resource):
 
             current_app.logger.info(f"New token generated for '{username}'")
 
-            return Response(
+            response = Response(
                 json.dumps({
                     'token': access_token,
                     'expires': str(
@@ -58,6 +85,11 @@ class LoginApi(Resource):
                 }),
                 mimetype="application/json",
                 status=200)
+
+            # add token to response headers - so SwaggerUI can use it
+            response.headers.extend({'jwt-token': access_token})
+
+            return response
 
         except (UnauthorizedError, DoesNotExist) as e:
             current_app.logger.error(e)

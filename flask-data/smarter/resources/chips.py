@@ -19,6 +19,26 @@ class SupportedChipApi(ModelView):
 
     @jwt_required()
     def get(self, id_):
+        """
+        Fetch a single chip
+        ---
+        tags:
+          - Supported Chips
+        description: Fetch a single chip using ObjectID
+        parameters:
+          - in: path
+            name: id_
+            type: string
+            description: The chip ObjectID
+            required: true
+        responses:
+            '200':
+              description: The desidered chip
+              content:
+                application/json:
+                  schema:
+                    type: object
+        """
         variant = self.get_object(id_)
         return jsonify(variant)
 
@@ -51,6 +71,35 @@ class SupportedChipListApi(ListView):
 
     @jwt_required()
     def get(self):
+        """
+        Get information on chips
+        ---
+        tags:
+          - Supported Chips
+        description: Query SMARTER data about chips
+        parameters:
+          - name: species
+            in: query
+            type: string
+            enum: ['Sheep', 'Goat']
+            description: The desidered species
+          - name: name
+            in: query
+            type: string
+            description: Chip name
+          - name: manifacturer
+            in: query
+            type: string
+            enum: ['affymetrix', 'illumina']
+            description: Chip manifacturer
+        responses:
+            '200':
+              description: Chips to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
         self.object_list = self.get_queryset()
         data = self.get_context_data()
         return jsonify(**data)

@@ -20,7 +20,7 @@ class SampleSheepTest(AuthMixin, BaseCase):
         'sampleSheep'
     ]
 
-    test_endpoint = '/api/samples/sheep/608ab4b191a0d06725bc0938'
+    test_endpoint = '/smarter-api/samples/sheep/608ab4b191a0d06725bc0938'
 
     @classmethod
     def setUpClass(cls):
@@ -42,7 +42,7 @@ class SampleSheepTest(AuthMixin, BaseCase):
 
     def test_get_sample_invalid(self):
         response = self.client.get(
-            "/api/samples/sheep/foo",
+            "/smarter-api/samples/sheep/foo",
             headers=self.headers
         )
 
@@ -54,7 +54,7 @@ class SampleSheepTest(AuthMixin, BaseCase):
 
     def test_get_sample_not_found(self):
         response = self.client.get(
-            "/api/samples/sheep/604f75a61a08c53cebd09b58",
+            "/smarter-api/samples/sheep/604f75a61a08c53cebd09b58",
             headers=self.headers
         )
 
@@ -71,7 +71,7 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         'sampleSheep'
     ]
 
-    test_endpoint = '/api/samples/sheep'
+    test_endpoint = '/smarter-api/samples/sheep'
 
     @classmethod
     def setUpClass(cls):
@@ -391,7 +391,7 @@ class SampleGoatTest(AuthMixin, BaseCase):
         'sampleGoat'
     ]
 
-    test_endpoint = '/api/samples/goat/6092940199215a3814492195'
+    test_endpoint = '/smarter-api/samples/goat/6092940199215a3814492195'
 
     @classmethod
     def setUpClass(cls):
@@ -413,7 +413,7 @@ class SampleGoatTest(AuthMixin, BaseCase):
 
     def test_get_sample_invalid(self):
         response = self.client.get(
-            "/api/samples/goat/foo",
+            "/smarter-api/samples/goat/foo",
             headers=self.headers
         )
 
@@ -425,7 +425,7 @@ class SampleGoatTest(AuthMixin, BaseCase):
 
     def test_get_sample_not_found(self):
         response = self.client.get(
-            "/api/samples/goat/604f75a61a08c53cebd09b58",
+            "/smarter-api/samples/goat/604f75a61a08c53cebd09b58",
             headers=self.headers
         )
 
@@ -442,7 +442,7 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         'sampleGoat'
     ]
 
-    test_endpoint = '/api/samples/goat'
+    test_endpoint = '/smarter-api/samples/goat'
 
     @classmethod
     def setUpClass(cls):

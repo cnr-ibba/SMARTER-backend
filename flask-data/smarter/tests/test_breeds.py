@@ -22,7 +22,7 @@ class TestGetBreedList(AuthMixin, BaseCase):
         'breeds'
     ]
 
-    test_endpoint = '/api/breeds'
+    test_endpoint = '/smarter-api/breeds'
 
     @classmethod
     def setUpClass(cls):
@@ -264,7 +264,7 @@ class TestGetBreed(AuthMixin, BaseCase):
         'breeds'
     ]
 
-    test_endpoint = '/api/breeds/608ab46e1031c98150016dbd'
+    test_endpoint = '/smarter-api/breeds/608ab46e1031c98150016dbd'
 
     @classmethod
     def setUpClass(cls):
@@ -286,7 +286,7 @@ class TestGetBreed(AuthMixin, BaseCase):
 
     def test_get_breed_invalid(self):
         response = self.client.get(
-            "/api/breeds/foo",
+            "/smarter-api/breeds/foo",
             headers=self.headers
         )
 
@@ -298,7 +298,7 @@ class TestGetBreed(AuthMixin, BaseCase):
 
     def test_get_breed_not_found(self):
         response = self.client.get(
-            "/api/breeds/604f75a61a08c53cebd09b58",
+            "/smarter-api/breeds/604f75a61a08c53cebd09b58",
             headers=self.headers
         )
 

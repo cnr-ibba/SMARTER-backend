@@ -29,38 +29,23 @@ credentials in order to not store them in our code. ``dplyr`` is useful to manag
 dataframes, for examples when they have different columns (like response from
 SMARTER-backend)
 
-Define some useful variables
-----------------------------
-
-Let's define some useful variables which will be used in our functions:
-
-.. code-block:: r
-
-   base_url <- "https://webserver.ibba.cnr.it"
-   base_endpoint <- "/smarter-api"
-
-``base_url`` is defined for simplicity in order to make all our request to the
-same server; the same applies for ``base_endpoint``, which is the default location 
-in which we can direct all our queries. If you plan to install a local version of 
-SMARTER-backend (see :ref:`Backend installation` for more info) you can change 
-those two variables in order to query your local copy of SMARTER-backend.
-
 Generate a JWT token with R
 ---------------------------
 
 As stated in our :ref:`Authentication` section of this guide, you need to generate 
 a :ref:`JWT token <JWT Authentication>` in order to get full access to smarter 
 metadata. Here is an utility function to request a token by providing your 
-credentials with a ``POST`` HTTP method. Mind to ``base_url`` and ``base_endpoint``
-defined before and used in this and in the other functions:
+credentials with a ``POST`` HTTP method:
 
 .. code-block:: r
+
+   base_url <- "https://webserver.ibba.cnr.it"
 
    get_smarter_token <-
       function(username = readline(prompt = "Username ? "),
                password = getPass::getPass("Password ? ")) {
          auth_url <-
-            httr::modify_url(base_url, path = sprintf("%s/auth/login", base_endpoint))
+            httr::modify_url(base_url, path = "/smarter-api/auth/login")
 
          resp <-
             POST(
@@ -78,8 +63,9 @@ defined before and used in this and in the other functions:
 
    token <- get_smarter_token()
 
-The ``get_smarter_token`` function requires *user* and *password* as parameters. 
-The ``readline`` and ``getPass::getPass`` functions used as
+``base_url`` is defined for simplicity in order to make all our request to the
+same server. The ``get_smarter_token`` function requires *user* and *password* 
+as parameters. The ``readline`` and ``getPass::getPass`` functions used as
 default values are not strictly required, we use them in order to not write
 credentials in our code: the function will prompt for those values if not provided 
 during function call. The token string is parsed and written into ``token`` variable:
@@ -180,7 +166,7 @@ deal with datasets objects by querying the *datasets* endpoint:
 
    get_smarter_datasets <- function(token, query=list()) {
       url <-
-         modify_url(base_url, path = sprintf("%s/datasets", base_endpoint))
+         modify_url(base_url, path = "/smarter-api/datasets")
 
       data <- get_smarter_data(url, token, query)
 
@@ -199,7 +185,7 @@ define the ``get_smarter_breeds`` function:
 
    get_smarter_breeds <- function(token, query = list()) {
       # setting the URL endpoint
-      url <- httr::modify_url(base_url, path = sprintf("%s/breeds", base_endpoint))
+      url <- httr::modify_url(base_url, path = "/smarter-api/breeds")
 
       # reading our data
       data <- get_smarter_data(url, token, query)
@@ -264,7 +250,7 @@ endpoints relying on parameters:
       species <- tolower(species)
 
       url <-
-         modify_url(base_url, path = sprintf("%s/samples/%s", base_endpoint, species))
+         modify_url(base_url, path = sprintf("/smarter-api/samples/%s", species))
 
       data <- get_smarter_data(url, token, query)
       
@@ -312,12 +298,8 @@ variants. In the following example we will select the goat variants on chromosom
       species <- tolower(species)
       assembly <- toupper(assembly)
 
-      url <- modify_url(base_url, path = sprintf(
-         "%s/variants/%s/%s", 
-         base_endpoint, 
-         species,
-         assembly)
-      )
+      url <-
+         modify_url(base_url, path = sprintf("/smarter-api/variants/%s/%s", species, assembly))
 
       data <- get_smarter_data(url, token, query)
 
