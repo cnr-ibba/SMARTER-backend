@@ -17,6 +17,9 @@ services:
       MONGODB_SMARTER_USER: ${MONGODB_SMARTER_USER}
       MONGODB_SMARTER_PASS: ${MONGODB_SMARTER_PASS}
 
+    # The entrypoint of the image is created to pass its arguments along to mongod
+    command: --wiredTigerCacheSizeGB 1
+
     # to export volume, as recommeded in https://registry.hub.docker.com/u/library/mysql/
     volumes:
       - type: bind
