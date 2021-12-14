@@ -72,6 +72,13 @@ class SampleListMixin():
                 # add a new key to kwargs dictionary
                 kwargs[f'{key}__in'] = value
 
+        if 'geo_within_polygon' in kwargs:
+            # get the geometry field
+            geometry = kwargs.pop('geo_within_polygon')['geometry']
+
+            # add a new key to kwargs dictionary
+            kwargs['locations__geo_within'] = geometry
+
         current_app.logger.info(f"{args}, {kwargs}")
 
         if args or kwargs:
@@ -199,10 +206,10 @@ class SampleSheepListApi(SampleListMixin, ListView):
 
     @jwt_required()
     def post(self):
-      # parse request arguments and deal with generic arguments
-      args, kwargs = self.parse_args()
+        self.object_list = self.get_queryset()
+        data = self.get_context_data()
+        return jsonify(**data)
 
-      current_app.logger.info(f"{args}, {kwargs}")
 
 class SampleGoatApi(ModelView):
     model = SampleGoat
@@ -317,34 +324,6 @@ class SampleGoatListApi(SampleListMixin, ListView):
 
     @jwt_required()
     def post(self):
-        # parse request arguments and deal with generic arguments
-        args, kwargs = self.parse_args()
-
-        # mind to list arguments
-        for key in ['breed', 'breed_code', 'chip_name', 'country', 'dataset']:
-            if key in kwargs:
-                value = kwargs.pop(key)
-
-                # add a new key to kwargs dictionary
-                kwargs[f'{key}__in'] = value
-
-        if 'geo_within_polygon' in kwargs:
-            # get the geometry field
-            geometry = kwargs.pop('geo_within_polygon')['geometry']
-
-            # add a new key to kwargs dictionary
-            kwargs['locations__geo_within'] = geometry
-
-        current_app.logger.info(f"{args}, {kwargs}")
-
-        if args or kwargs:
-            self.object_list = self.model.objects.filter(*args, **kwargs)
-
-        else:
-            self.object_list = self.model.objects.all()
-
-        if self.order_by:
-            self.object_list = self.object_list.order_by(self.order_by)
-
+        self.object_list = self.get_queryset()
         data = self.get_context_data()
         return jsonify(**data)
