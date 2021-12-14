@@ -690,3 +690,35 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             "Unknown arguments: foo", response.json['message'])
+
+    def test_get_samples_geo_within_polygon(self):
+        response = self.client.post(
+            self.test_endpoint,
+            headers=self.headers,
+            json={
+                "geo_within_polygon": {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [9, 45],
+                            [9, 46],
+                            [10, 46],
+                            [10, 45],
+                            [9, 45]
+                        ]]
+                    },
+                    "properties": {
+                        "name": "A sample polygon"
+                    }
+                }
+            }
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
