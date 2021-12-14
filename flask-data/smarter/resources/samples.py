@@ -59,6 +59,12 @@ class SampleListMixin():
       type=dict,
       location='json'
     )
+    parser.add_argument(
+      'geo_within_sphere',
+      help="Filter Samples inside a 2dshpere (center, radius in Km)",
+      type=list,
+      location='json'
+    )
 
     def get_queryset(self):
         # parse request arguments and deal with generic arguments
@@ -78,6 +84,15 @@ class SampleListMixin():
 
             # add a new key to kwargs dictionary
             kwargs['locations__geo_within'] = geometry
+
+        if 'geo_within_sphere' in kwargs:
+            value = kwargs.pop('geo_within_sphere')
+
+            # convert radius in radians (Km expected)
+            value[-1] = value[-1] / 6378.1
+
+            # add a new key to kwargs dictionary
+            kwargs['locations__geo_within_sphere'] = value
 
         current_app.logger.info(f"{args}, {kwargs}")
 

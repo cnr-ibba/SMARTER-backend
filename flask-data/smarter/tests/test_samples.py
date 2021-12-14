@@ -754,3 +754,23 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 1)
         self.assertListEqual(test['items'], [self.data[1]])
+
+    def test_get_samples_geo_within_sphere(self):
+        response = self.client.post(
+            self.test_endpoint,
+            headers=self.headers,
+            json={
+                "geo_within_sphere": [
+                    [9.18, 45.46], 
+                    10 # Km
+                ]
+            }
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
