@@ -13,6 +13,7 @@ from .datasets import DatasetListApi, DatasetApi
 from .info import SmarterInfoApi
 from .samples import (
     SampleSheepApi, SampleSheepListApi, SampleGoatApi, SampleGoatListApi)
+from .GeoJSON import (SampleSheepGeoJSONApi, SampleGoatGeoJSONApi)
 from .variants import (
     VariantSheepApi, VariantGoatApi, VariantSheepOAR3Api, VariantSheepOAR4Api,
     VariantGoatCHI1Api, VariantGoatARS1Api)
@@ -36,8 +37,16 @@ def initialize_routes(api):
     api.add_resource(SampleSheepListApi, '/smarter-api/samples/sheep')
     api.add_resource(SampleSheepApi, '/smarter-api/samples/sheep/<string:id_>')
 
+    api.add_resource(
+        SampleSheepGeoJSONApi,
+        '/smarter-api/samples.geojson/sheep/<string:id_>')
+
     api.add_resource(SampleGoatListApi, '/smarter-api/samples/goat')
     api.add_resource(SampleGoatApi, '/smarter-api/samples/goat/<string:id_>')
+
+    api.add_resource(
+        SampleGoatGeoJSONApi,
+        '/smarter-api/samples.geojson/goat/<string:id_>')
 
     api.add_resource(VariantSheepOAR3Api, '/smarter-api/variants/sheep/OAR3')
     api.add_resource(VariantSheepOAR4Api, '/smarter-api/variants/sheep/OAR4')

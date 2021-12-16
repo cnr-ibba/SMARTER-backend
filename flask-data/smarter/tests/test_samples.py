@@ -761,8 +761,8 @@ class SampleGoatListTest(AuthMixin, BaseCase):
             headers=self.headers,
             json={
                 "geo_within_sphere": [
-                    [9.18, 45.46], 
-                    10 # Km
+                    [9.18, 45.46],
+                    10  # Km
                 ]
             }
         )
