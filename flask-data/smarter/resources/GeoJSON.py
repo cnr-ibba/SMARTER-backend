@@ -65,6 +65,39 @@ class GeoJSONMixin():
         return jsonify(result)
 
 
+class GeoJSONListMixin(Resource):
+    model = None
+
+    def get(self):
+        collection = self.model.objects().aggregate([
+            {"$match": {"locations": {"$exists": True}}},
+            geojson,
+            {"$group": {
+                "_id": None,
+                "features": {
+                    "$push": "$$ROOT"
+                }
+            }},
+            {"$project": {
+                "_id": 0,
+                "type": "FeatureCollection",
+                "features": "$features"
+            }}
+        ])
+
+        try:
+            result = next(collection)
+
+        except StopIteration as exc:
+            current_app.logger.warning(exc)
+            result = {
+                "type": "FeatureCollection",
+                "features": []
+            }
+
+        return jsonify(result)
+
+
 class SampleSheepGeoJSONApi(GeoJSONMixin, Resource):
     model = SampleSheep
 
@@ -79,3 +112,19 @@ class SampleGoatGeoJSONApi(GeoJSONMixin, Resource):
     @jwt_required()
     def get(self, id_):
         return super().get(id_)
+
+
+class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
+    model = SampleSheep
+
+    @jwt_required()
+    def get(self):
+        return super().get()
+
+
+class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
+    model = SampleGoat
+
+    @jwt_required()
+    def get(self):
+        return super().get()

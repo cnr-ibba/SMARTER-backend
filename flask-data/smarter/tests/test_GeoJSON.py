@@ -79,6 +79,7 @@ class SampleGoatTest(AuthMixin, BaseCase):
 
         test = response.json
 
+        self.assertEqual(response.status_code, 200)
         self.assertIsInstance(test, dict)
         self.assertEqual(test['type'], "Feature")
         self.assertIn('properties', test)
@@ -107,3 +108,65 @@ class SampleGoatTest(AuthMixin, BaseCase):
         self.assertIsInstance(test, dict)
         self.assertIn("Object does not exist", test["message"])
         self.assertEqual(response.status_code, 404)
+
+
+class SampleSheepListTest(AuthMixin, BaseCase):
+    fixtures = [
+        'user',
+        'sampleSheep'
+    ]
+
+    test_endpoint = '/smarter-api/samples.geojson/sheep'
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        with open(f"{FIXTURES_DIR}/sampleSheep.json") as handle:
+            cls.data = json.load(handle)
+
+    def test_get_samples(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(test, dict)
+        self.assertEqual(test['type'], "FeatureCollection")
+        self.assertIn('features', test)
+        self.assertIsInstance(test['features'], list)
+        self.assertEqual(len(test['features']), 0)
+
+
+class SampleGoatListTest(AuthMixin, BaseCase):
+    fixtures = [
+        'user',
+        'sampleGoat'
+    ]
+
+    test_endpoint = '/smarter-api/samples.geojson/goat'
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        with open(f"{FIXTURES_DIR}/sampleGoat.json") as handle:
+            cls.data = json.load(handle)
+
+    def test_get_samples(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(test, dict)
+        self.assertEqual(test['type'], "FeatureCollection")
+        self.assertIn('features', test)
+        self.assertIsInstance(test['features'], list)
+        self.assertEqual(len(test['features']), 2)
