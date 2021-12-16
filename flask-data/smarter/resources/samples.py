@@ -221,6 +221,39 @@ class SampleSheepListApi(SampleListMixin, ListView):
 
     @jwt_required()
     def post(self):
+        """
+        Get samples information for Sheep
+        ---
+        tags:
+          - Samples
+        description: Query SMARTER data about samples
+        parameters:
+          - in: body
+            name: body
+            description: Execute a gis query
+            schema:
+              properties:
+                geo_within_polygon:
+                  type: object
+                  description: A Polygon feature
+                  properties:
+                    type:
+                      type: string
+                    properties:
+                      type: object
+                    geometry:
+                      type: object
+                geo_within_sphere:
+                  type: array
+                  description: A list with coordinates and radius in Km
+        responses:
+            '200':
+              description: Samples to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
         self.object_list = self.get_queryset()
         data = self.get_context_data()
         return jsonify(**data)
@@ -339,6 +372,39 @@ class SampleGoatListApi(SampleListMixin, ListView):
 
     @jwt_required()
     def post(self):
+        """
+        Get samples information for Goat
+        ---
+        tags:
+          - Samples
+        description: Query SMARTER data about samples
+        parameters:
+          - in: body
+            name: body
+            description: Execute a gis query
+            schema:
+              properties:
+                geo_within_polygon:
+                  type: object
+                  description: A Polygon feature
+                  properties:
+                    type:
+                      type: string
+                    properties:
+                      type: object
+                    geometry:
+                      type: object
+                geo_within_sphere:
+                  type: array
+                  description: A list with coordinates and radius in Km
+        responses:
+            '200':
+              description: Samples to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
         self.object_list = self.get_queryset()
         data = self.get_context_data()
         return jsonify(**data)

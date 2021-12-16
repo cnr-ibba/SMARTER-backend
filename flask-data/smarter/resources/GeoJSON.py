@@ -103,6 +103,26 @@ class SampleSheepGeoJSONApi(GeoJSONMixin, Resource):
 
     @jwt_required()
     def get(self, id_):
+        """
+        Get a single GeoJSON for Sheep
+        ---
+        tags:
+          - GeoJSON
+        description: Query SMARTER data about samples
+        parameters:
+          - in: path
+            name: id_
+            type: string
+            description: The sample ObjectID
+            required: true
+        responses:
+            '200':
+              description: GeoJSON Feature
+              content:
+                application/json:
+                  schema:
+                    type: object
+        """
         return super().get(id_)
 
 
@@ -111,6 +131,26 @@ class SampleGoatGeoJSONApi(GeoJSONMixin, Resource):
 
     @jwt_required()
     def get(self, id_):
+        """
+        Get a single GeoJSON for Goat
+        ---
+        tags:
+          - GeoJSON
+        description: Query SMARTER data about samples
+        parameters:
+          - in: path
+            name: id_
+            type: string
+            description: The sample ObjectID
+            required: true
+        responses:
+            '200':
+              description: GeoJSON Feature
+              content:
+                application/json:
+                  schema:
+                    type: object
+        """
         return super().get(id_)
 
 
@@ -119,6 +159,20 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
 
     @jwt_required()
     def get(self):
+        """
+        Get a GeoJSON for all Sheep samples
+        ---
+        tags:
+          - GeoJSON
+        description: Query SMARTER data about samples
+        responses:
+            '200':
+              description: GeoJSON FeatureCollection
+              content:
+                application/json:
+                  schema:
+                    type: object
+        """
         return super().get()
 
 
@@ -127,4 +181,18 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
 
     @jwt_required()
     def get(self):
+        """
+        Get a GeoJSON for all Goat samples
+        ---
+        tags:
+          - GeoJSON
+        description: Query SMARTER data about samples
+        responses:
+            '200':
+              description: GeoJSON FeatureCollection
+              content:
+                application/json:
+                  schema:
+                    type: object
+        """
         return super().get()
