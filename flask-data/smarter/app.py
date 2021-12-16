@@ -8,12 +8,14 @@ Created on Fri May 21 17:50:23 2021
 
 import os
 
+from bson import ObjectId
 from logging.config import dictConfig
 
 from flask import Flask, redirect, url_for
 from flask_restful import Api
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+from flask_mongoengine.json import MongoEngineJSONEncoder
 from flask_cors import CORS
 from flasgger import Swagger
 
@@ -42,6 +44,15 @@ dictConfig({
 })
 
 
+class CustomJSONEncoder(MongoEngineJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, ObjectId):
+            return {
+                "$oid": str(obj)
+            }
+        return MongoEngineJSONEncoder.default(self, obj)
+
+
 # https://stackoverflow.com/a/56474420/4385116
 def create_app(config={}):
     """This function create Flask app. Is required by wsgi because it need to
@@ -63,6 +74,9 @@ def create_app(config={}):
     api = Api(app, errors=errors)
     Bcrypt(app)
     JWTManager(app)
+
+    # deal with ObjectId in json responses
+    app.json_encoder = CustomJSONEncoder
 
     # workaround to make flasgger deal with jwt-token headers
     app.config["JWT_AUTH_URL_RULE"] = True
