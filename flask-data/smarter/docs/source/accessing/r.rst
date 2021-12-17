@@ -207,8 +207,9 @@ example, you could retrieve all the *genotypes* datasets using the ``type`` para
    genotypes_datasets <- get_smarter_datasets(token, query = list(type="genotypes"))
 
 Since query accepts ``list``, you can specify the same parameter multiple times 
-(if the endpoints supports this type of query). For example, if you need only the 
-*foreground genotypes*, you can select dataset like this:
+(if the endpoints supports this type of query, see `api docs <https://webserver.ibba.cnr.it/smarter-api/docs/>`_ 
+to get more information). For example, if you need only the *foreground genotypes*, 
+you can select dataset like this:
 
 .. code-block:: r
 
