@@ -53,6 +53,18 @@ class SampleListMixin():
         'phenotype__exists',
         help="Get data with phenotype",
         type=bool)
+    parser.add_argument(
+      'geo_within_polygon',
+      help="Filter Samples inside a polygon",
+      type=dict,
+      location='json'
+    )
+    parser.add_argument(
+      'geo_within_sphere',
+      help="Filter Samples inside a 2dshpere (center, radius in Km)",
+      type=list,
+      location='json'
+    )
 
     def get_queryset(self):
         # parse request arguments and deal with generic arguments
@@ -65,6 +77,22 @@ class SampleListMixin():
 
                 # add a new key to kwargs dictionary
                 kwargs[f'{key}__in'] = value
+
+        if 'geo_within_polygon' in kwargs:
+            # get the geometry field
+            geometry = kwargs.pop('geo_within_polygon')['geometry']
+
+            # add a new key to kwargs dictionary
+            kwargs['locations__geo_within'] = geometry
+
+        if 'geo_within_sphere' in kwargs:
+            value = kwargs.pop('geo_within_sphere')
+
+            # convert radius in radians (Km expected)
+            value[-1] = value[-1] / 6378.1
+
+            # add a new key to kwargs dictionary
+            kwargs['locations__geo_within_sphere'] = value
 
         current_app.logger.info(f"{args}, {kwargs}")
 
@@ -191,6 +219,45 @@ class SampleSheepListApi(SampleListMixin, ListView):
         data = self.get_context_data()
         return jsonify(**data)
 
+    @jwt_required()
+    def post(self):
+        """
+        Get samples information for Sheep
+        ---
+        tags:
+          - Samples
+        description: Query SMARTER data about samples
+        parameters:
+          - in: body
+            name: body
+            description: Execute a gis query
+            schema:
+              properties:
+                geo_within_polygon:
+                  type: object
+                  description: A Polygon feature
+                  properties:
+                    type:
+                      type: string
+                    properties:
+                      type: object
+                    geometry:
+                      type: object
+                geo_within_sphere:
+                  type: array
+                  description: A list with coordinates and radius in Km
+        responses:
+            '200':
+              description: Samples to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
+        self.object_list = self.get_queryset()
+        data = self.get_context_data()
+        return jsonify(**data)
+
 
 class SampleGoatApi(ModelView):
     model = SampleGoat
@@ -291,6 +358,45 @@ class SampleGoatListApi(SampleListMixin, ListView):
             in: query
             type: bool
             description: Filter samples with a phenotype (any)
+        responses:
+            '200':
+              description: Samples to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
+        self.object_list = self.get_queryset()
+        data = self.get_context_data()
+        return jsonify(**data)
+
+    @jwt_required()
+    def post(self):
+        """
+        Get samples information for Goat
+        ---
+        tags:
+          - Samples
+        description: Query SMARTER data about samples
+        parameters:
+          - in: body
+            name: body
+            description: Execute a gis query
+            schema:
+              properties:
+                geo_within_polygon:
+                  type: object
+                  description: A Polygon feature
+                  properties:
+                    type:
+                      type: string
+                    properties:
+                      type: object
+                    geometry:
+                      type: object
+                geo_within_sphere:
+                  type: array
+                  description: A list with coordinates and radius in Km
         responses:
             '200':
               description: Samples to be returned

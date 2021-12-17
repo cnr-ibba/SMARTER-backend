@@ -14,15 +14,15 @@
     },
     "chip_name": "IlluminaGoatSNP50",
     "sex": 2,
-    "locations": [
-      {
-        "type": "Point",
-        "coordinates": [
+    "locations" : {
+      "type" : "MultiPoint",
+      "coordinates" : [
+        [
           3.19558,
           39.4603
         ]
-      }
-    ],
+      ]
+    },
     "metadata": {
       "sampling_info": "test info",
       "dob": "01/01/10",
@@ -52,15 +52,15 @@
     },
     "chip_name": "IlluminaGoatSNP50",
     "sex": 2,
-    "locations": [
-      {
-        "type": "Point",
-        "coordinates": [
-          3.19558,
-          39.4603
+    "locations" : {
+      "type" : "MultiPoint",
+      "coordinates" : [
+        [
+          9.1859243, 
+          45.4654219
         ]
-      }
-    ],
+      ]
+    },
     "metadata": {
       "sampling_info": "test info",
       "dob": "01/01/11",

@@ -43,15 +43,11 @@ example::
 will retrive all the SMARTER goat breeds which have ``land`` in ther name (*Landrace*,
 for example, but also *Rangeland*)
 
-.. note::
-
-   Every API endpoint has its own set of parameters, see the proper endpoint 
-   documentation to have a list of the allowed parameters and what the do 
-
 .. hint::
 
-   We plan to document the API endpoints using swagger: endpoints parameters 
-   and their allowed values will be documented here
+   The page https://webserver.ibba.cnr.it/smarter-api/docs/ describes every API 
+   endpoints with their own set of parameters, see the proper endpoint 
+   documentation to have a list of the allowed parameters and what they do.
 
 Pagination
 ----------
@@ -78,7 +74,7 @@ see a reply like this::
 
 Where in the ``items`` array there will be ``size`` Breed objects (default 10, 
 omitted here to better describe the response); in the ``next`` attribute there 
-will be the URL string to be used to get the next batch of  objects, if you 
+will be the URLs to be used to get the next batch of  objects, if you 
 get the next page, you will get a ``prev`` attribute for the previous page; 
 The ``total`` stands for the total number of breed objects and the ``page`` 
 stands for the current batch page number. By default, the behaviour is to 

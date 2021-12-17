@@ -21,7 +21,7 @@ SMARTER-backend receives requests over the internet and returns SMARTER data in
 JSON objects. There could be different data types that could be returned by 
 SMARTER-backend, for example Breed, Variant, Sample or Dataset. In order to access 
 to each different data types you have to make a request to the proper API 
-`endpoint <https://en.wikipedia.org/wiki/Web_API#Endpoints>`_, which is the means
+`endpoint <https://en.wikipedia.org/wiki/Web_API#Endpoints>`_, which is the mean
 from which the API can access the resources requested. An API endpoint is an URL,
 to which HTTP requests are submitted, and from which the response is thus expected.
 For example, to retrieve information on all the Breeds stored in SMARTER database, 
@@ -29,7 +29,7 @@ you should make a request to the breed endpoint which is::
 
    https://webserver.ibba.cnr.it/smarter-api/breeds
 
-while, to have informations on Goat samples you have to make a request to a different
+Similarly, to have informations on Goat samples you have to make a request to a different
 endpoint, which is::
 
    https://webserver.ibba.cnr.it/smarter-api/samples/goat
@@ -39,30 +39,36 @@ a prefix in common (``https://webserver.ibba.cnr.it/smarter-api``), while the la
 part of the URL changes relying on the data they provide. There are a few endpoints 
 available by SMARTER-backend:
 
-+------------------------+----------------+-----------------------------------------------+
-| Suffix                 | Data type      | Description                                   |
-+========================+================+===============================================+
-| /breeds                | Breeds         | returns a list of the available breeds        |
-+------------------------+----------------+-----------------------------------------------+
-| /datasets              | Dataset        | returns a list of the available datasets      |
-+------------------------+----------------+-----------------------------------------------+
-| /info                  | SmarterInfo    | A dictionary of smarter information           |
-+------------------------+----------------+-----------------------------------------------+
-| /samples/sheep         | SampleSheep    | returns a list of the sheep samples           |
-+------------------------+----------------+-----------------------------------------------+
-| /samples/goat          | SampleGoat     | returns a list of goat samples                |
-+------------------------+----------------+-----------------------------------------------+
-|| /supported-chips      || SupportedChip || returns a list of chip which provide SNPs    |
-||                       ||               || to the SMARTER dataset                       |
-+------------------------+----------------+-----------------------------------------------+
-| /variants/sheep/OAR3   | VariantSheep   | returns a list of sheep SNPs in OAR3 assembly |
-+------------------------+----------------+-----------------------------------------------+
-| /variants/sheep/OAR4   | VariantSheep   | returns a list of sheep SNPs in OAR4 assembly |
-+------------------------+----------------+-----------------------------------------------+
-| /variants/goat/ARS1    | VariantGoat    | returns a list of goat SNPs in ARS1 assembly  |
-+------------------------+----------------+-----------------------------------------------+
-| /variants/goat/CHI1    | VariantGoat    | returns a list of goat SNPs in CHI1 assembly  |
-+------------------------+----------------+-----------------------------------------------+
++------------------------+---------------+-----------------------------------------------+
+| Suffix                 | Data type     | Description                                   |
++========================+===============+===============================================+
+| /auth/login            | Users         | user authentication                           |
++------------------------+---------------+-----------------------------------------------+
+| /breeds                | Breeds        | returns a list of the available breeds        |
++------------------------+---------------+-----------------------------------------------+
+| /datasets              | Dataset       | returns a list of the available datasets      |
++------------------------+---------------+-----------------------------------------------+
+| /info                  | SmarterInfo   | A dictionary of smarter information           |
++------------------------+---------------+-----------------------------------------------+
+| /samples/sheep         | SampleSheep   | returns a list of the sheep samples           |
++------------------------+---------------+-----------------------------------------------+
+| /samples/goat          | SampleGoat    | returns a list of goat samples                |
++------------------------+---------------+-----------------------------------------------+
+| /samples.geojson/sheep | GeoJSON       | return sheep samples in GeoJSON format        |
++------------------------+---------------+-----------------------------------------------+
+| /samples.geojson/goat  | GeoJSON       | return goat samples in GeoJSON format         |
++------------------------+---------------+-----------------------------------------------+
+| /supported-chips       | SupportedChip | returns a list of chip which provide SNPs     |
+|                        |               | to the SMARTER dataset                        |
++------------------------+---------------+-----------------------------------------------+
+| /variants/sheep/OAR3   | VariantSheep  | returns a list of sheep SNPs in OAR3 assembly |
++------------------------+---------------+-----------------------------------------------+
+| /variants/sheep/OAR4   | VariantSheep  | returns a list of sheep SNPs in OAR4 assembly |
++------------------------+---------------+-----------------------------------------------+
+| /variants/goat/ARS1    | VariantGoat   | returns a list of goat SNPs in ARS1 assembly  |
++------------------------+---------------+-----------------------------------------------+
+| /variants/goat/CHI1    | VariantGoat   | returns a list of goat SNPs in CHI1 assembly  |
++------------------------+---------------+-----------------------------------------------+
 
 So if you require to retrieve all the sheep SNPs in OAR3 assembly, 
 you can append the suffix ``/variants/sheep/OAR3``
@@ -71,7 +77,7 @@ final endpoint::
 
    https://webserver.ibba.cnr.it/smarter-api/variants/sheep/OAR3
 
-Every endpoint described provide a list of results, however you could retrieve a 
+Every endpoints described provide a list of results, however you could retrieve a 
 specific object by appending the proper ObjectId to the endpoint, for example::
 
    https://webserver.ibba.cnr.it/smarter-api/datasets/604f75a61a08c53cebd09b5b
@@ -94,18 +100,18 @@ An endpoint can act differently relying on the
 making a request. For SMARTER-backend, only two HTTP Verbs (or methods) are currently 
 supported, ``GET`` and ``POST``:
 
-+-----------+--------+------------------------------------+
-| Http Verb | CRUD   |                                    |
-+===========+========+====================================+
-| GET       | Read   | Retrieve a list or a single object |
-+-----------+--------+------------------------------------+
-| POST      | Create | Create a new auth token            |
-+-----------+--------+------------------------------------+
++-----------+--------+----------------------------------------------------+
+| Http Verb | CRUD   |                                                    |
++===========+========+====================================================+
+| GET       | Read   | Retrieve a list of objects or a single object      |
++-----------+--------+----------------------------------------------------+
+| POST      | Create | Create a new auth token / add a payload to a query |
++-----------+--------+----------------------------------------------------+
 
-More precisely, SMARTER data through the SMARTER-backend are read-only and only 
-``GET`` method are allowed in order to retrieve any type of SMARTER
-data object from the API. ``POST`` method are required only during the authentication
-step, in order to generate a JWT token required to access to the SMARTER information
+More precisely, SMARTER data through the SMARTER-backend are read-only and 
+``GET`` and ``POST`` method are allowed in order to retrieve any type of SMARTER
+data object from the API. ``POST`` method are required during the authentication
+step, and to submit a complex queries by providing a payload to certain endpoints.
 
 Status codes
 ------------
