@@ -20,7 +20,7 @@ class SampleSheepTest(AuthMixin, BaseCase):
         'sampleSheep'
     ]
 
-    test_endpoint = '/api/samples/sheep/608ab4b191a0d06725bc0938'
+    test_endpoint = '/smarter-api/samples/sheep/608ab4b191a0d06725bc0938'
 
     @classmethod
     def setUpClass(cls):
@@ -42,7 +42,7 @@ class SampleSheepTest(AuthMixin, BaseCase):
 
     def test_get_sample_invalid(self):
         response = self.client.get(
-            "/api/samples/sheep/foo",
+            "/smarter-api/samples/sheep/foo",
             headers=self.headers
         )
 
@@ -54,7 +54,7 @@ class SampleSheepTest(AuthMixin, BaseCase):
 
     def test_get_sample_not_found(self):
         response = self.client.get(
-            "/api/samples/sheep/604f75a61a08c53cebd09b58",
+            "/smarter-api/samples/sheep/604f75a61a08c53cebd09b58",
             headers=self.headers
         )
 
@@ -71,7 +71,7 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         'sampleSheep'
     ]
 
-    test_endpoint = '/api/samples/sheep'
+    test_endpoint = '/smarter-api/samples/sheep'
 
     @classmethod
     def setUpClass(cls):
@@ -109,6 +109,22 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_samples_by_multiple_breeds(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?breed=Texel&"
+                "breed=Merino"),
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
     def test_get_samples_by_breed_code(self):
         response = self.client.get(
             self.test_endpoint,
@@ -124,11 +140,43 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_samples_by_multiple_breed_codes(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?breed_code=TEX&"
+                "breed_code=MER"),
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
     def test_get_samples_by_chip_name(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
             query_string={'chip_name': 'IlluminaOvineSNP50'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_multiple_chip_names(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?chip_name=IlluminaOvineSNP50&"
+                "chip_name=AffymetrixAxiomOviCan"),
+            headers=self.headers
         )
 
         test = response.json
@@ -144,6 +192,22 @@ class SampleSheepListTest(AuthMixin, BaseCase):
             self.test_endpoint,
             headers=self.headers,
             query_string={'country': 'Italy'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_multiple_countries(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?country=Italy&"
+                "country=France"),
+            headers=self.headers
         )
 
         test = response.json
@@ -193,24 +257,26 @@ class SampleSheepListTest(AuthMixin, BaseCase):
 
         test = response.json
 
-        self.assertEqual(test['total'], 2)
+        self.assertEqual(test['total'], 1)
         self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 2)
-        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
 
-        # this query doesn't return results
+    def test_get_samples_by_multiple_dataset_ids(self):
         response = self.client.get(
-            self.test_endpoint,
-            headers=self.headers,
-            query_string={'dataset': '604f75a61a08c53cebd09b5b'}
+            self.test_endpoint + (
+                "?dataset=604f75a61a08c53cebd09b58&"
+                "dataset=604f75a61a08c53cebd09b5b"),
+            headers=self.headers
         )
 
         test = response.json
 
-        self.assertEqual(test['total'], 0)
+        self.assertEqual(test['total'], 2)
         self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 0)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
         self.assertEqual(response.status_code, 200)
 
     def test_get_samples_by_locations__exists(self):
@@ -241,6 +307,115 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertEqual(len(test['items']), 0)
         self.assertEqual(response.status_code, 200)
 
+    def test_get_samples_by_type(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'type': 'background'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_pagination(self):
+        payload = {'page': 1, 'size': 1}
+
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string=payload,
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], self.data[:1])
+        self.assertIsNone(test['prev'])
+        self.assertIsNotNone(test['next'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_sort_by_smarter_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'smarter_id',
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[-1])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_sort_by_smarter_id_desc(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'smarter_id',
+                'order': 'desc'
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[0])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])
+
+    def test_get_samples_geo_within_polygon(self):
+        response = self.client.post(
+            self.test_endpoint,
+            headers=self.headers,
+            json={
+                "geo_within_polygon": {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [9, 45],
+                            [9, 46],
+                            [10, 46],
+                            [10, 45],
+                            [9, 45]
+                        ]]
+                    },
+                    "properties": {
+                        "name": "A sample polygon"
+                    }
+                }
+            }
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(test['total'], 0)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 0)
+        self.assertListEqual(test['items'], [])
+
 
 class SampleGoatTest(AuthMixin, BaseCase):
     fixtures = [
@@ -248,7 +423,7 @@ class SampleGoatTest(AuthMixin, BaseCase):
         'sampleGoat'
     ]
 
-    test_endpoint = '/api/samples/goat/6092940199215a3814492195'
+    test_endpoint = '/smarter-api/samples/goat/6092940199215a3814492195'
 
     @classmethod
     def setUpClass(cls):
@@ -270,7 +445,7 @@ class SampleGoatTest(AuthMixin, BaseCase):
 
     def test_get_sample_invalid(self):
         response = self.client.get(
-            "/api/samples/goat/foo",
+            "/smarter-api/samples/goat/foo",
             headers=self.headers
         )
 
@@ -282,7 +457,7 @@ class SampleGoatTest(AuthMixin, BaseCase):
 
     def test_get_sample_not_found(self):
         response = self.client.get(
-            "/api/samples/goat/604f75a61a08c53cebd09b58",
+            "/smarter-api/samples/goat/604f75a61a08c53cebd09b58",
             headers=self.headers
         )
 
@@ -299,7 +474,7 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         'sampleGoat'
     ]
 
-    test_endpoint = '/api/samples/goat'
+    test_endpoint = '/smarter-api/samples/goat'
 
     @classmethod
     def setUpClass(cls):
@@ -470,3 +645,132 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         self.assertEqual(len(test['items']), 2)
         self.assertListEqual(test['items'], self.data)
         self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_type(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'type': 'foreground'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_pagination(self):
+        payload = {'page': 1, 'size': 1}
+
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string=payload,
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], self.data[:1])
+        self.assertIsNone(test['prev'])
+        self.assertIsNotNone(test['next'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_sort_by_breed(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'breed',
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[-1])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_sort_by_breed_desc(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'breed',
+                'order': 'desc'
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[0])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])
+
+    def test_get_samples_geo_within_polygon(self):
+        response = self.client.post(
+            self.test_endpoint,
+            headers=self.headers,
+            json={
+                "geo_within_polygon": {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [9, 45],
+                            [9, 46],
+                            [10, 46],
+                            [10, 45],
+                            [9, 45]
+                        ]]
+                    },
+                    "properties": {
+                        "name": "A sample polygon"
+                    }
+                }
+            }
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+
+    def test_get_samples_geo_within_sphere(self):
+        response = self.client.post(
+            self.test_endpoint,
+            headers=self.headers,
+            json={
+                "geo_within_sphere": [
+                    [9.18, 45.46],
+                    10  # Km
+                ]
+            }
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])

@@ -10,7 +10,7 @@ This module is an attempt to define class based views like the django ones
 
 from mongoengine.errors import ValidationError, DoesNotExist
 from flask import request, url_for, current_app
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from flask_mongoengine import QuerySet
 from werkzeug.urls import url_encode
 
@@ -77,6 +77,55 @@ class ListView(Resource):
     model = None
     object_list = None
     endpoint = None
+    order_by = None
+    page = 1
+    size = 10
+
+    parser = reqparse.RequestParser()
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        # add sort arguments
+        self.parser.add_argument('sort', help="Sort results by this key")
+        self.parser.add_argument('order', help="Sort key order")
+
+        # add pagination arguments
+        self.parser.add_argument('page', type=int, help="Results page number")
+        self.parser.add_argument(
+            'size',
+            type=int,
+            help="Number of results per page"
+        )
+
+    def parse_args(self) -> list:
+        # reading request parameters
+        kwargs = self.parser.parse_args(strict=True)
+        args = []
+
+        # filter args
+        kwargs = {key: val for key, val in kwargs.items() if val}
+
+        # deal with ordering stuff
+        self.order_by = None
+
+        if 'sort' in kwargs:
+            self.order_by = kwargs.pop('sort')
+
+        if 'order' in kwargs:
+            order = kwargs.pop('order')
+
+            if self.order_by and order == 'desc':
+                self.order_by = f"-{self.order_by}"
+
+        # remove pagination arguments
+        if 'page' in kwargs:
+            self.page = kwargs.pop('page')
+
+        if 'size' in kwargs:
+            self.size = kwargs.pop('size')
+
+        return args, kwargs
 
     def get_queryset(self):
         if self.queryset:
@@ -97,7 +146,8 @@ class ListView(Resource):
                 }
             )
 
-        # HINT: add ordering code?
+        if self.order_by:
+            queryset = queryset.order_by(self.order_by)
 
         return queryset
 
@@ -106,25 +156,22 @@ class ListView(Resource):
 
         current_app.logger.debug(f"Got {qs}")
 
-        page = int(request.args.get('page', 1))
-        size = int(request.args.get('size', 10))
+        # get a shallow copy of an immutable dict
+        params = request.args.copy()
 
-        # convert an immutable dict to a dictionary object
-        params = request.args.to_dict()
-
-        paginated = qs.paginate(page=page, per_page=size)
+        paginated = qs.paginate(page=self.page, per_page=self.size)
 
         next_ = None
         prev = None
 
         if paginated.has_next:
-            params['size'] = size
-            params['page'] = page + 1
+            params['size'] = self.size
+            params['page'] = self.page + 1
             next_ = url_for(self.endpoint) + '?' + url_encode(params)
 
         if paginated.has_prev:
-            params['size'] = size
-            params['page'] = page - 1
+            params['size'] = self.size
+            params['page'] = self.page - 1
             prev = url_for(self.endpoint) + '?' + url_encode(params)
 
         return {

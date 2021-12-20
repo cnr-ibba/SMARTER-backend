@@ -8,19 +8,23 @@ Created on Fri May 21 17:50:23 2021
 
 import os
 
+from bson import ObjectId
 from logging.config import dictConfig
 
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask_restful import Api
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+from flask_mongoengine.json import MongoEngineJSONEncoder
 from flask_cors import CORS
+from flasgger import Swagger
 
 from database.db import initialize_db, DB_ALIAS
 from resources.errors import errors
 from resources.routes import initialize_routes
 from commands import usersbp
 
+__version__ = "0.2.0.dev0"
 
 # https://flask.palletsprojects.com/en/2.0.x/logging/#basic-configuration
 dictConfig({
@@ -38,6 +42,15 @@ dictConfig({
         'handlers': ['wsgi']
     }
 })
+
+
+class CustomJSONEncoder(MongoEngineJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, ObjectId):
+            return {
+                "$oid": str(obj)
+            }
+        return MongoEngineJSONEncoder.default(self, obj)
 
 
 # https://stackoverflow.com/a/56474420/4385116
@@ -61,6 +74,42 @@ def create_app(config={}):
     api = Api(app, errors=errors)
     Bcrypt(app)
     JWTManager(app)
+
+    # deal with ObjectId in json responses
+    app.json_encoder = CustomJSONEncoder
+
+    # workaround to make flasgger deal with jwt-token headers
+    app.config["JWT_AUTH_URL_RULE"] = True
+
+    # Swagger stuff
+    swagger_template = {
+        "swagger": "2.0",
+        "info": {
+            "title": "SMARTER-backend API",
+            "description": "REST API for SMARTER data",
+            "termsOfService": None,
+            "version": __version__
+        },
+        "basePath": "/smarter-api/",  # base bash for blueprint registration
+    }
+
+    swagger_config = {
+        "headers": [],
+        "specs": [
+            {
+                "endpoint": '/smarter-api/apispec_1',
+                "route": '/smarter-api/apispec_1.json',
+                "rule_filter": lambda rule: True,  # all in
+                "model_filter": lambda tag: True,  # all in
+            }
+        ],
+        "static_url_path": "/smarter-api/flasgger_static",
+        # "static_folder": "static",  # must be set by user
+        "swagger_ui": True,
+        "specs_route": "/smarter-api/docs/"
+    }
+
+    Swagger(app, template=swagger_template, config=swagger_config)
 
     app.logger.debug("App initialized")
 
@@ -96,6 +145,11 @@ def create_app(config={}):
     initialize_routes(api)
 
     app.logger.debug("Routes initialized")
+
+    # add a redirect for the index page
+    @app.route('/smarter-api/')
+    def index():
+        return redirect(url_for('flasgger.apidocs'))
 
     return app
 

@@ -13,7 +13,8 @@
       "$oid": "604f75a61a08c53cebd09b58"
     },
     "chip_name": "IlluminaOvineSNP50",
-    "alias": "sheep-one"
+    "alias": "sheep-one",
+    "type": "background"
   },
   {
     "_id": {
@@ -21,13 +22,14 @@
     },
     "original_id": "sheep2",
     "smarter_id": "ITOA-MER-000000002",
-    "country": "Italy",
+    "country": "France",
     "species": "Sheep",
     "breed": "Merino",
     "breed_code": "MER",
     "dataset_id": {
-      "$oid": "604f75a61a08c53cebd09b58"
+      "$oid": "604f75a61a08c53cebd09b5b"
     },
-    "chip_name": "IlluminaOvineSNP50"
+    "chip_name": "AffymetrixAxiomOviCan",
+    "type": "foreground"
   }
 ]

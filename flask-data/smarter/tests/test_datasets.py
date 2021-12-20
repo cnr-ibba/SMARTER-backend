@@ -22,7 +22,7 @@ class TestGetDatasetList(AuthMixin, BaseCase):
         'dataset'
     ]
 
-    test_endpoint = '/api/datasets'
+    test_endpoint = '/smarter-api/datasets'
 
     @classmethod
     def setUpClass(cls):
@@ -138,6 +138,20 @@ class TestGetDatasetList(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_datasets_by_multiple_types(self):
+        response = self.client.get(
+            self.test_endpoint + "?type=genotypes&type=background",
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
     def test_get_datasets_by_search(self):
         response = self.client.get(
             self.test_endpoint,
@@ -184,6 +198,50 @@ class TestGetDatasetList(AuthMixin, BaseCase):
         self.assertEqual(test, self.data[0])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_datasets_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])
+
+    def test_get_datasets_by_chip_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'chip_name': 'IlluminaOvineSNP50'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_datasets_by_multiple_chip_names(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?chip_name=IlluminaOvineSNP50&"
+                "chip_name=AffymetrixAxiomOviCan"),
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
 
 class TestGetDataset(AuthMixin, BaseCase):
     fixtures = [
@@ -191,7 +249,7 @@ class TestGetDataset(AuthMixin, BaseCase):
         'dataset'
     ]
 
-    test_endpoint = '/api/datasets/604f75a61a08c53cebd09b58'
+    test_endpoint = '/smarter-api/datasets/604f75a61a08c53cebd09b58'
 
     @classmethod
     def setUpClass(cls):
@@ -213,7 +271,7 @@ class TestGetDataset(AuthMixin, BaseCase):
 
     def test_get_breed_invalid(self):
         response = self.client.get(
-            "/api/datasets/foo",
+            "/smarter-api/datasets/foo",
             headers=self.headers
         )
 
@@ -225,7 +283,7 @@ class TestGetDataset(AuthMixin, BaseCase):
 
     def test_get_breed_not_found(self):
         response = self.client.get(
-            "/api/datasets/608ab46e1031c98150016dbd",
+            "/smarter-api/datasets/608ab46e1031c98150016dbd",
             headers=self.headers
         )
 

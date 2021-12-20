@@ -103,7 +103,7 @@ class BaseCase(unittest.TestCase):
 
 class AuthMixin():
     test_endpoint = None
-    auth_endpoint = "/api/auth/login"
+    auth_endpoint = "/smarter-api/auth/login"
 
     @classmethod
     def setUpClass(cls):

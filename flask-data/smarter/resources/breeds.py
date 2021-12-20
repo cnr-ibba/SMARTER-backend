@@ -27,29 +27,10 @@ class BreedListApi(ListView):
     parser.add_argument('code', help="Breed code name")
     parser.add_argument(
         'search', help="Search breed name and aliases by pattern")
-    parser.add_argument('sort', help="Sort results by this key")
-    parser.add_argument('order', help="Sort key order")
 
     def get_queryset(self):
-        # reading request parameters
-        kwargs = self.parser.parse_args()
-        args = []
-
-        # filter args
-        kwargs = {key: val for key, val in kwargs.items() if val}
-
-        # deal with ordering stuff
-        # HINT should this be placed in a mixin?
-        sort = None
-
-        if 'sort' in kwargs:
-            sort = kwargs.pop('sort')
-
-        if 'order' in kwargs:
-            order = kwargs.pop('order')
-
-            if sort and order == 'desc':
-                sort = f"-{sort}"
+        # parse request arguments and deal with generic arguments
+        args, kwargs = self.parse_args()
 
         # deal with search fields
         if 'search' in kwargs:
@@ -69,13 +50,45 @@ class BreedListApi(ListView):
         else:
             queryset = self.model.objects.all()
 
-        if sort:
-            queryset = queryset.order_by(sort)
+        if self.order_by:
+            queryset = queryset.order_by(self.order_by)
 
         return queryset
 
     @jwt_required()
     def get(self):
+        """
+        Get information on breeds
+        ---
+        tags:
+          - Breeds
+        description: Query SMARTER data about breeds
+        parameters:
+          - name: species
+            in: query
+            type: string
+            enum: ['Sheep', 'Goat']
+            description: The desidered species
+          - name: name
+            in: query
+            type: string
+            description: Breed name
+          - name: code
+            in: query
+            type: string
+            description: Breed code
+          - name: search
+            in: query
+            type: string
+            description: Search breed using this pattern
+        responses:
+            '200':
+              description: Breeds to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
         self.object_list = self.get_queryset()
         data = self.get_context_data()
         return jsonify(**data)
@@ -86,5 +99,25 @@ class BreedApi(ModelView):
 
     @jwt_required()
     def get(self, id_):
+        """
+        Fetch a single breed
+        ---
+        tags:
+          - Breeds
+        description: Fetch a single breed using ObjectID
+        parameters:
+          - in: path
+            name: id_
+            type: string
+            description: The breed ObjectID
+            required: true
+        responses:
+            '200':
+              description: The desidered breed
+              content:
+                application/json:
+                  schema:
+                    type: object
+        """
         breed = self.get_object(id_)
         return jsonify(breed)

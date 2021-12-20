@@ -50,7 +50,7 @@ class VariantSheepTest(DateMixin, AuthMixin, BaseCase):
     ]
 
     data_file = f"{FIXTURES_DIR}/variantSheep.json"
-    test_endpoint = '/api/variants/sheep/60ca279a8025a403796f644a'
+    test_endpoint = '/smarter-api/variants/sheep/60ca279a8025a403796f644a'
 
     def test_get_variant(self):
         response = self.client.get(
@@ -66,7 +66,7 @@ class VariantSheepTest(DateMixin, AuthMixin, BaseCase):
 
     def test_get_variant_invalid(self):
         response = self.client.get(
-            "/api/variants/sheep/foo",
+            "/smarter-api/variants/sheep/foo",
             headers=self.headers
         )
 
@@ -78,7 +78,7 @@ class VariantSheepTest(DateMixin, AuthMixin, BaseCase):
 
     def test_get_variant_not_found(self):
         response = self.client.get(
-            "/api/variants/sheep/604f75a61a08c53cebd09b58",
+            "/smarter-api/variants/sheep/604f75a61a08c53cebd09b58",
             headers=self.headers
         )
 
@@ -89,15 +89,7 @@ class VariantSheepTest(DateMixin, AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 404)
 
 
-class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
-    fixtures = [
-        'user',
-        'variantSheep'
-    ]
-
-    data_file = f"{FIXTURES_DIR}/variantSheep.json"
-    test_endpoint = '/api/variants/sheep'
-
+class VariantSheepListMixin(DateMixin, AuthMixin):
     def test_get_variants(self):
         response = self.client.get(
             self.test_endpoint,
@@ -192,8 +184,6 @@ class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
             self.test_endpoint,
             headers=self.headers,
             query_string={
-                'imported_from': 'manifest',
-                'version': 'Oar_v3.1',
                 'region': '23:26298007-26298027'
             }
         )
@@ -206,32 +196,11 @@ class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
 
-        # quering for the same position for a different assembly doesn't
-        # return anything
-        response = self.client.get(
-            self.test_endpoint,
-            headers=self.headers,
-            query_string={
-                'imported_from': 'manifest',
-                'version': 'Oar_v4.0',
-                'region': '23:26298007-26298027'
-            }
-        )
-
-        test = response.json
-
-        self.assertEqual(test['total'], 0)
-        self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 0)
-        self.assertEqual(response.status_code, 200)
-
     def test_get_variant_by_region_quote(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
             query_string={
-                'imported_from': 'manifest',
-                'version': 'Oar_v3.1',
                 'region': '23%3A26298007-26298027'
             }
         )
@@ -244,6 +213,166 @@ class VariantSheepListTest(DateMixin, AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_variant_pagination(self):
+        payload = {'page': 1, 'size': 1}
+
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string=payload,
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], self.data[:1])
+        self.assertIsNone(test['prev'])
+        self.assertIsNotNone(test['next'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_sort_by_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'name',
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[0])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_sort_by_name_desc(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'name',
+                'order': 'desc'
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[-1])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])
+
+    def test_get_samples_by_multiple_chips(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?chip_name=IlluminaOvineSNP50&chip_name=IlluminaOvineHDSNP"),
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+
+class VariantSheepOAR3Test(VariantSheepListMixin, BaseCase):
+    fixtures = [
+        'user',
+        'smarterInfo',
+        'variantSheep'
+    ]
+
+    data_file = f"{FIXTURES_DIR}/variantSheep.json"
+    test_endpoint = '/smarter-api/variants/sheep/OAR3'
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # need to drop unwanted information from location
+        OAR3 = {
+            'version': 'Oar_v3.1',
+            'imported_from': 'SNPchiMp v.3'
+        }
+
+        for i, variant in enumerate(cls.data):
+            for j, location in enumerate(variant['locations']):
+                if (location['version'] == OAR3['version'] and
+                        location['imported_from'] == OAR3['imported_from']):
+                    break
+
+            variant['locations'] = [location]
+
+            # drop unwanted keys
+            del variant['sender']
+
+            cls.data[i] = variant
+
+
+class VariantSheepOAR4Test(DateMixin, AuthMixin, BaseCase):
+    fixtures = [
+        'user',
+        'smarterInfo',
+        'variantSheep'
+    ]
+
+    data_file = f"{FIXTURES_DIR}/variantSheep.json"
+    test_endpoint = '/smarter-api/variants/sheep/OAR4'
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # need to drop unwanted information from location
+        OAR4 = {
+            'version': 'Oar_v4.0',
+            'imported_from': 'SNPchiMp v.3'
+        }
+
+        for i, variant in enumerate(cls.data):
+            for j, location in enumerate(variant['locations']):
+                if (location['version'] == OAR4['version'] and
+                        location['imported_from'] == OAR4['imported_from']):
+                    break
+
+            variant['locations'] = [location]
+
+            # drop unwanted keys
+            del variant['sender']
+
+            cls.data[i] = variant
+
+    def test_get_variants(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data)
+        self.assertEqual(response.status_code, 200)
+
 
 class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
     fixtures = [
@@ -252,7 +381,7 @@ class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
     ]
 
     data_file = f"{FIXTURES_DIR}/variantGoat.json"
-    test_endpoint = '/api/variants/goat/60ca4dabd8f09cfd319da0f8'
+    test_endpoint = '/smarter-api/variants/goat/60ca4dabd8f09cfd319da0f8'
 
     def test_get_variant(self):
         response = self.client.get(
@@ -268,7 +397,7 @@ class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
 
     def test_get_variant_invalid(self):
         response = self.client.get(
-            "/api/variants/goat/foo",
+            "/smarter-api/variants/goat/foo",
             headers=self.headers
         )
 
@@ -280,7 +409,7 @@ class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
 
     def test_get_variant_not_found(self):
         response = self.client.get(
-            "/api/variants/goat/604f75a61a08c53cebd09b58",
+            "/smarter-api/variants/goat/604f75a61a08c53cebd09b58",
             headers=self.headers
         )
 
@@ -291,15 +420,7 @@ class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 404)
 
 
-class VariantGoatListTest(DateMixin, AuthMixin, BaseCase):
-    fixtures = [
-        'user',
-        'variantGoat'
-    ]
-
-    data_file = f"{FIXTURES_DIR}/variantGoat.json"
-    test_endpoint = '/api/variants/goat'
-
+class VariantGoatListMixin(DateMixin, AuthMixin):
     def test_get_variants(self):
         response = self.client.get(
             self.test_endpoint,
@@ -349,8 +470,6 @@ class VariantGoatListTest(DateMixin, AuthMixin, BaseCase):
             self.test_endpoint,
             headers=self.headers,
             query_string={
-                'imported_from': 'manifest',
-                'version': 'ARS1',
                 'region': '1:10408754-10408774'
             }
         )
@@ -361,4 +480,149 @@ class VariantGoatListTest(DateMixin, AuthMixin, BaseCase):
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 1)
         self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_pagination(self):
+        payload = {'page': 1, 'size': 1}
+
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string=payload,
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], self.data[:1])
+        self.assertIsNone(test['prev'])
+        self.assertIsNotNone(test['next'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_sort_by_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'name',
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[0])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_sort_by_name_desc(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'sort': 'name',
+                'order': 'desc'
+            }
+        )
+
+        # get first result
+        test = response.json['items'][0]
+
+        self.assertEqual(test, self.data[-1])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])
+
+
+class VariantGoatARS1Test(VariantGoatListMixin, BaseCase):
+    fixtures = [
+        'user',
+        'smarterInfo',
+        'variantGoat'
+    ]
+
+    data_file = f"{FIXTURES_DIR}/variantGoat.json"
+    test_endpoint = '/smarter-api/variants/goat/ARS1'
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # need to drop unwanted information from location
+        ARS1 = {
+            'version': 'ARS1',
+            'imported_from': 'manifest'
+        }
+
+        for i, variant in enumerate(cls.data):
+            for j, location in enumerate(variant['locations']):
+                if (location['version'] == ARS1['version'] and
+                        location['imported_from'] == ARS1['imported_from']):
+                    break
+
+            variant['locations'] = [location]
+
+            # drop unwanted keys
+            del variant['sender']
+
+            cls.data[i] = variant
+
+
+class VariantGoatCHI1Test(DateMixin, AuthMixin, BaseCase):
+    fixtures = [
+        'user',
+        'smarterInfo',
+        'variantGoat'
+    ]
+
+    data_file = f"{FIXTURES_DIR}/variantGoat.json"
+    test_endpoint = '/smarter-api/variants/goat/CHI1'
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # need to drop unwanted information from location
+        CHI1 = {
+            'version': 'CHI1',
+            'imported_from': 'manifest'
+        }
+
+        for i, variant in enumerate(cls.data):
+            for j, location in enumerate(variant['locations']):
+                if (location['version'] == CHI1['version'] and
+                        location['imported_from'] == CHI1['imported_from']):
+                    break
+
+            variant['locations'] = [location]
+
+            # drop unwanted keys
+            del variant['sender']
+
+            cls.data[i] = variant
+
+    def test_get_variants(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 0)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 0)
+        self.assertListEqual(test['items'], [])
         self.assertEqual(response.status_code, 200)

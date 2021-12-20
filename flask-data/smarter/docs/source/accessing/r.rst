@@ -63,10 +63,10 @@ credentials with a ``POST`` HTTP method:
 
    token <- get_smarter_token()
 
-``base_url`` we will set this variable for simplicity in order to make all our 
-request to the same server. Next, we define the ``get_smarter_token`` function
-which require user and password as parameters. The ``readline`` and ``getPass::getPass``
-default values are not strictly required, we use them in order to not write our 
+``base_url`` is defined for simplicity in order to make all our request to the
+same server. The ``get_smarter_token`` function requires *user* and *password* 
+as parameters. The ``readline`` and ``getPass::getPass`` functions used as
+default values are not strictly required, we use them in order to not write
 credentials in our code: the function will prompt for those values if not provided 
 during function call. The token string is parsed and written into ``token`` variable:
 This is the value we need to add to each requests *header*
@@ -159,8 +159,27 @@ Read data with R
 
 Next we can try to read data from our API by defining custom functions around 
 the desidered endpoint. This function will call the functions previously defined
-and will return all the results in a *dataframe*. For example, to deal with the 
-Breed endpoint: 
+and will return all the results in a *dataframe*. Here's a sample function to 
+deal with datasets objects by querying the *datasets* endpoint:
+
+.. code-block:: r
+
+   get_smarter_datasets <- function(token, query=list()) {
+      url <-
+         modify_url(base_url, path = "/smarter-api/datasets")
+
+      data <- get_smarter_data(url, token, query)
+
+      # returning only the results dataframe
+      data$results
+   }
+
+   all_datasets <- get_smarter_datasets(token)
+
+By calling the defined ``get_smarter_datasets`` function and providing a valid
+token as parameter you will retrieve all datasets and you will store them in 
+the ``all_datasets`` dataframe. Similarly, to deal with the Breed endpoint you could 
+define the ``get_smarter_breeds`` function: 
 
 .. code-block:: r
 
@@ -178,11 +197,30 @@ Breed endpoint:
    goat_breeds <-
       get_smarter_breeds(token, query = list(species = "Goat"))
 
-the ``get_smarter_breeds`` will be a generic function able to return all the SMARTER 
-breeds. If you want to select only the *Goat* breeds, we can specify ``species = "Goat"``
-in the ``query`` parameters. If you need to filter using another parameters, for 
-example for searcing the *land* term as in the :ref:`Query parameters` example,
-you will call the same function by passing a new parameter:
+``get_smarter_breeds`` and ``get_smarter_datasets`` functions can be used to return 
+all the SMARTER datasets and breeds. However you can pass additional parameters to 
+the endpoint using the ``query`` parameter (which need to be a ``list``). For 
+example, you could retrieve all the *genotypes* datasets using the ``type`` parameter:
+
+.. code-block:: r
+
+   genotypes_datasets <- get_smarter_datasets(token, query = list(type="genotypes"))
+
+Since query accepts ``list``, you can specify the same parameter multiple times 
+(if the endpoints supports this type of query, see `api docs <https://webserver.ibba.cnr.it/smarter-api/docs/>`_ 
+to get more information). For example, if you need only the *foreground genotypes*, 
+you can select dataset like this:
+
+.. code-block:: r
+
+   foreground_genotypes_datasets <- get_smarter_datasets(
+      token, query = list(type="genotypes", type="foreground"))
+
+You can add other parameters to refine your query, for example
+if you want to select only the *Goat* breeds, you can specify 
+``species = "Goat"`` in the ``query`` parameter. If you need also to search 
+for the *land* term in the *breed* name, you will call the same function 
+by adding a new parameter:
 
 .. code-block:: r 
 
@@ -259,9 +297,10 @@ variants. In the following example we will select the goat variants on chromosom
    get_smarter_variations <- function(token, species, query = list()) {
       # mind that species is lowercase in endpoint url
       species <- tolower(species)
+      assembly <- toupper(assembly)
 
       url <-
-         modify_url(base_url, path = sprintf("/smarter-api/variants/%s", species))
+         modify_url(base_url, path = sprintf("/smarter-api/variants/%s/%s", species, assembly))
 
       data <- get_smarter_data(url, token, query)
 
@@ -272,19 +311,18 @@ variants. In the following example we will select the goat variants on chromosom
    selected_goat_variations <- get_smarter_variations(
       token,
       species = "Goat",
+      assembly = "ARS1",
       query = list(
-         size = 100, 
-         region = "1:1-1000000", 
-         version = "ARS1", 
-         imported_from = "manifest"
+         size = 100,
+         region = "1:1-1000000"
       )
    )
 
 .. hint:: 
 
-   We are planning to simplify the variants response by returning only the coordinates
-   used within SMARTER. We are planning also to return a SNP list of the selected 
-   SNPs only, in order to be used when subsetting a genotype file using plink
+   We are planning to simplify the variants response by returning a SNP list of
+   the selected SNPs only, in order to be used when subsetting a genotype file 
+   using plink
 
 .. warning:: 
 
