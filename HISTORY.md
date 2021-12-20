@@ -7,15 +7,15 @@ TODO
 
 * configure logging [#7](https://github.com/cnr-ibba/SMARTER-backend/issues/7)
 
-0.2.0.dev0
-----------
+0.2.0 (2021-12-20)
+------------------
 
 * support for GIS search in sample endpoints [#13](https://github.com/cnr-ibba/SMARTER-backend/issues/13)
-  * document GeoJSON endpoint and GIS parameters using swagger
-  * returning all samples as GeoJSON FeatureCollection
+  * document *GeoJSON* endpoint and GIS parameters using swagger
+  * returning all samples as *GeoJSON* FeatureCollection
   * select samples within a sphere
   * select samples inside a polygon
-  * model locations with MultiPointField
+  * model locations with `MultiPointField`
 * configure MongoDB memory usage [#12](https://github.com/cnr-ibba/SMARTER-backend/issues/12)
 * move base location from `/api/` to `/smarter-api/`
 * document API with `flasgger` [#6](https://github.com/cnr-ibba/SMARTER-backend/issues/6)
