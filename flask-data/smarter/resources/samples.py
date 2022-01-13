@@ -186,7 +186,7 @@ class SampleSheepListApi(SampleListMixin, ListView):
             in: query
             type: string
             description: The smarter sample name
-          - name: dataset_id
+          - name: dataset
             in: query
             type: array
             items:
@@ -337,7 +337,7 @@ class SampleGoatListApi(SampleListMixin, ListView):
             in: query
             type: string
             description: The smarter sample name
-          - name: dataset_id
+          - name: dataset
             in: query
             type: array
             items:

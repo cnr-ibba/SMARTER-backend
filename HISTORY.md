@@ -7,6 +7,11 @@ TODO
 
 * configure logging [#7](https://github.com/cnr-ibba/SMARTER-backend/issues/7)
 
+0.2.1.dev0
+----------
+
+* Fix `dataset` parameter in swagger Samples endpoint
+
 0.2.0 (2021-12-20)
 ------------------
 
