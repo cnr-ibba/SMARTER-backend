@@ -141,7 +141,7 @@ class VariantSheepOAR3Api(VariantListMixin, ListView):
     @jwt_required()
     def get(self):
         """
-        Get get SNPs on Sheep OAR3 Assembly
+        Get SNPs on Sheep OAR3 Assembly
         ---
         tags:
           - Variants
@@ -195,7 +195,7 @@ class VariantSheepOAR4Api(VariantListMixin, ListView):
     @jwt_required()
     def get(self):
         """
-        Get get SNPs on Sheep OAR4 Assembly
+        Get SNPs on Sheep OAR4 Assembly
         ---
         tags:
           - Variants
@@ -278,7 +278,7 @@ class VariantGoatCHI1Api(VariantListMixin, ListView):
     @jwt_required()
     def get(self):
         """
-        Get get SNPs on Goat CHI1 Assembly
+        Get SNPs on Goat CHI1 Assembly
         ---
         tags:
           - Variants
@@ -332,7 +332,7 @@ class VariantGoatARS1Api(VariantListMixin, ListView):
     @jwt_required()
     def get(self):
         """
-        Get get SNPs on Goat ARS1 Assembly
+        Get SNPs on Goat ARS1 Assembly
         ---
         tags:
           - Variants
