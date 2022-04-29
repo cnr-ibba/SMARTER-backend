@@ -95,3 +95,27 @@ uwsgitop /tmp/smarter-stats.sock
 ```
 
 Type `q` to exit from monitoring process
+
+## Test application
+
+Some useful commands to test the application:
+
+```bash
+# open the flask shell
+docker-compose run --rm uwsgi flask shell
+
+# test and exit when a issue is found. Call first the failed test on successive calls
+docker-compose run --rm uwsgi pytest --verbosity=2 --exitfirst --failed-first --showlocals
+
+# test with coverage
+docker-compose run --rm uwsgi coverage run --source='.' -m py.test
+
+# generate coverage report locally
+docker-compose run --rm uwsgi coverage html
+
+# check code with flake8
+docker-compose run --rm uwsgi flake8
+
+# test like CI
+docker-compose run --no-deps --rm uwsgi sh -c 'coverage run --source='.' -m py.test && flake8'
+```
