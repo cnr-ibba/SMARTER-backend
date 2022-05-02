@@ -151,6 +151,22 @@ class TestGetBreedList(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_breeds_by_multiple_names(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?name=Texel&"
+                "name=Merino"),
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data[:2])
+        self.assertEqual(response.status_code, 200)
+
     def test_get_breed_by_breed_code(self):
         response = self.client.get(
             self.test_endpoint,
@@ -164,6 +180,22 @@ class TestGetBreedList(AuthMixin, BaseCase):
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 1)
         self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_breeds_by_multiple_codes(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?code=TEX&"
+                "code=MER"),
+            headers=self.headers
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 2)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 2)
+        self.assertListEqual(test['items'], self.data[:2])
         self.assertEqual(response.status_code, 200)
 
     def test_get_breed_by_species(self):

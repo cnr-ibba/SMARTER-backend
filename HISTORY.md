@@ -11,6 +11,8 @@ TODO
 ----------
 
 * Fix `dataset` parameter in swagger Samples endpoint
+* Add country endpoint [#33](https://github.com/cnr-ibba/SMARTER-backend/issues/33)
+* Support multiple parameters in Breeds endpoint [29](https://github.com/cnr-ibba/SMARTER-backend/issues/29)
 
 0.2.0 (2021-12-20)
 ------------------

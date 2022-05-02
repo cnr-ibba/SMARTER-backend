@@ -23,8 +23,8 @@ class BreedListApi(ListView):
 
     parser = reqparse.RequestParser()
     parser.add_argument('species', help="Species name")
-    parser.add_argument('name', help="Breed name")
-    parser.add_argument('code', help="Breed code name")
+    parser.add_argument('name', help="Breed name", action='append')
+    parser.add_argument('code', help="Breed code name", action='append')
     parser.add_argument(
         'search', help="Search breed name and aliases by pattern")
 
@@ -41,6 +41,14 @@ class BreedListApi(ListView):
             # remove name from args if exists (i'm searching against it)
             if 'name' in kwargs:
                 del(kwargs['name'])
+
+        # mind to list arguments
+        for key in ['name', 'code']:
+            if key in kwargs:
+                value = kwargs.pop(key)
+
+                # add a new key to kwargs dictionary
+                kwargs[f'{key}__in'] = value
 
         current_app.logger.info(f"{args}, {kwargs}")
 
@@ -71,11 +79,17 @@ class BreedListApi(ListView):
             description: The desidered species
           - name: name
             in: query
-            type: string
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
             description: Breed name
           - name: code
             in: query
-            type: string
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
             description: Breed code
           - name: search
             in: query
