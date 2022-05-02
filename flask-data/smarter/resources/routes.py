@@ -9,6 +9,7 @@ Created on Mon May 24 11:22:59 2021
 from .auth import LoginApi
 from .breeds import BreedListApi, BreedApi
 from .chips import SupportedChipApi, SupportedChipListApi
+from .countries import CountryListApi, CountryApi
 from .datasets import DatasetListApi, DatasetApi
 from .info import SmarterInfoApi
 from .samples import (
@@ -32,6 +33,9 @@ def initialize_routes(api):
     api.add_resource(SupportedChipListApi, '/smarter-api/supported-chips')
     api.add_resource(
         SupportedChipApi, '/smarter-api/supported-chips/<string:id_>')
+
+    api.add_resource(CountryListApi, '/smarter-api/countries')
+    api.add_resource(CountryApi, '/smarter-api/countries/<string:id_>')
 
     api.add_resource(DatasetListApi, '/smarter-api/datasets')
     api.add_resource(DatasetApi, '/smarter-api/datasets/<string:id_>')
