@@ -21,11 +21,33 @@ class CountryListApi(ListView):
     endpoint = 'countrylistapi'
     model = Country
 
+    def check_alpha2(value):
+        if len(value) != 2:
+            raise ValueError(
+                f"The value '{value}' is not an alpha2 country code. ")
+
+        return value.upper()
+
+    def check_alpha3(value):
+        if len(value) != 3:
+            raise ValueError(
+                f"The value '{value}' is not an alpha3 country code. ")
+
+        return value.upper()
+
     parser = reqparse.RequestParser()
     parser.add_argument('species', help="Species name")
     parser.add_argument('name', help="Country name")
-    parser.add_argument('alpha_2', help="Alpha 2 code")
-    parser.add_argument('alpha_3', help="Alpha 3 code")
+    parser.add_argument(
+        'alpha_2',
+        type=check_alpha2,
+        help='Alpha 2 code: {error_msg}'
+    )
+    parser.add_argument(
+        'alpha_3',
+        type=check_alpha3,
+        help='Alpha 3 code: {error_msg}'
+    )
     parser.add_argument(
         'search', help="Search country name and official name by pattern")
 

@@ -125,6 +125,18 @@ class TestGetCountryList(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_countries_by_wrong_alpha2_code(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'alpha_2': 'FRA'}
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "is not an alpha2 country code",
+            response.json['message']['alpha_2'])
+
     def test_get_countries_by_alpha3_code(self):
         response = self.client.get(
             self.test_endpoint,
@@ -139,6 +151,18 @@ class TestGetCountryList(AuthMixin, BaseCase):
         self.assertEqual(len(test['items']), 1)
         self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
+
+    def test_get_countries_by_wrong_alpha3_code(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'alpha_3': 'IT'}
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "is not an alpha3 country code",
+            response.json['message']['alpha_3'])
 
     def test_get_country_by_search(self):
         response = self.client.get(
