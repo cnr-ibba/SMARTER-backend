@@ -73,6 +73,19 @@ class GeoJSONListMixin(Resource):
         'country',
         help="Country name")
     parser.add_argument(
+        'breed',
+        help="Breed name")
+    parser.add_argument(
+        'breed_code',
+        help="Breed code name")
+    parser.add_argument(
+        'chip_name',
+        help="Chip name")
+    parser.add_argument(
+        'dataset',
+        dest="dataset_id",
+        help="The dataset id")
+    parser.add_argument(
         'type',
         help="The sample type (background/foreground)")
 
@@ -83,6 +96,10 @@ class GeoJSONListMixin(Resource):
 
         # filter args
         kwargs = {key: val for key, val in kwargs.items() if val}
+
+        # mind to ObjectId object
+        if 'dataset_id' in kwargs:
+            kwargs['dataset_id'] = ObjectId(kwargs['dataset_id'])
 
         return args, kwargs
 
@@ -98,7 +115,7 @@ class GeoJSONListMixin(Resource):
             for key, value in kwargs.items():
                 matches[key] = value
 
-        current_app.logger.debug(f"Got matches: '{matches}'")
+        current_app.logger.warning(f"Got matches: '{matches}'")
 
         collection = self.model.objects().aggregate([
             {"$match": matches},
@@ -197,6 +214,18 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
           - GeoJSON
         description: Query SMARTER data about samples
         parameters:
+          - name: breed
+            in: query
+            type: string
+            description: Breed name
+          - name: breed_code
+            in: query
+            type: string
+            description: Breed code
+          - name: chip_name
+            in: query
+            type: string
+            description: Chip name
           - name: country
             in: query
             type: string
@@ -230,6 +259,18 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
           - GeoJSON
         description: Query SMARTER data about samples
         parameters:
+          - name: breed
+            in: query
+            type: string
+            description: Breed name
+          - name: breed_code
+            in: query
+            type: string
+            description: Breed code
+          - name: chip_name
+            in: query
+            type: string
+            description: Chip name
           - name: country
             in: query
             type: string

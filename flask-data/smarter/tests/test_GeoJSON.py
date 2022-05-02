@@ -140,11 +140,75 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertIsInstance(test['features'], list)
         self.assertEqual(len(test['features']), 0)
 
+    def test_get_samples_by_breed(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'breed': 'Texel'}
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(test, dict)
+        self.assertEqual(test['type'], "FeatureCollection")
+        self.assertIn('features', test)
+        self.assertIsInstance(test['features'], list)
+        self.assertEqual(len(test['features']), 0)
+
+    def test_get_samples_by_breed_code(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'breed_code': 'TEX'}
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(test, dict)
+        self.assertEqual(test['type'], "FeatureCollection")
+        self.assertIn('features', test)
+        self.assertIsInstance(test['features'], list)
+        self.assertEqual(len(test['features']), 0)
+
     def test_get_samples_by_country(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
             query_string={'country': 'Italy'}
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(test, dict)
+        self.assertEqual(test['type'], "FeatureCollection")
+        self.assertIn('features', test)
+        self.assertIsInstance(test['features'], list)
+        self.assertEqual(len(test['features']), 0)
+
+    def test_get_samples_by_chip_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'chip_name': 'IlluminaOvineSNP50'}
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(test, dict)
+        self.assertEqual(test['type'], "FeatureCollection")
+        self.assertIn('features', test)
+        self.assertIsInstance(test['features'], list)
+        self.assertEqual(len(test['features']), 0)
+
+    def test_get_samples_by_dataset_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'dataset': '604f75a61a08c53cebd09b58'}
         )
 
         test = response.json
@@ -203,6 +267,46 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         self.assertIsInstance(test['features'], list)
         self.assertEqual(len(test['features']), 2)
 
+    def test_get_samples_by_breed(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'breed': 'Cashmere'}
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(test, dict)
+        self.assertEqual(test['type'], "FeatureCollection")
+        self.assertIn('features', test)
+        self.assertIsInstance(test['features'], list)
+        self.assertEqual(len(test['features']), 1)
+        self.assertEqual(
+            test['features'][0]['properties']['smarter_id'],
+            "ESCH-MAL-000000001"
+        )
+
+    def test_get_samples_by_breed_code(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'breed_code': 'CAS'}
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(test, dict)
+        self.assertEqual(test['type'], "FeatureCollection")
+        self.assertIn('features', test)
+        self.assertIsInstance(test['features'], list)
+        self.assertEqual(len(test['features']), 1)
+        self.assertEqual(
+            test['features'][0]['properties']['smarter_id'],
+            "ESCH-MAL-000000001"
+        )
+
     def test_get_samples_by_country(self):
         response = self.client.get(
             self.test_endpoint,
@@ -218,6 +322,38 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         self.assertIn('features', test)
         self.assertIsInstance(test['features'], list)
         self.assertEqual(len(test['features']), 0)
+
+    def test_get_samples_by_chip_name(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'chip_name': 'IlluminaGoatSNP50'}
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(test, dict)
+        self.assertEqual(test['type'], "FeatureCollection")
+        self.assertIn('features', test)
+        self.assertIsInstance(test['features'], list)
+        self.assertEqual(len(test['features']), 2)
+
+    def test_get_samples_by_dataset_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'dataset': '604f75a61a08c53cebd09b5b'}
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(test, dict)
+        self.assertEqual(test['type'], "FeatureCollection")
+        self.assertIn('features', test)
+        self.assertIsInstance(test['features'], list)
+        self.assertEqual(len(test['features']), 2)
 
     def test_get_samples_by_type(self):
         response = self.client.get(
