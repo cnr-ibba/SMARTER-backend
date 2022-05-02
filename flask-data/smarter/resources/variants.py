@@ -24,6 +24,15 @@ class VariantListMixin():
     assembly = None
     coordinate_system = {}
 
+    def check_region(value):
+        if not re.search(location_pattern, unquote(value)):
+            raise ValueError(
+                f"The value '{value}' is is not a valid region, "
+                f"it must be <chrom>:<start>-<end>"
+            )
+
+        return value
+
     parser = reqparse.RequestParser()
     parser.add_argument('name', help="Variant name")
     parser.add_argument('rs_id', help="rsID identifier")
@@ -33,7 +42,10 @@ class VariantListMixin():
         help="Chip name")
     parser.add_argument('probeset_id', help="Affymetrix probeset id")
     parser.add_argument('cust_id', help="Affymetrix cust_id (illumina name)")
-    parser.add_argument('region', help="Sequence location (ex 1:1-10000")
+    parser.add_argument(
+        'region',
+        help="Sequence location (ex 1:1-10000): {error_msg}",
+        type=check_region)
 
     def __init__(self) -> None:
         super().__init__()

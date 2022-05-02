@@ -196,6 +196,20 @@ class VariantSheepListMixin(DateMixin, AuthMixin):
         self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_variant_by_wrong_region(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'region': '23:26298007'
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "is not a valid region",
+            response.json['message']['region'])
+
     def test_get_variant_by_region_quote(self):
         response = self.client.get(
             self.test_endpoint,
