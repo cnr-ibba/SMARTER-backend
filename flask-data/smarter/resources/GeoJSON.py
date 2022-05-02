@@ -10,7 +10,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 
 from flask import jsonify, current_app
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import SampleSheep, SampleGoat
@@ -68,9 +68,40 @@ class GeoJSONMixin():
 class GeoJSONListMixin(Resource):
     model = None
 
+    parser = reqparse.RequestParser()
+    parser.add_argument(
+        'country',
+        help="Country name")
+    parser.add_argument(
+        'type',
+        help="The sample type (background/foreground)")
+
+    def parse_args(self) -> list:
+        # reading request parameters
+        kwargs = self.parser.parse_args(strict=True)
+        args = []
+
+        # filter args
+        kwargs = {key: val for key, val in kwargs.items() if val}
+
+        return args, kwargs
+
     def get(self):
+        # parse request arguments and deal with generic arguments
+        args, kwargs = self.parse_args()
+
+        current_app.logger.debug(f"{args}, {kwargs}")
+
+        matches = {"locations": {"$exists": True}}
+
+        if len(kwargs) > 0:
+            for key, value in kwargs.items():
+                matches[key] = value
+
+        current_app.logger.debug(f"Got matches: '{matches}'")
+
         collection = self.model.objects().aggregate([
-            {"$match": {"locations": {"$exists": True}}},
+            {"$match": matches},
             geojson,
             {"$group": {
                 "_id": None,
@@ -89,7 +120,7 @@ class GeoJSONListMixin(Resource):
             result = next(collection)
 
         except StopIteration as exc:
-            current_app.logger.warning(exc)
+            current_app.logger.debug(f"No results for {matches}: {exc}")
             result = {
                 "type": "FeatureCollection",
                 "features": []
@@ -160,11 +191,21 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
     @jwt_required()
     def get(self):
         """
-        Get a GeoJSON for all Sheep samples
+        Get a GeoJSON for Sheep samples
         ---
         tags:
           - GeoJSON
         description: Query SMARTER data about samples
+        parameters:
+          - name: country
+            in: query
+            type: string
+            description: Country where sample was collected
+          - name: type
+            in: query
+            type: string
+            enum: ['foreground', 'background']
+            description: Dataset type
         responses:
             '200':
               description: GeoJSON FeatureCollection
@@ -173,6 +214,7 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
                   schema:
                     type: object
         """
+
         return super().get()
 
 
@@ -182,11 +224,21 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
     @jwt_required()
     def get(self):
         """
-        Get a GeoJSON for all Goat samples
+        Get a GeoJSON for Goat samples
         ---
         tags:
           - GeoJSON
         description: Query SMARTER data about samples
+        parameters:
+          - name: country
+            in: query
+            type: string
+            description: Country where sample was collected
+          - name: type
+            in: query
+            type: string
+            enum: ['foreground', 'background']
+            description: Dataset type
         responses:
             '200':
               description: GeoJSON FeatureCollection
