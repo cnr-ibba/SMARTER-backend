@@ -74,6 +74,7 @@ class GeoJSONListMixin(Resource):
         help="Country name")
     parser.add_argument(
         'breed',
+        action='append',
         help="Breed name")
     parser.add_argument(
         'breed_code',
@@ -107,6 +108,14 @@ class GeoJSONListMixin(Resource):
         # parse request arguments and deal with generic arguments
         args, kwargs = self.parse_args()
 
+        # mind to list arguments
+        for key in ['breed']:
+            if key in kwargs:
+                values = kwargs[key]
+
+                # change values
+                kwargs[key] = {'$in': values}
+
         current_app.logger.debug(f"{args}, {kwargs}")
 
         matches = {"locations": {"$exists": True}}
@@ -115,7 +124,7 @@ class GeoJSONListMixin(Resource):
             for key, value in kwargs.items():
                 matches[key] = value
 
-        current_app.logger.warning(f"Got matches: '{matches}'")
+        current_app.logger.debug(f"Got matches: '{matches}'")
 
         collection = self.model.objects().aggregate([
             {"$match": matches},
@@ -216,7 +225,10 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
         parameters:
           - name: breed
             in: query
-            type: string
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
             description: Breed name
           - name: breed_code
             in: query
@@ -265,7 +277,10 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
         parameters:
           - name: breed
             in: query
-            type: string
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
             description: Breed name
           - name: breed_code
             in: query
