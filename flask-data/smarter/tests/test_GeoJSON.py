@@ -247,6 +247,59 @@ class SampleSheepListTest(AuthMixin, BaseCase):
 
         self.check_no_results(response)
 
+    def test_get_samples_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])
+
+    def test_get_samples_geo_within_polygon(self):
+        response = self.client.post(
+            self.test_endpoint,
+            headers=self.headers,
+            json={
+                "geo_within_polygon": {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [9, 45],
+                            [9, 46],
+                            [10, 46],
+                            [10, 45],
+                            [9, 45]
+                        ]]
+                    },
+                    "properties": {
+                        "name": "A sample polygon"
+                    }
+                }
+            }
+        )
+
+        self.check_no_results(response)
+
+    def test_get_samples_geo_within_sphere(self):
+        response = self.client.post(
+            self.test_endpoint,
+            headers=self.headers,
+            json={
+                "geo_within_sphere": [
+                    [9.18, 45.46],
+                    10  # Km
+                ]
+            }
+        )
+
+        self.check_no_results(response)
+
 
 class SampleGoatListTest(AuthMixin, BaseCase):
     fixtures = [
@@ -277,6 +330,16 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         self.assertEqual(
             test['features'][0]['properties']['smarter_id'],
             "ESCH-MAL-000000001"
+        )
+
+    def check_second_result(self, response):
+        self.check_results(response, n_of_results=1)
+
+        test = response.json
+
+        self.assertEqual(
+            test['features'][0]['properties']['smarter_id'],
+            "ESCH-MAL-000000002"
         )
 
     def check_results(self, response, n_of_results=0):
@@ -400,3 +463,56 @@ class SampleGoatListTest(AuthMixin, BaseCase):
         )
 
         self.check_first_result(response)
+
+    def test_get_samples_unknown_arguments(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'foo': 'bar',
+            }
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "Unknown arguments: foo", response.json['message'])
+
+    def test_get_samples_geo_within_polygon(self):
+        response = self.client.post(
+            self.test_endpoint,
+            headers=self.headers,
+            json={
+                "geo_within_polygon": {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [[
+                            [9, 45],
+                            [9, 46],
+                            [10, 46],
+                            [10, 45],
+                            [9, 45]
+                        ]]
+                    },
+                    "properties": {
+                        "name": "A sample polygon"
+                    }
+                }
+            }
+        )
+
+        self.check_second_result(response)
+
+    def test_get_samples_geo_within_sphere(self):
+        response = self.client.post(
+            self.test_endpoint,
+            headers=self.headers,
+            json={
+                "geo_within_sphere": [
+                    [9.18, 45.46],
+                    10  # Km
+                ]
+            }
+        )
+
+        self.check_second_result(response)

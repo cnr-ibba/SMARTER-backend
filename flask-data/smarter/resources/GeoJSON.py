@@ -93,6 +93,18 @@ class GeoJSONListMixin(Resource):
     parser.add_argument(
         'type',
         help="The sample type (background/foreground)")
+    parser.add_argument(
+      'geo_within_polygon',
+      help="Filter Samples inside a polygon",
+      type=dict,
+      location='json'
+    )
+    parser.add_argument(
+      'geo_within_sphere',
+      help="Filter Samples inside a 2dshpere (center, radius in Km)",
+      type=list,
+      location='json'
+    )
 
     def parse_args(self) -> list:
         # reading request parameters
@@ -107,9 +119,33 @@ class GeoJSONListMixin(Resource):
             kwargs['dataset_id'] = [
                 ObjectId(id_) for id_ in kwargs['dataset_id']]
 
+        if 'geo_within_polygon' in kwargs:
+            # get the geometry field
+            geometry = kwargs.pop('geo_within_polygon')['geometry']
+
+            if 'locations' not in kwargs:
+                kwargs['locations'] = {}
+
+            # add a new key to kwargs dictionary
+            kwargs['locations']['$geoWithin'] = {}
+            kwargs['locations']['$geoWithin']["$geometry"] = geometry
+
+        if 'geo_within_sphere' in kwargs:
+            value = kwargs.pop('geo_within_sphere')
+
+            # convert radius in radians (Km expected)
+            value[-1] = value[-1] / 6378.1
+
+            if 'locations' not in kwargs:
+                kwargs['locations'] = {}
+
+            # add a new key to kwargs dictionary
+            kwargs['locations']['$geoWithin'] = {}
+            kwargs['locations']['$geoWithin']["$centerSphere"] = value
+
         return args, kwargs
 
-    def get(self):
+    def get_context_data(self):
         # parse request arguments and deal with generic arguments
         args, kwargs = self.parse_args()
 
@@ -278,7 +314,45 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
                     type: object
         """
 
-        return super().get()
+        return self.get_context_data()
+
+    @jwt_required()
+    def post(self):
+        """
+        Get a GeoJSON for Sheep samples
+        ---
+        tags:
+          - GeoJSON
+        description: Query SMARTER data about samples
+        parameters:
+          - in: body
+            name: body
+            description: Execute a gis query
+            schema:
+              properties:
+                geo_within_polygon:
+                  type: object
+                  description: A Polygon feature
+                  properties:
+                    type:
+                      type: string
+                    properties:
+                      type: object
+                    geometry:
+                      type: object
+                geo_within_sphere:
+                  type: array
+                  description: A list with coordinates and radius in Km
+        responses:
+            '200':
+              description: Samples to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
+
+        return self.get_context_data()
 
 
 class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
@@ -341,4 +415,43 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
                   schema:
                     type: object
         """
-        return super().get()
+
+        return self.get_context_data()
+
+    @jwt_required()
+    def post(self):
+        """
+        Get a GeoJSON for Sheep samples
+        ---
+        tags:
+          - GeoJSON
+        description: Query SMARTER data about samples
+        parameters:
+          - in: body
+            name: body
+            description: Execute a gis query
+            schema:
+              properties:
+                geo_within_polygon:
+                  type: object
+                  description: A Polygon feature
+                  properties:
+                    type:
+                      type: string
+                    properties:
+                      type: object
+                    geometry:
+                      type: object
+                geo_within_sphere:
+                  type: array
+                  description: A list with coordinates and radius in Km
+        responses:
+            '200':
+              description: Samples to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
+
+        return self.get_context_data()
