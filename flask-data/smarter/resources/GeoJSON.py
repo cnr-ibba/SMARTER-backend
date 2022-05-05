@@ -230,6 +230,10 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
             in: query
             type: string
             description: Country where sample was collected
+          - name: dataset
+            in: query
+            type: string
+            description: The dataset ObjectID
           - name: type
             in: query
             type: string
@@ -275,6 +279,10 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
             in: query
             type: string
             description: Country where sample was collected
+          - name: dataset
+            in: query
+            type: string
+            description: The dataset ObjectID
           - name: type
             in: query
             type: string
