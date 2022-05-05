@@ -181,15 +181,6 @@ class SampleSheepListTest(AuthMixin, BaseCase):
 
         self.check_no_results(response)
 
-    def test_get_samples_by_country(self):
-        response = self.client.get(
-            self.test_endpoint,
-            headers=self.headers,
-            query_string={'country': 'Italy'}
-        )
-
-        self.check_no_results(response)
-
     def test_get_samples_by_chip_name(self):
         response = self.client.get(
             self.test_endpoint,
@@ -199,11 +190,50 @@ class SampleSheepListTest(AuthMixin, BaseCase):
 
         self.check_no_results(response)
 
+    def test_get_samples_by_multiple_chip_names(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?chip_name=IlluminaOvineSNP50&"
+                "chip_name=AffymetrixAxiomOviCan"),
+            headers=self.headers
+        )
+
+        self.check_no_results(response)
+
+    def test_get_samples_by_country(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'country': 'Italy'}
+        )
+
+        self.check_no_results(response)
+
+    def test_get_samples_by_multiple_countries(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?country=Italy&"
+                "country=France"),
+            headers=self.headers
+        )
+
+        self.check_no_results(response)
+
     def test_get_samples_by_dataset_id(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
             query_string={'dataset': '604f75a61a08c53cebd09b58'}
+        )
+
+        self.check_no_results(response)
+
+    def test_get_samples_by_multiple_dataset_ids(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?dataset=604f75a61a08c53cebd09b58&"
+                "dataset=604f75a61a08c53cebd09b5b"),
+            headers=self.headers
         )
 
         self.check_no_results(response)
@@ -295,14 +325,15 @@ class SampleGoatListTest(AuthMixin, BaseCase):
 
         self.check_first_result(response)
 
-    def test_get_samples_by_country(self):
+    def test_get_samples_by_multiple_breed_codes(self):
         response = self.client.get(
-            self.test_endpoint,
-            headers=self.headers,
-            query_string={'country': 'Italy'}
+            self.test_endpoint + (
+                "?breed_code=CAS&"
+                "breed_code=BRI"),
+            headers=self.headers
         )
 
-        self.check_no_results(response)
+        self.check_both_results(response)
 
     def test_get_samples_by_chip_name(self):
         response = self.client.get(
@@ -313,11 +344,50 @@ class SampleGoatListTest(AuthMixin, BaseCase):
 
         self.check_both_results(response)
 
+    def test_get_samples_by_multiple_chip_names(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?chip_name=IlluminaGoatSNP50&"
+                "chip_name=AffymetrixAxiomOviCan"),
+            headers=self.headers
+        )
+
+        self.check_both_results(response)
+
+    def test_get_samples_by_country(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'country': 'Italy'}
+        )
+
+        self.check_no_results(response)
+
+    def test_get_samples_by_multiple_countries(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?country=France&"
+                "country=Italy"),
+            headers=self.headers
+        )
+
+        self.check_both_results(response)
+
     def test_get_samples_by_dataset_id(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
             query_string={'dataset': '604f75a61a08c53cebd09b5b'}
+        )
+
+        self.check_both_results(response)
+
+    def test_get_samples_by_multiple_dataset_ids(self):
+        response = self.client.get(
+            self.test_endpoint + (
+                "?dataset=604f75a61a08c53cebd09b5b&"
+                "dataset=604f75a61a08c53cebd09b5b"),
+            headers=self.headers
         )
 
         self.check_both_results(response)

@@ -70,20 +70,24 @@ class GeoJSONListMixin(Resource):
 
     parser = reqparse.RequestParser()
     parser.add_argument(
-        'country',
-        help="Country name")
-    parser.add_argument(
         'breed',
         action='append',
         help="Breed name")
     parser.add_argument(
         'breed_code',
+        action='append',
         help="Breed code name")
     parser.add_argument(
         'chip_name',
+        action='append',
         help="Chip name")
     parser.add_argument(
+        'country',
+        action='append',
+        help="Country name")
+    parser.add_argument(
         'dataset',
+        action='append',
         dest="dataset_id",
         help="The dataset id")
     parser.add_argument(
@@ -100,7 +104,8 @@ class GeoJSONListMixin(Resource):
 
         # mind to ObjectId object
         if 'dataset_id' in kwargs:
-            kwargs['dataset_id'] = ObjectId(kwargs['dataset_id'])
+            kwargs['dataset_id'] = [
+                ObjectId(id_) for id_ in kwargs['dataset_id']]
 
         return args, kwargs
 
@@ -109,7 +114,8 @@ class GeoJSONListMixin(Resource):
         args, kwargs = self.parse_args()
 
         # mind to list arguments
-        for key in ['breed']:
+        for key in [
+                'breed', 'breed_code', 'chip_name', 'country', 'dataset_id']:
             if key in kwargs:
                 values = kwargs[key]
 
@@ -232,19 +238,31 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
             description: Breed name
           - name: breed_code
             in: query
-            type: string
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
             description: Breed code
           - name: chip_name
             in: query
-            type: string
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
             description: Chip name
           - name: country
             in: query
-            type: string
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
             description: Country where sample was collected
           - name: dataset
             in: query
-            type: string
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
             description: The dataset ObjectID
           - name: type
             in: query
@@ -284,19 +302,31 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
             description: Breed name
           - name: breed_code
             in: query
-            type: string
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
             description: Breed code
           - name: chip_name
             in: query
-            type: string
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
             description: Chip name
           - name: country
             in: query
-            type: string
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
             description: Country where sample was collected
           - name: dataset
             in: query
-            type: string
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
             description: The dataset ObjectID
           - name: type
             in: query
