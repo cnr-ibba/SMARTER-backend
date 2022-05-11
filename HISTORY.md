@@ -11,8 +11,8 @@ TODO
 * Support `text/csv` header request [#16](https://github.com/cnr-ibba/SMARTER-backend/issues/16)
 * Substitute flask-restful components with better alternatives [#10](https://github.com/cnr-ibba/SMARTER-backend/issues/10)
 
-0.2.1.dev0
-----------
+0.2.1 (2022-05-11)
+------------------
 
 * Fix `dataset` parameter in swagger Samples endpoint
 * Add country endpoint [#33](https://github.com/cnr-ibba/SMARTER-backend/issues/33)
