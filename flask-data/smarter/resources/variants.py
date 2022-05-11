@@ -24,6 +24,15 @@ class VariantListMixin():
     assembly = None
     coordinate_system = {}
 
+    def check_region(value):
+        if not re.search(location_pattern, unquote(value)):
+            raise ValueError(
+                f"The value '{value}' is is not a valid region, "
+                f"it must be <chrom>:<start>-<end>"
+            )
+
+        return value
+
     parser = reqparse.RequestParser()
     parser.add_argument('name', help="Variant name")
     parser.add_argument('rs_id', help="rsID identifier")
@@ -33,7 +42,10 @@ class VariantListMixin():
         help="Chip name")
     parser.add_argument('probeset_id', help="Affymetrix probeset id")
     parser.add_argument('cust_id', help="Affymetrix cust_id (illumina name)")
-    parser.add_argument('region', help="Sequence location (ex 1:1-10000")
+    parser.add_argument(
+        'region',
+        help="Sequence location (ex 1:1-10000): {error_msg}",
+        type=check_region)
 
     def __init__(self) -> None:
         super().__init__()
@@ -141,7 +153,7 @@ class VariantSheepOAR3Api(VariantListMixin, ListView):
     @jwt_required()
     def get(self):
         """
-        Get get SNPs on Sheep OAR3 Assembly
+        Get SNPs on Sheep OAR3 Assembly
         ---
         tags:
           - Variants
@@ -195,7 +207,7 @@ class VariantSheepOAR4Api(VariantListMixin, ListView):
     @jwt_required()
     def get(self):
         """
-        Get get SNPs on Sheep OAR4 Assembly
+        Get SNPs on Sheep OAR4 Assembly
         ---
         tags:
           - Variants
@@ -278,7 +290,7 @@ class VariantGoatCHI1Api(VariantListMixin, ListView):
     @jwt_required()
     def get(self):
         """
-        Get get SNPs on Goat CHI1 Assembly
+        Get SNPs on Goat CHI1 Assembly
         ---
         tags:
           - Variants
@@ -332,7 +344,7 @@ class VariantGoatARS1Api(VariantListMixin, ListView):
     @jwt_required()
     def get(self):
         """
-        Get get SNPs on Goat ARS1 Assembly
+        Get SNPs on Goat ARS1 Assembly
         ---
         tags:
           - Variants

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon May 24 11:16:39 2021
+Created on Mon May  2 11:23:00 2022
 
-@author: Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
+@author: Paolo Cozzi <bunop@libero.it>
 """
 
 import re
@@ -13,20 +13,43 @@ from flask import jsonify, current_app
 from flask_restful import reqparse
 from flask_jwt_extended import jwt_required
 
-from database.models import Breed
+from database.models import Country
 from common.views import ListView, ModelView
 
 
-class BreedListApi(ListView):
-    endpoint = 'breedlistapi'
-    model = Breed
+class CountryListApi(ListView):
+    endpoint = 'countrylistapi'
+    model = Country
+
+    def check_alpha2(value):
+        if len(value) != 2:
+            raise ValueError(
+                f"The value '{value}' is not an alpha2 country code. ")
+
+        return value.upper()
+
+    def check_alpha3(value):
+        if len(value) != 3:
+            raise ValueError(
+                f"The value '{value}' is not an alpha3 country code. ")
+
+        return value.upper()
 
     parser = reqparse.RequestParser()
     parser.add_argument('species', help="Species name")
-    parser.add_argument('name', help="Breed name", action='append')
-    parser.add_argument('code', help="Breed code name", action='append')
+    parser.add_argument('name', help="Country name")
     parser.add_argument(
-        'search', help="Search breed name and aliases by pattern")
+        'alpha_2',
+        type=check_alpha2,
+        help='Alpha 2 code: {error_msg}'
+    )
+    parser.add_argument(
+        'alpha_3',
+        type=check_alpha3,
+        help='Alpha 3 code: {error_msg}'
+    )
+    parser.add_argument(
+        'search', help="Search country name and official name by pattern")
 
     def get_queryset(self):
         # parse request arguments and deal with generic arguments
@@ -36,19 +59,11 @@ class BreedListApi(ListView):
         if 'search' in kwargs:
             pattern = kwargs.pop("search")
             pattern = re.compile(pattern, re.IGNORECASE)
-            args = [Q(name=pattern) | Q(aliases__fid=pattern)]
+            args = [Q(name=pattern) | Q(official_name=pattern)]
 
             # remove name from args if exists (i'm searching against it)
             if 'name' in kwargs:
                 del(kwargs['name'])
-
-        # mind to list arguments
-        for key in ['name', 'code']:
-            if key in kwargs:
-                value = kwargs.pop(key)
-
-                # add a new key to kwargs dictionary
-                kwargs[f'{key}__in'] = value
 
         current_app.logger.info(f"{args}, {kwargs}")
 
@@ -66,11 +81,11 @@ class BreedListApi(ListView):
     @jwt_required()
     def get(self):
         """
-        Get information on breeds
+        Get information on Countries
         ---
         tags:
-          - Breeds
-        description: Query SMARTER data about breeds
+          - Countries
+        description: Query SMARTER data about countries
         parameters:
           - name: species
             in: query
@@ -79,25 +94,23 @@ class BreedListApi(ListView):
             description: The desidered species
           - name: name
             in: query
-            type: array
-            items:
-              type: string
-            collectionFormat: multi
-            description: Breed name
-          - name: code
+            type: string
+            description: Country name
+          - name: alpha_2
             in: query
-            type: array
-            items:
-              type: string
-            collectionFormat: multi
-            description: Breed code
+            type: string
+            description: Alpha 2 code
+          - name: alpha_3
+            in: query
+            type: string
+            description: Alpha 3 code
           - name: search
             in: query
             type: string
-            description: Search breed using this pattern
+            description: Search country name and official name by pattern
         responses:
             '200':
-              description: Breeds to be returned
+              description: Countries to be returned
               content:
                 application/json:
                   schema:
@@ -108,30 +121,31 @@ class BreedListApi(ListView):
         return jsonify(**data)
 
 
-class BreedApi(ModelView):
-    model = Breed
+class CountryApi(ModelView):
+    model = Country
 
     @jwt_required()
     def get(self, id_):
         """
-        Fetch a single breed
+        Fetch a single Country
         ---
         tags:
-          - Breeds
-        description: Fetch a single breed using ObjectID
+          - Countries
+        description: Fetch a single country using ObjectID
         parameters:
           - in: path
             name: id_
             type: string
-            description: The breed ObjectID
+            description: The country ObjectID
             required: true
         responses:
             '200':
-              description: The desidered breed
+              description: The desidered country
               content:
                 application/json:
                   schema:
                     type: object
         """
-        breed = self.get_object(id_)
-        return jsonify(breed)
+
+        country = self.get_object(id_)
+        return jsonify(country)

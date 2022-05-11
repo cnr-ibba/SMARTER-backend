@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue May 25 14:47:24 2021
+Created on Fri Apr 29 16:29:38 2022
 
-@author: Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
+@author: Paolo Cozzi <bunop@libero.it>
 """
 
 import json
@@ -16,29 +16,22 @@ from .base import BaseCase, AuthMixin
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
 
 
-class TestGetBreedList(AuthMixin, BaseCase):
+class TestGetCountryList(AuthMixin, BaseCase):
     fixtures = [
         'user',
-        'breeds'
+        'countries'
     ]
 
-    test_endpoint = '/smarter-api/breeds'
+    test_endpoint = '/smarter-api/countries'
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-        with open(f"{FIXTURES_DIR}/breeds.json") as handle:
+        with open(f"{FIXTURES_DIR}/countries.json") as handle:
             cls.data = json.load(handle)
 
-        # get goat items
-        cls.goats_data = list()
-
-        for item in cls.data:
-            if item['species'] == 'Goat':
-                cls.goats_data.append(item)
-
-    def test_get_breeds(self):
+    def test_get_countries(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers
@@ -46,14 +39,14 @@ class TestGetBreedList(AuthMixin, BaseCase):
 
         test = response.json
 
-        self.assertEqual(test['total'], 4)
+        self.assertEqual(test['total'], 2)
         self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 4)
+        self.assertEqual(len(test['items']), 2)
         self.assertListEqual(test['items'], self.data)
         self.assertEqual(response.status_code, 200)
 
-    def test_get_breeds_pagination(self):
-        payload = {'page': 1, 'size': 2}
+    def test_get_countries_pagination(self):
+        payload = {'page': 1, 'size': 1}
 
         response = self.client.get(
             "?".join([self.test_endpoint, url_encode(payload)]),
@@ -62,10 +55,10 @@ class TestGetBreedList(AuthMixin, BaseCase):
 
         test = response.json
 
-        self.assertEqual(test['total'], 4)
+        self.assertEqual(test['total'], 2)
         self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 2)
-        self.assertListEqual(test['items'], self.data[:2])
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], self.data[:1])
         self.assertIsNone(test['prev'])
         self.assertIsNotNone(test['next'])
         self.assertEqual(response.status_code, 200)
@@ -78,15 +71,15 @@ class TestGetBreedList(AuthMixin, BaseCase):
 
         test = response.json
 
-        self.assertEqual(test['total'], 4)
+        self.assertEqual(test['total'], 2)
         self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 2)
-        self.assertListEqual(test['items'], self.data[2:])
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], self.data[1:])
         self.assertIsNone(test['next'])
         self.assertIsNotNone(test['prev'])
         self.assertEqual(response.status_code, 200)
 
-    def test_get_breeds_by_species(self):
+    def test_get_countries_by_species(self):
         payload = {'species': 'Goat'}
 
         response = self.client.get(
@@ -96,128 +89,17 @@ class TestGetBreedList(AuthMixin, BaseCase):
 
         test = response.json
 
-        self.assertEqual(test['total'], 2)
-        self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 2)
-        self.assertListEqual(test['items'], self.goats_data)
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_breeds_by_species_pagination(self):
-        payload = {'species': 'Goat', 'size': 1}
-
-        response = self.client.get(
-            "?".join([self.test_endpoint, url_encode(payload)]),
-            headers=self.headers
-        )
-
-        test = response.json
-
-        self.assertEqual(test['total'], 2)
-        self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 1)
-        self.assertListEqual(test['items'], self.goats_data[:1])
-        self.assertIsNone(test['prev'])
-        self.assertIsNotNone(test['next'])
-        self.assertEqual(response.status_code, 200)
-
-        # get next page
-        response = self.client.get(
-            test['next'],
-            headers=self.headers
-        )
-
-        test = response.json
-
-        self.assertEqual(test['total'], 2)
-        self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 1)
-        self.assertListEqual(test['items'], self.goats_data[1:])
-        self.assertIsNone(test['next'])
-        self.assertIsNotNone(test['prev'])
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_breed_by_name(self):
-        response = self.client.get(
-            self.test_endpoint,
-            headers=self.headers,
-            query_string={'name': 'Texel'}
-        )
-
-        test = response.json
-
         self.assertEqual(test['total'], 1)
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 1)
-        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(test['items'][0]['name'], "Italy")
         self.assertEqual(response.status_code, 200)
 
-    def test_get_breeds_by_multiple_names(self):
-        response = self.client.get(
-            self.test_endpoint + (
-                "?name=Texel&"
-                "name=Merino"),
-            headers=self.headers
-        )
-
-        test = response.json
-
-        self.assertEqual(test['total'], 2)
-        self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 2)
-        self.assertListEqual(test['items'], self.data[:2])
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_breed_by_breed_code(self):
+    def test_get_countries_by_name(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
-            query_string={'code': 'TEX'}
-        )
-
-        test = response.json
-
-        self.assertEqual(test['total'], 1)
-        self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 1)
-        self.assertListEqual(test['items'], [self.data[0]])
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_breeds_by_multiple_codes(self):
-        response = self.client.get(
-            self.test_endpoint + (
-                "?code=TEX&"
-                "code=MER"),
-            headers=self.headers
-        )
-
-        test = response.json
-
-        self.assertEqual(test['total'], 2)
-        self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 2)
-        self.assertListEqual(test['items'], self.data[:2])
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_breed_by_species(self):
-        response = self.client.get(
-            self.test_endpoint,
-            headers=self.headers,
-            query_string={'species': 'Sheep'}
-        )
-
-        test = response.json
-
-        self.assertEqual(test['total'], 2)
-        self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 2)
-        self.assertListEqual(test['items'], self.data[:2])
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_breed_by_search(self):
-        response = self.client.get(
-            self.test_endpoint,
-            headers=self.headers,
-            query_string={'search': 'merino'}
+            query_string={'name': 'Italy'}
         )
 
         test = response.json
@@ -228,24 +110,76 @@ class TestGetBreedList(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
 
-        # the same query in goat species return no results
+    def test_get_countries_by_alpha2_code(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
-            query_string={
-                'search': 'merino',
-                'species': 'Goat'
-            }
+            query_string={'alpha_2': 'FR'}
         )
 
         test = response.json
 
-        self.assertEqual(test['total'], 0)
+        self.assertEqual(test['total'], 1)
         self.assertIsInstance(test['items'], list)
-        self.assertEqual(len(test['items']), 0)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
 
-    def test_get_breeds_sort_by_name(self):
+    def test_get_countries_by_wrong_alpha2_code(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'alpha_2': 'FRA'}
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "is not an alpha2 country code",
+            response.json['message']['alpha_2'])
+
+    def test_get_countries_by_alpha3_code(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'alpha_3': 'ITA'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_countries_by_wrong_alpha3_code(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'alpha_3': 'IT'}
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "is not an alpha3 country code",
+            response.json['message']['alpha_3'])
+
+    def test_get_country_by_search(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'search': 'italian'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_countries_sort_by_name(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
@@ -257,10 +191,10 @@ class TestGetBreedList(AuthMixin, BaseCase):
         # get first result
         test = response.json['items'][0]
 
-        self.assertEqual(test, self.data[-1])
+        self.assertEqual(test, self.data[0])
         self.assertEqual(response.status_code, 200)
 
-    def test_get_breeds_sort_by_name_desc(self):
+    def test_get_countries_sort_by_name_desc(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
@@ -273,10 +207,10 @@ class TestGetBreedList(AuthMixin, BaseCase):
         # get first result
         test = response.json['items'][0]
 
-        self.assertEqual(test, self.data[0])
+        self.assertEqual(test, self.data[1])
         self.assertEqual(response.status_code, 200)
 
-    def test_get_breeds_unknown_arguments(self):
+    def test_get_countries_unknown_arguments(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
@@ -290,22 +224,22 @@ class TestGetBreedList(AuthMixin, BaseCase):
             "Unknown arguments: foo", response.json['message'])
 
 
-class TestGetBreed(AuthMixin, BaseCase):
+class TestGetCountry(AuthMixin, BaseCase):
     fixtures = [
         'user',
-        'breeds'
+        'countries'
     ]
 
-    test_endpoint = '/smarter-api/breeds/608ab46e1031c98150016dbd'
+    test_endpoint = '/smarter-api/countries/621d0a5e4f7668dc81846f42'
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-        with open(f"{FIXTURES_DIR}/breeds.json") as handle:
-            cls.data = json.load(handle)[0]
+        with open(f"{FIXTURES_DIR}/countries.json") as handle:
+            cls.data = json.load(handle)[1]
 
-    def test_get_breed(self):
+    def test_get_countries(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers
@@ -316,9 +250,9 @@ class TestGetBreed(AuthMixin, BaseCase):
         self.assertIsInstance(test, dict)
         self.assertEqual(test, self.data)
 
-    def test_get_breed_invalid(self):
+    def test_get_countries_invalid(self):
         response = self.client.get(
-            "/smarter-api/breeds/foo",
+            "/smarter-api/countries/foo",
             headers=self.headers
         )
 
@@ -328,9 +262,9 @@ class TestGetBreed(AuthMixin, BaseCase):
         self.assertIn("not a valid ObjectId", test["message"])
         self.assertEqual(response.status_code, 400)
 
-    def test_get_breed_not_found(self):
+    def test_get_countries_not_found(self):
         response = self.client.get(
-            "/smarter-api/breeds/604f75a61a08c53cebd09b58",
+            "/smarter-api/countries/621d0a5e4f7668dc81846f47",
             headers=self.headers
         )
 

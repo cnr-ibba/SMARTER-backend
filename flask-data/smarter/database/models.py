@@ -70,6 +70,29 @@ class SmarterInfo(db.Document):
         return f"{self.id}: {self.version}"
 
 
+class Country(db.Document):
+    """A helper class to deal with countries object. Each record is created
+    after data import, when database status is updated"""
+
+    alpha_2 = db.StringField(
+        required=True, unique=True, min_length=2, max_length=2)
+    alpha_3 = db.StringField(
+        required=True, unique=True, min_length=3, max_length=3)
+    name = db.StringField(required=True, unique=True)
+    numeric = db.IntField(required=True, unique=True)
+    official_name = db.StringField()
+
+    species = db.ListField(db.StringField())
+
+    meta = {
+        'db_alias': DB_ALIAS,
+        'collection': 'countries'
+    }
+
+    def __str__(self):
+        return f"{self.name} ({self.alpha_2})"
+
+
 class SupportedChip(db.Document):
     name = db.StringField(required=True, unique=True)
     species = db.StringField(required=True)

@@ -5,7 +5,20 @@ History
 TODO
 ----
 
-* configure logging [#7](https://github.com/cnr-ibba/SMARTER-backend/issues/7)
+* Configure logging [#7](https://github.com/cnr-ibba/SMARTER-backend/issues/7)
+* Try to compress responses [#34](https://github.com/cnr-ibba/SMARTER-backend/issues/34)
+* Support searching with patterns on original and smarter id [#19](https://github.com/cnr-ibba/SMARTER-backend/issues/19)
+* Support `text/csv` header request [#16](https://github.com/cnr-ibba/SMARTER-backend/issues/16)
+* Substitute flask-restful components with better alternatives [#10](https://github.com/cnr-ibba/SMARTER-backend/issues/10)
+
+0.2.1.dev0
+----------
+
+* Fix `dataset` parameter in swagger Samples endpoint
+* Add country endpoint [#33](https://github.com/cnr-ibba/SMARTER-backend/issues/33)
+* Support multiple parameters in Breeds endpoint [#29](https://github.com/cnr-ibba/SMARTER-backend/issues/29)
+* Support parameters into GeoJSON endpoint [#32](https://github.com/cnr-ibba/SMARTER-backend/issues/32)
+* Return error when searching variant with a wrong region [#30](https://github.com/cnr-ibba/SMARTER-backend/issues/30)
 
 0.2.0 (2021-12-20)
 ------------------

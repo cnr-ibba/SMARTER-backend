@@ -1,0 +1,27 @@
+[{
+	"_id": {
+		"$oid": "621d0a5e4f7668dc81846f3c"
+	},
+	"alpha_2": "FR",
+	"alpha_3": "FRA",
+	"name": "France",
+	"numeric": 250,
+	"official_name": "French Republic",
+	"species": [
+		"Sheep"
+	]
+},
+{
+	"_id": {
+		"$oid": "621d0a5e4f7668dc81846f42"
+	},
+	"alpha_2": "IT",
+	"alpha_3": "ITA",
+	"name": "Italy",
+	"numeric": 380,
+	"official_name": "Italian Republic",
+	"species": [
+		"Sheep",
+		"Goat"
+	]
+}]

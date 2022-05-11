@@ -10,7 +10,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 
 from flask import jsonify, current_app
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import SampleSheep, SampleGoat
@@ -68,9 +68,108 @@ class GeoJSONMixin():
 class GeoJSONListMixin(Resource):
     model = None
 
-    def get(self):
+    parser = reqparse.RequestParser()
+    parser.add_argument(
+        'breed',
+        action='append',
+        help="Breed name")
+    parser.add_argument(
+        'breed_code',
+        action='append',
+        help="Breed code name")
+    parser.add_argument(
+        'chip_name',
+        action='append',
+        help="Chip name")
+    parser.add_argument(
+        'country',
+        action='append',
+        help="Country name")
+    parser.add_argument(
+        'dataset',
+        action='append',
+        dest="dataset_id",
+        help="The dataset id")
+    parser.add_argument(
+        'type',
+        help="The sample type (background/foreground)")
+    parser.add_argument(
+      'geo_within_polygon',
+      help="Filter Samples inside a polygon",
+      type=dict,
+      location='json'
+    )
+    parser.add_argument(
+      'geo_within_sphere',
+      help="Filter Samples inside a 2dshpere (center, radius in Km)",
+      type=list,
+      location='json'
+    )
+
+    def parse_args(self) -> list:
+        # reading request parameters
+        kwargs = self.parser.parse_args(strict=True)
+        args = []
+
+        # filter args
+        kwargs = {key: val for key, val in kwargs.items() if val}
+
+        # mind to ObjectId object
+        if 'dataset_id' in kwargs:
+            kwargs['dataset_id'] = [
+                ObjectId(id_) for id_ in kwargs['dataset_id']]
+
+        if 'geo_within_polygon' in kwargs:
+            # get the geometry field
+            geometry = kwargs.pop('geo_within_polygon')['geometry']
+
+            if 'locations' not in kwargs:
+                kwargs['locations'] = {}
+
+            # add a new key to kwargs dictionary
+            kwargs['locations']['$geoWithin'] = {}
+            kwargs['locations']['$geoWithin']["$geometry"] = geometry
+
+        if 'geo_within_sphere' in kwargs:
+            value = kwargs.pop('geo_within_sphere')
+
+            # convert radius in radians (Km expected)
+            value[-1] = value[-1] / 6378.1
+
+            if 'locations' not in kwargs:
+                kwargs['locations'] = {}
+
+            # add a new key to kwargs dictionary
+            kwargs['locations']['$geoWithin'] = {}
+            kwargs['locations']['$geoWithin']["$centerSphere"] = value
+
+        return args, kwargs
+
+    def get_context_data(self):
+        # parse request arguments and deal with generic arguments
+        args, kwargs = self.parse_args()
+
+        # mind to list arguments
+        for key in [
+                'breed', 'breed_code', 'chip_name', 'country', 'dataset_id']:
+            if key in kwargs:
+                values = kwargs[key]
+
+                # change values
+                kwargs[key] = {'$in': values}
+
+        current_app.logger.debug(f"{args}, {kwargs}")
+
+        matches = {"locations": {"$exists": True}}
+
+        if len(kwargs) > 0:
+            for key, value in kwargs.items():
+                matches[key] = value
+
+        current_app.logger.debug(f"Got matches: '{matches}'")
+
         collection = self.model.objects().aggregate([
-            {"$match": {"locations": {"$exists": True}}},
+            {"$match": matches},
             geojson,
             {"$group": {
                 "_id": None,
@@ -89,7 +188,7 @@ class GeoJSONListMixin(Resource):
             result = next(collection)
 
         except StopIteration as exc:
-            current_app.logger.warning(exc)
+            current_app.logger.debug(f"No results for {matches}: {exc}")
             result = {
                 "type": "FeatureCollection",
                 "features": []
@@ -160,11 +259,52 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
     @jwt_required()
     def get(self):
         """
-        Get a GeoJSON for all Sheep samples
+        Get a GeoJSON for Sheep samples
         ---
         tags:
           - GeoJSON
         description: Query SMARTER data about samples
+        parameters:
+          - name: breed
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Breed name
+          - name: breed_code
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Breed code
+          - name: chip_name
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Chip name
+          - name: country
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Country where sample was collected
+          - name: dataset
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: The dataset ObjectID
+          - name: type
+            in: query
+            type: string
+            enum: ['foreground', 'background']
+            description: Dataset type
         responses:
             '200':
               description: GeoJSON FeatureCollection
@@ -173,7 +313,46 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
                   schema:
                     type: object
         """
-        return super().get()
+
+        return self.get_context_data()
+
+    @jwt_required()
+    def post(self):
+        """
+        Get a GeoJSON for Sheep samples
+        ---
+        tags:
+          - GeoJSON
+        description: Query SMARTER data about samples
+        parameters:
+          - in: body
+            name: body
+            description: Execute a gis query
+            schema:
+              properties:
+                geo_within_polygon:
+                  type: object
+                  description: A Polygon feature
+                  properties:
+                    type:
+                      type: string
+                    properties:
+                      type: object
+                    geometry:
+                      type: object
+                geo_within_sphere:
+                  type: array
+                  description: A list with coordinates and radius in Km
+        responses:
+            '200':
+              description: Samples to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
+
+        return self.get_context_data()
 
 
 class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
@@ -182,11 +361,52 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
     @jwt_required()
     def get(self):
         """
-        Get a GeoJSON for all Goat samples
+        Get a GeoJSON for Goat samples
         ---
         tags:
           - GeoJSON
         description: Query SMARTER data about samples
+        parameters:
+          - name: breed
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Breed name
+          - name: breed_code
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Breed code
+          - name: chip_name
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Chip name
+          - name: country
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: Country where sample was collected
+          - name: dataset
+            in: query
+            type: array
+            items:
+              type: string
+            collectionFormat: multi
+            description: The dataset ObjectID
+          - name: type
+            in: query
+            type: string
+            enum: ['foreground', 'background']
+            description: Dataset type
         responses:
             '200':
               description: GeoJSON FeatureCollection
@@ -195,4 +415,43 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
                   schema:
                     type: object
         """
-        return super().get()
+
+        return self.get_context_data()
+
+    @jwt_required()
+    def post(self):
+        """
+        Get a GeoJSON for Sheep samples
+        ---
+        tags:
+          - GeoJSON
+        description: Query SMARTER data about samples
+        parameters:
+          - in: body
+            name: body
+            description: Execute a gis query
+            schema:
+              properties:
+                geo_within_polygon:
+                  type: object
+                  description: A Polygon feature
+                  properties:
+                    type:
+                      type: string
+                    properties:
+                      type: object
+                    geometry:
+                      type: object
+                geo_within_sphere:
+                  type: array
+                  description: A list with coordinates and radius in Km
+        responses:
+            '200':
+              description: Samples to be returned
+              content:
+                application/json:
+                  schema:
+                    type: array
+        """
+
+        return self.get_context_data()
