@@ -389,14 +389,29 @@ class Location(db.EmbeddedDocument):
         )
 
 
+class Probeset(db.EmbeddedDocument):
+    chip_name = db.StringField(required=True)
+
+    # more probe could be assigned to the same SNP
+    probeset_id = db.ListField(db.StringField())
+
+    def __str__(self):
+        return (
+            f"{self.chip_name}: {self.probeset_id}"
+        )
+
+
 class VariantSpecies(db.Document):
-    rs_id = db.StringField()
+    rs_id = db.ListField(db.StringField(), default=None)
     chip_name = db.ListField(db.StringField())
 
     name = db.StringField(unique=True)
 
     # sequence should model both illumina or affymetrix sequences
     sequence = db.DictField()
+
+    # illumina top variant at variant level
+    illumina_top = db.StringField(required=True)
 
     locations = db.ListField(
         db.EmbeddedDocumentField(Location))
@@ -405,8 +420,8 @@ class VariantSpecies(db.Document):
     sender = db.StringField()
 
     # Affymetryx specific fields
-    # more probe could be assigned to the same SNP
-    probeset_id = db.ListField(db.StringField())
+    probesets = db.ListField(
+        db.EmbeddedDocumentField(Probeset), default=None)
     affy_snp_id = db.StringField()
     cust_id = db.StringField()
 
@@ -421,13 +436,28 @@ class VariantSpecies(db.Document):
                     "locations.position"
                 ],
             },
-            'probeset_id',
-            'rs_id'
+            {
+                'fields': ["affy_snp_id"],
+                'partialFilterExpression': {
+                    "affy_snp_id": {
+                        "$exists": True
+                    }
+                }
+            },
+            "probesets.probeset_id",
+            'rs_id',
         ]
     }
 
     def __str__(self):
-        return (f"name='{self.name}', rs_id='{self.rs_id}'")
+        if not self.name and self.affy_snp_id:
+            return (
+                f"affy_snp_id='{self.affy_snp_id}', rs_id='{self.rs_id}', "
+                f"illumina_top='{self.illumina_top}'")
+
+        return (
+            f"name='{self.name}', rs_id='{self.rs_id}', "
+            f"illumina_top='{self.illumina_top}'")
 
     def to_mongo(self, *args, **kwargs):
         """Override flask-mongoengine method"""

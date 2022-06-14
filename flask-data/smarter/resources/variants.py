@@ -69,6 +69,10 @@ class VariantListMixin():
             # add a new key to kwargs dictionary
             kwargs['chip_name__all'] = chip_name
 
+        if 'probeset_id' in kwargs:
+            probeset_id = kwargs.pop('probeset_id')
+            kwargs['probesets__probeset_id'] = probeset_id
+
         # add the $elemMatch clause if necessary
         kwargs = self.__prepare_match(kwargs)
 
@@ -88,8 +92,10 @@ class VariantListMixin():
             elemMatch__locations=self.coordinate_system.copy(),
             name=1,
             rs_id=1,
+            illumina_top=1,
             chip_name=1,
-            probeset_id=1,
+            probesets=1,
+            affy_snp_id=1,
             sequence=1,
             cust_id=1
         )
