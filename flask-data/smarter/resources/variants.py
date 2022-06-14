@@ -92,7 +92,6 @@ class VariantListMixin():
             elemMatch__locations=self.coordinate_system.copy(),
             name=1,
             rs_id=1,
-            illumina_top=1,
             chip_name=1,
             probesets=1,
             affy_snp_id=1,

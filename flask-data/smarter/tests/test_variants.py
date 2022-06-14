@@ -339,6 +339,7 @@ class VariantSheepOAR3Test(VariantSheepListMixin, BaseCase):
 
             # drop unwanted keys
             del variant['sender']
+            del variant['illumina_top']
 
             cls.data[i] = variant
 
@@ -373,6 +374,7 @@ class VariantSheepOAR4Test(DateMixin, AuthMixin, BaseCase):
 
             # drop unwanted keys
             del variant['sender']
+            del variant['illumina_top']
 
             cls.data[i] = variant
 
@@ -596,6 +598,7 @@ class VariantGoatARS1Test(VariantGoatListMixin, BaseCase):
 
             # drop unwanted keys
             del variant['sender']
+            del variant['illumina_top']
 
             cls.data[i] = variant
 
@@ -630,6 +633,7 @@ class VariantGoatCHI1Test(DateMixin, AuthMixin, BaseCase):
 
             # drop unwanted keys
             del variant['sender']
+            del variant['illumina_top']
 
             cls.data[i] = variant
 
