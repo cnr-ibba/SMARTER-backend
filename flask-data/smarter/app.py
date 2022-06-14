@@ -24,7 +24,7 @@ from resources.errors import errors
 from resources.routes import initialize_routes
 from commands import usersbp
 
-__version__ = "0.2.1"
+__version__ = "0.2.2.dev0"
 
 # https://flask.palletsprojects.com/en/2.0.x/logging/#basic-configuration
 dictConfig({
