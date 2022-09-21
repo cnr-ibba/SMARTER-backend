@@ -67,7 +67,7 @@ class SmarterInfo(db.Document):
     }
 
     def __str__(self):
-        return f"{self.id}: {self.version}"
+        return f"{self.id}: {self.version} (self.last_updated)"
 
 
 class Country(db.Document):
@@ -231,9 +231,12 @@ class SampleSpecies(db.Document):
     smarter_id = db.StringField(required=True, unique=True)
 
     country = db.StringField(required=True)
-    species = db.StringField(required=True)
+
+    # generic species type (required to derive other stuff)
+    species_class = None
+
     breed = db.StringField(required=True)
-    breed_code = db.StringField(min_length=3)
+    breed_code = db.StringField(min_length=2)
 
     # this will be a original_id alias (a different sample name in original
     # data file)
@@ -278,6 +281,11 @@ class SampleSpecies(db.Document):
 
 
 class SampleSheep(SampleSpecies):
+    species = db.StringField(required=True, default="Ovis aries")
+
+    # generic species type (required to derive other stuff)
+    species_class = "Sheep"
+
     # try to model relationship between samples
     father_id = db.LazyReferenceField(
         'SampleSheep',
@@ -298,6 +306,11 @@ class SampleSheep(SampleSpecies):
 
 
 class SampleGoat(SampleSpecies):
+    species = db.StringField(required=True, default="Capra hircus")
+
+    # generic species type (required to derive other stuff)
+    species_class = "Goat"
+
     # try to model relationship between samples
     father_id = db.LazyReferenceField(
         'SampleGoat',

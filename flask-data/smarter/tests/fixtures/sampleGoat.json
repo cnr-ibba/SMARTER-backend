@@ -6,7 +6,7 @@
     "original_id": "ES_MAL0001",
     "smarter_id": "ESCH-MAL-000000001",
     "country": "France",
-    "species": "Goat",
+    "species": "Capra Hircus",
     "breed": "Cashmere",
     "breed_code": "CAS",
     "dataset_id": {
@@ -44,7 +44,7 @@
     "original_id": "ES_MAL0002",
     "smarter_id": "ESCH-MAL-000000002",
     "country": "France",
-    "species": "Goat",
+    "species": "Capra Hircus",
     "breed": "Bari",
     "breed_code": "BRI",
     "dataset_id": {
@@ -56,7 +56,7 @@
       "type" : "MultiPoint",
       "coordinates" : [
         [
-          9.1859243, 
+          9.1859243,
           45.4654219
         ]
       ]
