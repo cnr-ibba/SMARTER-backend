@@ -199,6 +199,23 @@ class VariantSheepListMixin(DateMixin, AuthMixin):
         self.assertListEqual(test['items'], [self.data[1]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_variant_by_chrom(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'region': '23'
+            }
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
     def test_get_variant_by_wrong_region(self):
         response = self.client.get(
             self.test_endpoint,
