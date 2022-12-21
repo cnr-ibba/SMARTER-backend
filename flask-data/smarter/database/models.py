@@ -181,6 +181,9 @@ class Dataset(db.Document):
     # track the original chip_name with dataset
     chip_name = db.StringField()
 
+    doi = db.URLField()
+    """The publication DOI of this dataset"""
+
     meta = {
         'db_alias': DB_ALIAS,
         'collection': 'dataset'
