@@ -233,6 +233,21 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_samples_by_alias(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'alias': 'sheep-one'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
     def test_get_samples_by_smarter_id(self):
         response = self.client.get(
             self.test_endpoint,
@@ -562,6 +577,21 @@ class SampleGoatListTest(AuthMixin, BaseCase):
             self.test_endpoint,
             headers=self.headers,
             query_string={'original_id': 'ES_MAL0001'}
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[0]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_alias(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'alias': 'goat-one'}
         )
 
         test = response.json

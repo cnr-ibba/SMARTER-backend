@@ -20,7 +20,8 @@
 		"archive/test.map",
 		"archive/test.ped"
 	],
-	"chip_name": "IlluminaOvineSNP50"
+	"chip_name": "IlluminaOvineSNP50",
+	"doi": "https://www.example.com"
 },
 {
 	"_id": {

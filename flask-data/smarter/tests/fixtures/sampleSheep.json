@@ -6,7 +6,7 @@
     "original_id": "sheep1",
     "smarter_id": "ITOA-TEX-000000001",
     "country": "Italy",
-    "species": "Sheep",
+    "species": "Ovis aries",
     "breed": "Texel",
     "breed_code": "TEX",
     "dataset_id": {
@@ -23,7 +23,7 @@
     "original_id": "sheep2",
     "smarter_id": "ITOA-MER-000000002",
     "country": "France",
-    "species": "Sheep",
+    "species": "Ovis aries",
     "breed": "Merino",
     "breed_code": "MER",
     "dataset_id": {

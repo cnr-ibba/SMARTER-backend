@@ -18,6 +18,7 @@ from database.models import VariantGoat, VariantSheep, SmarterInfo
 from common.views import ListView, ModelView
 
 location_pattern = re.compile(r'(?P<chrom>\w+):(?P<start>\d+)-(?P<end>\d+)')
+chrom_pattern = re.compile(r'^(?P<chrom>\w+)$')
 
 
 class VariantListMixin():
@@ -25,10 +26,11 @@ class VariantListMixin():
     coordinate_system = {}
 
     def check_region(value):
-        if not re.search(location_pattern, unquote(value)):
+        if not re.search(location_pattern, unquote(value)) and not re.search(
+                chrom_pattern, unquote(value)):
             raise ValueError(
                 f"The value '{value}' is is not a valid region, "
-                f"it must be <chrom>:<start>-<end>"
+                f"it must be <chrom>:<start>-<end> or only <chrom>"
             )
 
         return value
@@ -44,7 +46,7 @@ class VariantListMixin():
     parser.add_argument('cust_id', help="Affymetrix cust_id (illumina name)")
     parser.add_argument(
         'region',
-        help="Sequence location (ex 1:1-10000): {error_msg}",
+        help="Sequence location (ex 1:1-10000 or only chrom): {error_msg}",
         type=check_region)
 
     def __init__(self) -> None:
@@ -69,6 +71,10 @@ class VariantListMixin():
             # add a new key to kwargs dictionary
             kwargs['chip_name__all'] = chip_name
 
+        if 'probeset_id' in kwargs:
+            probeset_id = kwargs.pop('probeset_id')
+            kwargs['probesets__probeset_id'] = probeset_id
+
         # add the $elemMatch clause if necessary
         kwargs = self.__prepare_match(kwargs)
 
@@ -89,10 +95,36 @@ class VariantListMixin():
             name=1,
             rs_id=1,
             chip_name=1,
-            probeset_id=1,
+            probesets=1,
+            affy_snp_id=1,
             sequence=1,
             cust_id=1
         )
+
+    def __search_pattern(self, region, elemMatch):
+        """Search for a region or for a whole chromosome"""
+
+        match = re.search(
+            location_pattern,
+            region
+        )
+
+        if match:
+            elemMatch['chrom'] = match.group("chrom")
+            elemMatch['position__gte'] = match.group("start")
+            elemMatch['position__lte'] = match.group("end")
+
+            return elemMatch
+
+        match = re.search(
+            chrom_pattern,
+            region
+        )
+
+        if match:
+            elemMatch['chrom'] = match.group("chrom")
+
+        return elemMatch
 
     def __prepare_match(self, kwargs):
         """Transform the kwargs RequestParser dictionary and add a $elemMatch
@@ -101,15 +133,10 @@ class VariantListMixin():
         elemMatch = self.coordinate_system.copy()
 
         if 'region' in kwargs:
-            match = re.search(
-                location_pattern,
-                unquote(kwargs.pop('region'))
+            elemMatch = self.__search_pattern(
+                unquote(kwargs.pop('region')),
+                elemMatch
             )
-
-            if match:
-                elemMatch['chrom'] = match.group("chrom")
-                elemMatch['position__gte'] = match.group("start")
-                elemMatch['position__lte'] = match.group("end")
 
         kwargs['locations__match'] = elemMatch
 
@@ -185,7 +212,8 @@ class VariantSheepOAR3Api(VariantListMixin, ListView):
           - name: region
             in: query
             type: string
-            description: Filter SNPs by position (chrom:start-end)
+            description: Filter SNPs by position (
+                chrom:start-end or only chrom)
         responses:
             '200':
               description: Datasets to be returned
@@ -239,7 +267,8 @@ class VariantSheepOAR4Api(VariantListMixin, ListView):
           - name: region
             in: query
             type: string
-            description: Filter SNPs by position (chrom:start-end)
+            description: Filter SNPs by position (
+                chrom:start-end or only chrom)
         responses:
             '200':
               description: Datasets to be returned
@@ -322,7 +351,8 @@ class VariantGoatCHI1Api(VariantListMixin, ListView):
           - name: region
             in: query
             type: string
-            description: Filter SNPs by position (chrom:start-end)
+            description: Filter SNPs by position (
+                chrom:start-end or only chrom)
         responses:
             '200':
               description: Datasets to be returned
@@ -376,7 +406,8 @@ class VariantGoatARS1Api(VariantListMixin, ListView):
           - name: region
             in: query
             type: string
-            description: Filter SNPs by position (chrom:start-end)
+            description: Filter SNPs by position (
+                chrom:start-end or only chrom)
         responses:
             '200':
               description: Datasets to be returned

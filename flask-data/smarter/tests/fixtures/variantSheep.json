@@ -6,10 +6,10 @@
     "chip_name": [
       "IlluminaOvineSNP50"
     ],
+    "illumina_top" : "A/G",
     "locations": [
       {
         "chrom": "15",
-        "consequences": [],
         "date": {
           "$date": "2009-01-07T00:00:00Z"
         },
@@ -24,7 +24,6 @@
       {
         "alleles": "C/T",
         "chrom": "15",
-        "consequences": [],
         "illumina": "T/C",
         "illumina_forward": "T/C",
         "illumina_strand": "bottom",
@@ -37,7 +36,6 @@
       },
       {
         "chrom": "15",
-        "consequences": [],
         "date": {
           "$date": "2017-03-13T00:00:00Z"
         },
@@ -52,7 +50,6 @@
       {
         "alleles": "C/T",
         "chrom": "15",
-        "consequences": [],
         "illumina": "T/C",
         "illumina_forward": "T/C",
         "illumina_strand": "bottom",
@@ -65,11 +62,12 @@
       }
     ],
     "name": "250506CS3900065000002_1238.1",
-    "probeset_id": [],
-    "rs_id": "rs55630613",
+    "rs_id": [
+      "rs55630613"
+    ],
     "sender": "AGR_BS",
-    "sequence": {
-      "manifest": "NNNNNNNNNNNNNNNNCTGCTTCCGTATTTGGGTCTTCTCTCAACTTCTCTTCTTCTCCC[T/C]TGCTGAGGAGGAGGCACTTTCAGATGTATTATGTTAATGGAGAGAAAAAGCATAATATTG"
+    "sequence" : {
+      "IlluminaOvineSNP50" : "NNNNNNNNNNNNNNNNCTGCTTCCGTATTTGGGTCTTCTCTCAACTTCTCTTCTTCTCCC[T/C]TGCTGAGGAGGAGGCACTTTCAGATGTATTATGTTAATGGAGAGAAAAAGCATAATATTG"
     }
   },
   {
@@ -78,12 +76,13 @@
     },
     "chip_name": [
       "IlluminaOvineSNP50",
-      "IlluminaOvineHDSNP"
+      "IlluminaOvineHDSNP",
+      "AffymetrixAxiomBGovisNP"
     ],
+    "illumina_top" : "A/G",
     "locations": [
       {
         "chrom": "23",
-        "consequences": [],
         "date": {
           "$date": "2009-01-07T00:00:00Z"
         },
@@ -98,7 +97,6 @@
       {
         "alleles": "C/T",
         "chrom": "23",
-        "consequences": [],
         "illumina": "T/C",
         "illumina_forward": "T/C",
         "illumina_strand": "bottom",
@@ -111,7 +109,6 @@
       },
       {
         "chrom": "23",
-        "consequences": [],
         "date": {
           "$date": "2017-03-13T00:00:00Z"
         },
@@ -126,7 +123,6 @@
       {
         "alleles": "C/T",
         "chrom": "23",
-        "consequences": [],
         "illumina": "T/C",
         "illumina_forward": "T/C",
         "illumina_strand": "bottom",
@@ -136,17 +132,40 @@
         "ss_id": "ss836318714",
         "strand": "forward",
         "version": "Oar_v4.0"
+      },
+      {
+        "version" : "Oar_v3.1",
+        "chrom" : "0",
+        "position" : 0,
+        "illumina" : "A/G",
+        "illumina_strand" : "TOP",
+        "affymetrix_ab" : "T/C",
+        "strand" : "+",
+        "imported_from" : "affymetrix",
+        "date": {
+          "$date": "2018-05-25T11:40:59Z"
+        }
       }
     ],
     "name": "250506CS3900140500001_312.1",
-    "probeset_id": [
-      "Test-Affy"
+    "probesets": [
+      {
+        "chip_name" : "AffymetrixAxiomBGovisNP",
+        "probeset_id" : [
+          "AX-123240316"
+        ]
+      }
     ],
-    "rs_id": "rs55630642",
+    "rs_id": [
+      "rs55630642"
+    ],
     "sender": "AGR_BS",
     "sequence": {
-      "manifest": "TATGCATGTACATTTTCTTGCCCTTTCCGGGCTTGCACTGTGTGCTTCTCACACCTTCTG[T/C]TTGAAAACTTATGTTACTTGGTATGCTCTGGAAGAGTATGTGAGGGAGTCAGGGATTGTG"
+      "IlluminaOvineSNP50": "TATGCATGTACATTTTCTTGCCCTTTCCGGGCTTGCACTGTGTGCTTCTCACACCTTCTG[T/C]TTGAAAACTTATGTTACTTGGTATGCTCTGGAAGAGTATGTGAGGGAGTCAGGGATTGTG",
+      "IlluminaOvineHDSNP": "TATGCATGTACATTTTCTTGCCCTTTCCGGGCTTGCACTGTGTGCTTCTCACACCTTCTG[T/C]TTGAAAACTTATGTTACTTGGTATGCTCTGGAAGAGTATGTGAGGGAGTCAGGGATTGTG",
+      "AffymetrixAxiomBGovisNP" : "TCCGGGCTTGCACTGTGTGCTTCTCACACCTTCTG[C/T]TTGAAAACTTATGTTACTTGGTATGCTCTGGAAGA"
     },
-    "cust_id": "250506CS3900140500001_312_01"
+    "cust_id": "250506CS3900140500001_312_01",
+    "affy_snp_id" : "Affx-122809524"
   }
 ]

@@ -90,6 +90,9 @@ class VariantSheepTest(DateMixin, AuthMixin, BaseCase):
 
 
 class VariantSheepListMixin(DateMixin, AuthMixin):
+    # print out all the differences
+    maxDiff = None
+
     def test_get_variants(self):
         response = self.client.get(
             self.test_endpoint,
@@ -153,7 +156,7 @@ class VariantSheepListMixin(DateMixin, AuthMixin):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
-            query_string={'probeset_id': 'Test-Affy'}
+            query_string={'probeset_id': 'AX-123240316'}
         )
 
         test = response.json
@@ -185,6 +188,23 @@ class VariantSheepListMixin(DateMixin, AuthMixin):
             headers=self.headers,
             query_string={
                 'region': '23:26298007-26298027'
+            }
+        )
+
+        test = response.json
+
+        self.assertEqual(test['total'], 1)
+        self.assertIsInstance(test['items'], list)
+        self.assertEqual(len(test['items']), 1)
+        self.assertListEqual(test['items'], [self.data[1]])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_variant_by_chrom(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={
+                'region': '23'
             }
         )
 
@@ -261,7 +281,7 @@ class VariantSheepListMixin(DateMixin, AuthMixin):
         self.assertEqual(test, self.data[0])
         self.assertEqual(response.status_code, 200)
 
-    def test_get_samples_sort_by_name_desc(self):
+    def test_get_variant_sort_by_name_desc(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
@@ -277,7 +297,7 @@ class VariantSheepListMixin(DateMixin, AuthMixin):
         self.assertEqual(test, self.data[-1])
         self.assertEqual(response.status_code, 200)
 
-    def test_get_samples_unknown_arguments(self):
+    def test_get_variant_unknown_arguments(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
@@ -290,7 +310,7 @@ class VariantSheepListMixin(DateMixin, AuthMixin):
         self.assertEqual(
             "Unknown arguments: foo", response.json['message'])
 
-    def test_get_samples_by_multiple_chips(self):
+    def test_get_variant_by_multiple_chips(self):
         response = self.client.get(
             self.test_endpoint + (
                 "?chip_name=IlluminaOvineSNP50&chip_name=IlluminaOvineHDSNP"),
@@ -336,6 +356,7 @@ class VariantSheepOAR3Test(VariantSheepListMixin, BaseCase):
 
             # drop unwanted keys
             del variant['sender']
+            del variant['illumina_top']
 
             cls.data[i] = variant
 
@@ -370,6 +391,7 @@ class VariantSheepOAR4Test(DateMixin, AuthMixin, BaseCase):
 
             # drop unwanted keys
             del variant['sender']
+            del variant['illumina_top']
 
             cls.data[i] = variant
 
@@ -435,6 +457,9 @@ class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
 
 
 class VariantGoatListMixin(DateMixin, AuthMixin):
+    # print out all the differences
+    maxDiff = None
+
     def test_get_variants(self):
         response = self.client.get(
             self.test_endpoint,
@@ -590,6 +615,7 @@ class VariantGoatARS1Test(VariantGoatListMixin, BaseCase):
 
             # drop unwanted keys
             del variant['sender']
+            del variant['illumina_top']
 
             cls.data[i] = variant
 
@@ -624,6 +650,7 @@ class VariantGoatCHI1Test(DateMixin, AuthMixin, BaseCase):
 
             # drop unwanted keys
             del variant['sender']
+            del variant['illumina_top']
 
             cls.data[i] = variant
 

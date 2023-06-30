@@ -35,8 +35,14 @@ class SampleListMixin():
         action='append',
         help="Country name")
     parser.add_argument(
-        'original_id', help="Sample name in original data source")
-    parser.add_argument('smarter_id', help="Smarter id")
+        'original_id',
+        help="Sample name in original data source")
+    parser.add_argument(
+        'alias',
+        help="The sample alias in source dataset")
+    parser.add_argument(
+        'smarter_id',
+        help="The smarter sample ID")
     parser.add_argument(
         'dataset',
         action='append',
@@ -182,10 +188,14 @@ class SampleSheepListApi(SampleListMixin, ListView):
             in: query
             type: string
             description: The original sample name in source dataset
+          - name: alias
+            in: query
+            type: string
+            description: The sample alias in source dataset
           - name: smarter_id
             in: query
             type: string
-            description: The smarter sample name
+            description: The smarter sample ID
           - name: dataset
             in: query
             type: array
@@ -333,10 +343,14 @@ class SampleGoatListApi(SampleListMixin, ListView):
             in: query
             type: string
             description: The original sample name in source dataset
+          - name: alias
+            in: query
+            type: string
+            description: The sample alias in source dataset
           - name: smarter_id
             in: query
             type: string
-            description: The smarter sample name
+            description: The smarter sample ID
           - name: dataset
             in: query
             type: array
