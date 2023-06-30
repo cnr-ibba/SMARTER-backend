@@ -11,6 +11,12 @@ TODO
 * Support `text/csv` header request [#16](https://github.com/cnr-ibba/SMARTER-backend/issues/16)
 * Substitute flask-restful components with better alternatives [#10](https://github.com/cnr-ibba/SMARTER-backend/issues/10)
 
+0.2.2 (2023-06-30)
+
+* Search samples by *aliases* [#38](https://github.com/cnr-ibba/SMARTER-backend/issues/38)
+* Update models top latest SMARTER database
+* Update docker image
+
 0.2.1 (2022-05-11)
 ------------------
 
