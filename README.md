@@ -108,7 +108,7 @@ docker-compose run --rm uwsgi flask shell
 docker-compose run --rm uwsgi pytest --verbosity=2 --exitfirst --failed-first --showlocals
 
 # test with coverage
-docker-compose run --rm uwsgi coverage run --source='.' -m py.test
+docker-compose run --rm uwsgi coverage run --source='.' -m pytest
 
 # generate coverage report locally
 docker-compose run --rm uwsgi coverage html
@@ -117,5 +117,5 @@ docker-compose run --rm uwsgi coverage html
 docker-compose run --rm uwsgi flake8
 
 # test like CI
-docker-compose run --no-deps --rm uwsgi sh -c 'coverage run --source='.' -m py.test && flake8'
+docker-compose run --no-deps --rm uwsgi sh -c 'coverage run --source='.' -m pytest && flake8'
 ```
