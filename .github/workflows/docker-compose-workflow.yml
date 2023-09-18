@@ -41,7 +41,7 @@ jobs:
           docker-compose ps
 
       - name: Run test suite
-        run: docker-compose run --no-deps --rm uwsgi sh -c 'coverage run --source='.' -m py.test && flake8'
+        run: docker-compose run --no-deps --rm uwsgi sh -c 'coverage run --source='.' -m pytest && flake8'
 
       - name: Submitting coverage and code quality
         run: |
