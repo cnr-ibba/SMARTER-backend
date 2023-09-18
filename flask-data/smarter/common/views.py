@@ -10,11 +10,13 @@ This module is an attempt to define class based views like the django ones
 
 from mongoengine.errors import ValidationError, DoesNotExist
 from flask import request, url_for, current_app
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from flask_mongoengine import QuerySet
 from werkzeug.urls import url_encode
 
 from resources.errors import MongoEngineValidationError, ObjectsNotExistsError
+
+from.utils import CustomRequestParser
 
 
 class ImproperlyConfigured(Exception):
@@ -81,7 +83,7 @@ class ListView(Resource):
     page = 1
     size = 10
 
-    parser = reqparse.RequestParser()
+    parser = CustomRequestParser()
 
     def __init__(self) -> None:
         super().__init__()

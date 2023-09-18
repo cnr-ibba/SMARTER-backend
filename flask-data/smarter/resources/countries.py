@@ -10,11 +10,11 @@ import re
 
 from mongoengine.queryset import Q
 from flask import jsonify, current_app
-from flask_restful import reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import Country
 from common.views import ListView, ModelView
+from common.utils import CustomRequestParser
 
 
 class CountryListApi(ListView):
@@ -35,7 +35,7 @@ class CountryListApi(ListView):
 
         return value.upper()
 
-    parser = reqparse.RequestParser()
+    parser = CustomRequestParser()
     parser.add_argument('species', help="Species name")
     parser.add_argument('name', help="Country name")
     parser.add_argument(

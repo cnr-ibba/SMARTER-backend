@@ -10,11 +10,12 @@ from bson import ObjectId
 from bson.errors import InvalidId
 
 from flask import jsonify, current_app
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 
 from database.models import SampleSheep, SampleGoat
 from resources.errors import MongoEngineValidationError, ObjectsNotExistsError
+from common.utils import CustomRequestParser
 
 geojson = {
     "$project": {
@@ -68,7 +69,7 @@ class GeoJSONMixin():
 class GeoJSONListMixin(Resource):
     model = None
 
-    parser = reqparse.RequestParser()
+    parser = CustomRequestParser()
     parser.add_argument(
         'breed',
         action='append',

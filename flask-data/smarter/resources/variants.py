@@ -11,11 +11,11 @@ import re
 from urllib.parse import unquote
 
 from flask import jsonify, current_app
-from flask_restful import reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import VariantGoat, VariantSheep, SmarterInfo
 from common.views import ListView, ModelView
+from common.utils import CustomRequestParser
 
 location_pattern = re.compile(r'(?P<chrom>\w+):(?P<start>\d+)-(?P<end>\d+)')
 chrom_pattern = re.compile(r'^(?P<chrom>\w+)$')
@@ -35,7 +35,7 @@ class VariantListMixin():
 
         return value
 
-    parser = reqparse.RequestParser()
+    parser = CustomRequestParser()
     parser.add_argument('name', help="Variant name")
     parser.add_argument('rs_id', help="rsID identifier")
     parser.add_argument(

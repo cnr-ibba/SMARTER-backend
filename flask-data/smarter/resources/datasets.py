@@ -10,18 +10,18 @@ import re
 
 from mongoengine.queryset import Q
 from flask import jsonify, current_app
-from flask_restful import reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import Dataset
 from common.views import ListView, ModelView
+from common.utils import CustomRequestParser
 
 
 class DatasetListApi(ListView):
     endpoint = 'datasetlistapi'
     model = Dataset
 
-    parser = reqparse.RequestParser()
+    parser = CustomRequestParser()
     parser.add_argument('species', help="Species name")
     parser.add_argument(
         'type',

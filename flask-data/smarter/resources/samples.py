@@ -7,17 +7,17 @@ Created on Fri Jun 18 16:04:11 2021
 """
 
 from flask import jsonify, current_app
-from flask_restful import reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import SampleGoat, SampleSheep
 from common.views import ListView, ModelView
+from common.utils import CustomRequestParser
 
 
 class SampleListMixin():
     species = None
 
-    parser = reqparse.RequestParser()
+    parser = CustomRequestParser()
     parser.add_argument(
         'breed',
         action='append',
