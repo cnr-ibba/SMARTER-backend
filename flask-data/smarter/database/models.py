@@ -67,7 +67,7 @@ class SmarterInfo(db.Document):
     }
 
     def __str__(self):
-        return f"{self.id}: {self.version} (self.last_updated)"
+        return f"{self.id}: {self.version} ({self.last_updated})"
 
 
 class Country(db.Document):
