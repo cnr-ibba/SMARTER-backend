@@ -15,7 +15,7 @@ from flask import Flask, redirect, url_for
 from flask_restful import Api
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
-from flask_mongoengine.json import MongoEngineJSONEncoder
+from flask.json import JSONEncoder
 from flask_cors import CORS
 from flasgger import Swagger
 
@@ -44,13 +44,13 @@ dictConfig({
 })
 
 
-class CustomJSONEncoder(MongoEngineJSONEncoder):
+class CustomJSONEncoder(JSONEncoder):
     def default(self, obj):
         if isinstance(obj, ObjectId):
             return {
                 "$oid": str(obj)
             }
-        return MongoEngineJSONEncoder.default(self, obj)
+        return JSONEncoder.default(self, obj)
 
 
 # https://stackoverflow.com/a/56474420/4385116
@@ -137,6 +137,7 @@ def create_app(config={}):
     initialize_db(app)
 
     app.logger.debug("Database initialized")
+    app.logger.debug(f"Got encoder {app.json_encoder}")
 
     # you MUST register the blueprint
     app.register_blueprint(usersbp)
