@@ -40,7 +40,7 @@ class BreedListApi(ListView):
 
             # remove name from args if exists (i'm searching against it)
             if 'name' in kwargs:
-                del(kwargs['name'])
+                del (kwargs['name'])
 
         # mind to list arguments
         for key in ['name', 'code']:

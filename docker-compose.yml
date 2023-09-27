@@ -1,6 +1,6 @@
 
 # User/password credentials are stored in .env file
-version: '3.3'
+version: '3.8'
 
 services:
 
@@ -40,7 +40,10 @@ services:
 
   uwsgi:
     # a custom image for flask
-    build: ./uwsgi
+    build:
+      # required to include poetry stuff into uwsgi image
+      context: .
+      dockerfile: uwsgi/Dockerfile
 
     environment:
       PYTHONPATH: "/var/uwsgi/smarter/"

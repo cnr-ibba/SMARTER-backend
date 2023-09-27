@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Make envfile
-        uses: SpicyPizza/create-envfile@v1
+        uses: SpicyPizza/create-envfile@v2
         with:
           envkey_DEBUG: false
           envkey_MONGODB_ROOT_USER: root
@@ -41,7 +41,7 @@ jobs:
           docker-compose ps
 
       - name: Run test suite
-        run: docker-compose run --no-deps --rm uwsgi sh -c 'coverage run --source='.' -m py.test && flake8'
+        run: docker-compose run --no-deps --rm uwsgi sh -c 'coverage run --source='.' -m pytest && flake8'
 
       - name: Submitting coverage and code quality
         run: |
