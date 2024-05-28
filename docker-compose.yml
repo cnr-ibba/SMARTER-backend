@@ -68,7 +68,7 @@ services:
       # required by coveralls
       - type: bind
         source: ./.git/
-        target: /var/uwsgi/smarter/.git/
+        target: /var/uwsgi/.git/
         read_only: true
 
     # Expose the default port
