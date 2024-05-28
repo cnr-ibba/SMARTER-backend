@@ -49,7 +49,7 @@ class SupportedChipListApi(ListView):
 
     parser = reqparse.RequestParser()
     parser.add_argument('species', help="Species name")
-    parser.add_argument('manifacturer', help="Chip manifacturer")
+    parser.add_argument('manufacturer', help="Chip manufacturer")
     parser.add_argument('name', help="Chip name")
 
     def get_queryset(self):
@@ -87,11 +87,11 @@ class SupportedChipListApi(ListView):
             in: query
             type: string
             description: Chip name
-          - name: manifacturer
+          - name: manufacturer
             in: query
             type: string
             enum: ['affymetrix', 'illumina']
-            description: Chip manifacturer
+            description: Chip manufacturer
         responses:
             '200':
               description: Chips to be returned
