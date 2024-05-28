@@ -65,12 +65,6 @@ services:
         source: ./flask-data/
         target: /var/uwsgi/
 
-      # required by coveralls
-      - type: bind
-        source: ./.git/
-        target: /var/uwsgi/.git/
-        read_only: true
-
     # Expose the default port
 
     # link container to database

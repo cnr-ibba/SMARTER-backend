@@ -45,7 +45,7 @@ jobs:
 
       - name: Submitting coverage and code quality
         run: |
-          docker-compose run --rm uwsgi coveralls
+          docker-compose run --rm --volume ./.git/:/var/uwsgi/smarter/.git/ uwsgi coveralls
 
       - name: Stop containers
         if: always()
