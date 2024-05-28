@@ -63,7 +63,7 @@ class CountryListApi(ListView):
 
             # remove name from args if exists (i'm searching against it)
             if 'name' in kwargs:
-                del(kwargs['name'])
+                del (kwargs['name'])
 
         current_app.logger.info(f"{args}, {kwargs}")
 
