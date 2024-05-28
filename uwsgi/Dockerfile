@@ -79,7 +79,11 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 # install required packages
 RUN apt-get update && apt-get install -y \
       libxml2 \
+      git \
       && rm -rf /var/lib/apt/lists/*
+
+# set safe directory for uwsgi
+RUN git config --global --add safe.directory /var/uwsgi
 
 # Set some useful variables
 ENV \
