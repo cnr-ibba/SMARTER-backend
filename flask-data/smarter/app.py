@@ -9,13 +9,13 @@ Created on Fri May 21 17:50:23 2021
 import os
 
 from bson import ObjectId
+from json import JSONEncoder
 from logging.config import dictConfig
 
 from flask import Flask, redirect, url_for
 from flask_restful import Api
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
-from flask.json import JSONEncoder
 from flask_cors import CORS
 from flasgger import Swagger
 

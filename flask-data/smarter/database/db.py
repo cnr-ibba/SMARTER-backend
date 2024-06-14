@@ -7,8 +7,8 @@ Created on Fri May 21 18:09:08 2021
 """
 
 import mongoengine
-import flask_mongoengine.connection
-from flask_mongoengine import MongoEngine
+import flask_mongoengine2.connection
+from flask_mongoengine2 import MongoEngine
 from pymongo import ReadPreference, uri_parser
 
 db = MongoEngine()
@@ -84,4 +84,4 @@ def _sanitize_settings(settings):
 
 
 # override class method
-flask_mongoengine.connection._sanitize_settings = _sanitize_settings
+flask_mongoengine2.connection._sanitize_settings = _sanitize_settings

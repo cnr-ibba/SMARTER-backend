@@ -11,8 +11,8 @@ This module is an attempt to define class based views like the django ones
 from mongoengine.errors import ValidationError, DoesNotExist
 from flask import request, url_for, current_app
 from flask_restful import Resource, reqparse
-from flask_mongoengine import QuerySet
-from werkzeug.urls import url_encode
+from flask_mongoengine2.documents import BaseQuerySet as QuerySet
+from urllib.parse import urlencode
 
 from resources.errors import MongoEngineValidationError, ObjectsNotExistsError
 
@@ -167,12 +167,12 @@ class ListView(Resource):
         if paginated.has_next:
             params['size'] = self.size
             params['page'] = self.page + 1
-            next_ = url_for(self.endpoint) + '?' + url_encode(params)
+            next_ = url_for(self.endpoint) + '?' + urlencode(params)
 
         if paginated.has_prev:
             params['size'] = self.size
             params['page'] = self.page - 1
-            prev = url_for(self.endpoint) + '?' + url_encode(params)
+            prev = url_for(self.endpoint) + '?' + urlencode(params)
 
         return {
             'items': paginated.items,
