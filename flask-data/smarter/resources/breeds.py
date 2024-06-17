@@ -76,7 +76,7 @@ class BreedListApi(ListView):
             in: query
             type: string
             enum: ['Sheep', 'Goat']
-            description: The desidered species
+            description: The desired species
           - name: name
             in: query
             type: array
@@ -127,7 +127,7 @@ class BreedApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered breed
+              description: The desired breed
               content:
                 application/json:
                   schema:

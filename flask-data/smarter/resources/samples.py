@@ -133,7 +133,7 @@ class SampleSheepApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered sample
+              description: The desired sample
               content:
                 application/json:
                   schema:
@@ -288,7 +288,7 @@ class SampleGoatApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered sample
+              description: The desired sample
               content:
                 application/json:
                   schema:

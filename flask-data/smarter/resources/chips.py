@@ -33,7 +33,7 @@ class SupportedChipApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered chip
+              description: The desired chip
               content:
                 application/json:
                   schema:
@@ -82,7 +82,7 @@ class SupportedChipListApi(ListView):
             in: query
             type: string
             enum: ['Sheep', 'Goat']
-            description: The desidered species
+            description: The desired species
           - name: name
             in: query
             type: string

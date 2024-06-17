@@ -91,7 +91,7 @@ class CountryListApi(ListView):
             in: query
             type: string
             enum: ['Sheep', 'Goat']
-            description: The desidered species
+            description: The desired species
           - name: name
             in: query
             type: string
@@ -140,7 +140,7 @@ class CountryApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered country
+              description: The desired country
               content:
                 application/json:
                   schema:

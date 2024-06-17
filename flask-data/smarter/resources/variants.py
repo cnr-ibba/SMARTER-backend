@@ -162,7 +162,7 @@ class VariantSheepApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered SNP
+              description: The desired SNP
               content:
                 application/json:
                   schema:
@@ -301,7 +301,7 @@ class VariantGoatApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered SNP
+              description: The desired SNP
               content:
                 application/json:
                   schema:

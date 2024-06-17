@@ -5,7 +5,7 @@ Accessing data using R
 .. toctree::
    :maxdepth: 4
 
-Here are some examples on how to interact with SMARTER-backend API using ``R``. 
+Here are some examples on how to interact with SMARTER-backend API using ``R``.
 You will need to set up some utility functions in order to save your time by avoiding
 repeating stuff.
 
@@ -23,18 +23,18 @@ to install some of them first):
    library(dplyr)
 
 ``httr`` is required to send requests and get response from SMARTER-backend API;
-``jsonlite`` is required to parse ``JSON`` output, which is the default format 
-of the API response. ``getPass`` is not strictly required, it will prompt for our 
-credentials in order to not store them in our code. ``dplyr`` is useful to manage 
+``jsonlite`` is required to parse ``JSON`` output, which is the default format
+of the API response. ``getPass`` is not strictly required, it will prompt for our
+credentials in order to not store them in our code. ``dplyr`` is useful to manage
 dataframes, for examples when they have different columns (like response from
 SMARTER-backend)
 
 Generate a JWT token with R
 ---------------------------
 
-As stated in our :ref:`Authentication` section of this guide, you need to generate 
-a :ref:`JWT token <JWT Authentication>` in order to get full access to smarter 
-metadata. Here is an utility function to request a token by providing your 
+As stated in our :ref:`Authentication` section of this guide, you need to generate
+a :ref:`JWT token <JWT Authentication>` in order to get full access to smarter
+metadata. Here is an utility function to request a token by providing your
 credentials with a ``POST`` HTTP method:
 
 .. code-block:: r
@@ -64,25 +64,25 @@ credentials with a ``POST`` HTTP method:
    token <- get_smarter_token()
 
 ``base_url`` is defined for simplicity in order to make all our request to the
-same server. The ``get_smarter_token`` function requires *user* and *password* 
+same server. The ``get_smarter_token`` function requires *user* and *password*
 as parameters. The ``readline`` and ``getPass::getPass`` functions used as
 default values are not strictly required, we use them in order to not write
-credentials in our code: the function will prompt for those values if not provided 
+credentials in our code: the function will prompt for those values if not provided
 during function call. The token string is parsed and written into ``token`` variable:
 This is the value we need to add to each requests *header*
 
-.. hint:: 
+.. hint::
 
    Rstudio has a dedicated section on `Securing Credentials <https://db.rstudio.com/best-practices/managing-credentials/>`_.
    We recommend to follow their guidelines.
-   
+
 Deal with data and pagination
 -----------------------------
 
 Next, before starting query SMARTER-backend, we can define more utility functions
 (as suggested by `Best practices for API packages <https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html>`_)
-in order to deal with pagination and API errors. We will read our data with 
-``jsonlite`` package in order to **flatten** our results (read nested object and 
+in order to deal with pagination and API errors. We will read our data with
+``jsonlite`` package in order to **flatten** our results (read nested object and
 add them as columns in the resulting dataframe):
 
 .. code-block:: r
@@ -100,7 +100,7 @@ add them as columns in the resulting dataframe):
       # parse a JSON response. fromJSON to flatten results
       parsed <-
          jsonlite::fromJSON(
-            content(resp, "text", encoding = "utf-8"), 
+            content(resp, "text", encoding = "utf-8"),
             flatten = TRUE
          )
 
@@ -149,17 +149,17 @@ add them as columns in the resulting dataframe):
    }
 
 
-Our functions will take an ``url`` parameter, which will be our API endpoint, the 
+Our functions will take an ``url`` parameter, which will be our API endpoint, the
 ``token`` that will be added in the header request as described in :ref:`Authentication`
-section of our documentation and ``query``, which will be a list of 
+section of our documentation and ``query``, which will be a list of
 parameters that will enhance our queries as described in :ref:`Query parameters`
 
-Read data with R 
+Read data with R
 ----------------
 
-Next we can try to read data from our API by defining custom functions around 
-the desidered endpoint. This function will call the functions previously defined
-and will return all the results in a *dataframe*. Here's a sample function to 
+Next we can try to read data from our API by defining custom functions around
+the desired endpoint. This function will call the functions previously defined
+and will return all the results in a *dataframe*. Here's a sample function to
 deal with datasets objects by querying the *datasets* endpoint:
 
 .. code-block:: r
@@ -177,9 +177,9 @@ deal with datasets objects by querying the *datasets* endpoint:
    all_datasets <- get_smarter_datasets(token)
 
 By calling the defined ``get_smarter_datasets`` function and providing a valid
-token as parameter you will retrieve all datasets and you will store them in 
-the ``all_datasets`` dataframe. Similarly, to deal with the Breed endpoint you could 
-define the ``get_smarter_breeds`` function: 
+token as parameter you will retrieve all datasets and you will store them in
+the ``all_datasets`` dataframe. Similarly, to deal with the Breed endpoint you could
+define the ``get_smarter_breeds`` function:
 
 .. code-block:: r
 
@@ -197,18 +197,18 @@ define the ``get_smarter_breeds`` function:
    goat_breeds <-
       get_smarter_breeds(token, query = list(species = "Goat"))
 
-``get_smarter_breeds`` and ``get_smarter_datasets`` functions can be used to return 
-all the SMARTER datasets and breeds. However you can pass additional parameters to 
-the endpoint using the ``query`` parameter (which need to be a ``list``). For 
+``get_smarter_breeds`` and ``get_smarter_datasets`` functions can be used to return
+all the SMARTER datasets and breeds. However you can pass additional parameters to
+the endpoint using the ``query`` parameter (which need to be a ``list``). For
 example, you could retrieve all the *genotypes* datasets using the ``type`` parameter:
 
 .. code-block:: r
 
    genotypes_datasets <- get_smarter_datasets(token, query = list(type="genotypes"))
 
-Since query accepts ``list``, you can specify the same parameter multiple times 
-(if the endpoints supports this type of query, see `api docs <https://webserver.ibba.cnr.it/smarter-api/docs/>`_ 
-to get more information). For example, if you need only the *foreground genotypes*, 
+Since query accepts ``list``, you can specify the same parameter multiple times
+(if the endpoints supports this type of query, see `api docs <https://webserver.ibba.cnr.it/smarter-api/docs/>`_
+to get more information). For example, if you need only the *foreground genotypes*,
 you can select dataset like this:
 
 .. code-block:: r
@@ -217,34 +217,34 @@ you can select dataset like this:
       token, query = list(type="genotypes", type="foreground"))
 
 You can add other parameters to refine your query, for example
-if you want to select only the *Goat* breeds, you can specify 
-``species = "Goat"`` in the ``query`` parameter. If you need also to search 
-for the *land* term in the *breed* name, you will call the same function 
+if you want to select only the *Goat* breeds, you can specify
+``species = "Goat"`` in the ``query`` parameter. If you need also to search
+for the *land* term in the *breed* name, you will call the same function
 by adding a new parameter:
 
-.. code-block:: r 
+.. code-block:: r
 
-   search_goat_breeds <- 
+   search_goat_breeds <-
       get_smarter_breeds(token, query = list(
          species = "Goat", search = "land")
       )
-      
+
 ``search_goat_breeds`` will be a dataframe with the same results of the query URL::
-   
+
    https://webserver.ibba.cnr.it/smarter-api/breeds?species=Goat&search=land
 
-We can select only the column we need by subsetting dataframe columns, or using 
+We can select only the column we need by subsetting dataframe columns, or using
 dplyr `select <https://dplyr.tidyverse.org/reference/select.html>`_:
 
 .. code-block:: r
 
    search_goat_breeds <- search_goat_breeds %>% select(name, code)
 
-Breed code and names can be used to get from samples from the proper endpoint. 
-Let's define another function that could be used for sheep and goat samples 
+Breed code and names can be used to get from samples from the proper endpoint.
+Let's define another function that could be used for sheep and goat samples
 endpoints relying on parameters:
 
-.. code-block:: r 
+.. code-block:: r
 
    get_smarter_samples <- function(token, species, query = list()) {
       # mind that species is lowercase in endpoint url
@@ -254,7 +254,7 @@ endpoints relying on parameters:
          modify_url(base_url, path = sprintf("/smarter-api/samples/%s", species))
 
       data <- get_smarter_data(url, token, query)
-      
+
       # returning only the results dataframe
       data$results
    }
@@ -265,9 +265,9 @@ endpoints relying on parameters:
       query = list(breed_code = "LNR")
    )
 
-As for the breed example, we can refine our query, for example by selecting 
+As for the breed example, we can refine our query, for example by selecting
 Landrace goat samples which have a locations (GPS coordinates) and phenotypes
-defined (mind to the double ``_`` in ``locations__exists`` and 
+defined (mind to the double ``_`` in ``locations__exists`` and
 ``phenotype__exists``):
 
 .. code-block:: r
@@ -276,12 +276,12 @@ defined (mind to the double ``_`` in ``locations__exists`` and
       token,
       species = "Goat",
       query = list(
-         breed_code = "LNR", 
+         breed_code = "LNR",
          locations__exists = TRUE,
          phenotype__exists = TRUE)
    )
 
-As before we can select the ``smarter_id`` columns, to have a list of our samples 
+As before we can select the ``smarter_id`` columns, to have a list of our samples
 in order to subset the full genotype file using ``plink``:
 
 .. code-block:: r
@@ -289,10 +289,10 @@ in order to subset the full genotype file using ``plink``:
    selected_landrace_samples %>% select(smarter_id)
 
 The same could be applied on variants endpoins in order to get information on
-variants. In the following example we will select the goat variants on chromosome 
+variants. In the following example we will select the goat variants on chromosome
 *1* within *1-1000000* position in *ARS1* assembly:
 
-.. code-block:: r 
+.. code-block:: r
 
    get_smarter_variations <- function(token, species, query = list()) {
       # mind that species is lowercase in endpoint url
@@ -318,14 +318,14 @@ variants. In the following example we will select the goat variants on chromosom
       )
    )
 
-.. hint:: 
+.. hint::
 
    We are planning to simplify the variants response by returning a SNP list of
-   the selected SNPs only, in order to be used when subsetting a genotype file 
+   the selected SNPs only, in order to be used when subsetting a genotype file
    using plink
 
-.. warning:: 
+.. warning::
 
-   Be careful when using the variants endpoints: getting all the variants will 
-   takes a lot of time and could fill all your available memory. Avoid to request 
+   Be careful when using the variants endpoints: getting all the variants will
+   takes a lot of time and could fill all your available memory. Avoid to request
    all variants in your R session, unless you know what you are doing
