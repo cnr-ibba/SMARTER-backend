@@ -20,7 +20,6 @@ from flasgger import Swagger
 from database.db import initialize_db, DB_ALIAS
 from resources.errors import errors
 from resources.routes import initialize_routes
-from commands import usersbp
 
 __version__ = "0.3.0.dev0"
 
@@ -128,9 +127,6 @@ def create_app(config={}):
 
     app.logger.debug("Database initialized")
     app.logger.debug(f"Got encoder {app.json_encoder}")
-
-    # you MUST register the blueprint
-    app.register_blueprint(usersbp)
 
     # add resources
     initialize_routes(api)
