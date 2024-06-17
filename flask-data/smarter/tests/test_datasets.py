@@ -11,12 +11,12 @@ import pathlib
 
 from werkzeug.urls import url_encode
 
-from .base import BaseCase, AuthMixin
+from .base import BaseCase
 
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
 
 
-class TestGetDatasetList(AuthMixin, BaseCase):
+class TestGetDatasetList(BaseCase):
     fixtures = [
         'user',
         'dataset'
@@ -243,7 +243,7 @@ class TestGetDatasetList(AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestGetDataset(AuthMixin, BaseCase):
+class TestGetDataset(BaseCase):
     fixtures = [
         'user',
         'dataset'

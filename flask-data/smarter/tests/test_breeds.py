@@ -11,12 +11,12 @@ import pathlib
 
 from werkzeug.urls import url_encode
 
-from .base import BaseCase, AuthMixin
+from .base import BaseCase
 
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
 
 
-class TestGetBreedList(AuthMixin, BaseCase):
+class TestGetBreedList(BaseCase):
     fixtures = [
         'user',
         'breeds'
@@ -290,7 +290,7 @@ class TestGetBreedList(AuthMixin, BaseCase):
             "Unknown arguments: foo", response.json['message'])
 
 
-class TestGetBreed(AuthMixin, BaseCase):
+class TestGetBreed(BaseCase):
     fixtures = [
         'user',
         'breeds'

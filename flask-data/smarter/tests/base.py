@@ -94,51 +94,11 @@ class BaseCase(unittest.TestCase):
                 except BulkWriteError as e:
                     logger.error(f"Cannot insert data: {e}")
 
+        # create and empty header attributes (for compatibility)
+        cls.headers = {}
+
     @classmethod
     def tearDownClass(cls):
         # Delete Database collections after the test is complete
         for collection in cls.db.list_collection_names():
             cls.db.drop_collection(collection)
-
-
-class AuthMixin():
-    test_endpoint = None
-    auth_endpoint = "/smarter-api/auth/login"
-
-    @classmethod
-    def setUpClass(cls):
-        # need to call other methods (for example, load fixture for auth)
-        super().setUpClass()
-
-        payload = json.dumps({
-            'username': 'test',
-            'password': 'password'
-        })
-
-        # authenticate to database
-        response = cls.client.post(
-            cls.auth_endpoint,
-            headers={"Content-Type": "application/json"},
-            data=payload)
-
-        # read token and prepare headers
-        cls.token = response.json['token']
-
-        # don't set content-type: application/json if you aren't posting JSON
-        # https://stackoverflow.com/a/47286909/4385116
-        cls.headers = {
-            "Authorization": f"Bearer {cls.token}"
-        }
-
-    def test_without_login(self, method='get', data=None):
-        method = getattr(self.client, method)
-
-        response = method(
-            self.test_endpoint,
-            headers={},
-            data=data
-        )
-
-        self.assertEqual(
-            "Missing Authorization Header", response.json['message'])
-        self.assertEqual(401, response.status_code)
