@@ -8,7 +8,6 @@ Created on Fri Jun 18 16:04:11 2021
 
 from flask import jsonify, current_app
 from flask_restful import reqparse
-from flask_jwt_extended import jwt_required
 
 from database.models import SampleGoat, SampleSheep
 from common.views import ListView, ModelView
@@ -117,7 +116,6 @@ class SampleListMixin():
 class SampleSheepApi(ModelView):
     model = SampleSheep
 
-    @jwt_required()
     def get(self, id_):
         """
         Fetch a single Sheep sample
@@ -147,7 +145,6 @@ class SampleSheepListApi(SampleListMixin, ListView):
     endpoint = 'samplesheeplistapi'
     model = SampleSheep
 
-    @jwt_required()
     def get(self):
         """
         Get samples information for Sheep
@@ -229,7 +226,6 @@ class SampleSheepListApi(SampleListMixin, ListView):
         data = self.get_context_data()
         return jsonify(**data)
 
-    @jwt_required()
     def post(self):
         """
         Get samples information for Sheep
@@ -272,7 +268,6 @@ class SampleSheepListApi(SampleListMixin, ListView):
 class SampleGoatApi(ModelView):
     model = SampleGoat
 
-    @jwt_required()
     def get(self, id_):
         """
         Fetch a single Goat sample
@@ -302,7 +297,6 @@ class SampleGoatListApi(SampleListMixin, ListView):
     endpoint = 'samplegoatlistapi'
     model = SampleGoat
 
-    @jwt_required()
     def get(self):
         """
         Get samples information for Goat
@@ -384,7 +378,6 @@ class SampleGoatListApi(SampleListMixin, ListView):
         data = self.get_context_data()
         return jsonify(**data)
 
-    @jwt_required()
     def post(self):
         """
         Get samples information for Goat
