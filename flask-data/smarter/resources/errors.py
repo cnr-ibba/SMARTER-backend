@@ -17,10 +17,6 @@ class SchemaValidationError(HTTPException):
     pass
 
 
-class UnauthorizedError(HTTPException):
-    pass
-
-
 class MongoEngineValidationError(HTTPException):
     pass
 
@@ -33,11 +29,6 @@ errors = {
     "InternalServerError": {
         "message": "Something went wrong",
         "status": 500
-    },
-    # flask_jwt_extended.exceptions.NoAuthorizationError:
-    "NoAuthorizationError": {
-        "message": "Missing Authorization Header",
-        "status": 401
     },
     "SchemaValidationError": {
         "message": "Request is missing required fields",
@@ -55,9 +46,5 @@ errors = {
     "ObjectsNotExistsError": {
         "message": "Object does not exist",
         "status": 404
-    },
-    "ExpiredSignatureError": {
-        "message": "Your token is expired",
-        "status": 401
     }
 }
