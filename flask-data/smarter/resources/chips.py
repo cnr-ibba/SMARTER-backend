@@ -8,7 +8,6 @@ Created on Wed Jun 23 15:37:00 2021
 
 from flask import jsonify, current_app
 from flask_restful import reqparse
-from flask_jwt_extended import jwt_required
 
 from database.models import SupportedChip
 from common.views import ListView, ModelView
@@ -17,7 +16,6 @@ from common.views import ListView, ModelView
 class SupportedChipApi(ModelView):
     model = SupportedChip
 
-    @jwt_required()
     def get(self, id_):
         """
         Fetch a single chip
@@ -69,7 +67,6 @@ class SupportedChipListApi(ListView):
 
         return queryset
 
-    @jwt_required()
     def get(self):
         """
         Get information on chips

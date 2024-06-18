@@ -22,7 +22,7 @@ class TestUserLogin(BaseCase):
             data=payload)
 
         # Then
-        self.assertEqual(str, type(response.json['token']))
+        self.assertEqual(str, type(response.json['message']))
         self.assertEqual(200, response.status_code)
 
     def test_login_with_invalid_user(self):
@@ -42,8 +42,10 @@ class TestUserLogin(BaseCase):
 
         # Then
         self.assertEqual(
-            "Invalid username or password", response.json['message'])
-        self.assertEqual(401, response.status_code)
+            "Please update your Smarter API client to the latest version",
+            response.json['message']
+        )
+        self.assertEqual(200, response.status_code)
 
     def test_login_with_invalid_password(self):
         # Given
@@ -62,8 +64,10 @@ class TestUserLogin(BaseCase):
 
         # Then
         self.assertEqual(
-            "Invalid username or password", response.json['message'])
-        self.assertEqual(401, response.status_code)
+            "Please update your Smarter API client to the latest version",
+            response.json['message']
+        )
+        self.assertEqual(200, response.status_code)
 
     def test_login_with_missing_fields(self):
         # Given
@@ -80,5 +84,7 @@ class TestUserLogin(BaseCase):
 
         # Then
         self.assertEqual(
-            "Request is missing required fields", response.json['message'])
-        self.assertEqual(400, response.status_code)
+            "Please update your Smarter API client to the latest version",
+            response.json['message']
+        )
+        self.assertEqual(200, response.status_code)

@@ -13,8 +13,6 @@ from logging.config import dictConfig
 
 from flask import Flask, redirect, url_for
 from flask_restful import Api
-from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager
 from flask.json import JSONEncoder
 from flask_cors import CORS
 from flasgger import Swagger
@@ -22,7 +20,6 @@ from flasgger import Swagger
 from database.db import initialize_db, DB_ALIAS
 from resources.errors import errors
 from resources.routes import initialize_routes
-from commands import usersbp
 
 __version__ = "0.3.0.dev0"
 
@@ -72,14 +69,9 @@ def create_app(config={}):
     app = Flask(__name__)
     CORS(app)
     api = Api(app, errors=errors)
-    Bcrypt(app)
-    JWTManager(app)
 
     # deal with ObjectId in json responses
     app.json_encoder = CustomJSONEncoder
-
-    # workaround to make flasgger deal with jwt-token headers
-    app.config["JWT_AUTH_URL_RULE"] = True
 
     # Swagger stuff
     swagger_template = {
@@ -130,17 +122,11 @@ def create_app(config={}):
         app.logger.error(f"Setting custom host: {config['host']}")
         app.config['MONGODB_SETTINGS']['host'] = config['host']
 
-    # https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
-    app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY')
-
     # connect to database
     initialize_db(app)
 
     app.logger.debug("Database initialized")
     app.logger.debug(f"Got encoder {app.json_encoder}")
-
-    # you MUST register the blueprint
-    app.register_blueprint(usersbp)
 
     # add resources
     initialize_routes(api)

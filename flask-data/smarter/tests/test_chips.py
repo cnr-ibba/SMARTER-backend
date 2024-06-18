@@ -11,12 +11,12 @@ import pathlib
 
 from werkzeug.urls import url_encode
 
-from .base import BaseCase, AuthMixin
+from .base import BaseCase
 
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
 
 
-class SupportedChipTest(AuthMixin, BaseCase):
+class SupportedChipTest(BaseCase):
     fixtures = [
         'user',
         'supportedChips'
@@ -69,7 +69,7 @@ class SupportedChipTest(AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 404)
 
 
-class SupportedChipListTest(AuthMixin, BaseCase):
+class SupportedChipListTest(BaseCase):
     fixtures = [
         'user',
         'supportedChips'

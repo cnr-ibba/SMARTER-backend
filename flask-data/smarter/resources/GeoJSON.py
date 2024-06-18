@@ -11,7 +11,6 @@ from bson.errors import InvalidId
 
 from flask import jsonify, current_app
 from flask_restful import Resource, reqparse
-from flask_jwt_extended import jwt_required
 
 from database.models import SampleSheep, SampleGoat
 from resources.errors import MongoEngineValidationError, ObjectsNotExistsError
@@ -200,7 +199,6 @@ class GeoJSONListMixin(Resource):
 class SampleSheepGeoJSONApi(GeoJSONMixin, Resource):
     model = SampleSheep
 
-    @jwt_required()
     def get(self, id_):
         """
         Get a single GeoJSON for Sheep
@@ -228,7 +226,6 @@ class SampleSheepGeoJSONApi(GeoJSONMixin, Resource):
 class SampleGoatGeoJSONApi(GeoJSONMixin, Resource):
     model = SampleGoat
 
-    @jwt_required()
     def get(self, id_):
         """
         Get a single GeoJSON for Goat
@@ -256,7 +253,6 @@ class SampleGoatGeoJSONApi(GeoJSONMixin, Resource):
 class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
     model = SampleSheep
 
-    @jwt_required()
     def get(self):
         """
         Get a GeoJSON for Sheep samples
@@ -316,7 +312,6 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
 
         return self.get_context_data()
 
-    @jwt_required()
     def post(self):
         """
         Get a GeoJSON for Sheep samples
@@ -358,7 +353,6 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
 class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
     model = SampleGoat
 
-    @jwt_required()
     def get(self):
         """
         Get a GeoJSON for Goat samples
@@ -418,7 +412,6 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
 
         return self.get_context_data()
 
-    @jwt_required()
     def post(self):
         """
         Get a GeoJSON for Sheep samples

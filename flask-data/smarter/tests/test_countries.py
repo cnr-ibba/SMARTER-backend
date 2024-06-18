@@ -11,12 +11,12 @@ import pathlib
 
 from werkzeug.urls import url_encode
 
-from .base import BaseCase, AuthMixin
+from .base import BaseCase
 
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
 
 
-class TestGetCountryList(AuthMixin, BaseCase):
+class TestGetCountryList(BaseCase):
     fixtures = [
         'user',
         'countries'
@@ -224,7 +224,7 @@ class TestGetCountryList(AuthMixin, BaseCase):
             "Unknown arguments: foo", response.json['message'])
 
 
-class TestGetCountry(AuthMixin, BaseCase):
+class TestGetCountry(BaseCase):
     fixtures = [
         'user',
         'countries'
