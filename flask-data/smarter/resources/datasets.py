@@ -84,7 +84,7 @@ class DatasetListApi(ListView):
             in: query
             type: string
             enum: ['Sheep', 'Goat']
-            description: The desidered species
+            description: The desired species
           - name: type
             in: query
             type: array
@@ -136,7 +136,7 @@ class DatasetApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered dataset
+              description: The desired dataset
               content:
                 application/json:
                   schema:

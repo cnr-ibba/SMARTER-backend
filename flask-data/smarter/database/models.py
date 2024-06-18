@@ -96,7 +96,7 @@ class Country(db.Document):
 class SupportedChip(db.Document):
     name = db.StringField(required=True, unique=True)
     species = db.StringField(required=True)
-    manifacturer = db.StringField()
+    manufacturer = db.StringField()
     n_of_snps = db.IntField(default=0)
 
     meta = {

@@ -24,7 +24,7 @@ copyright = '2021, Paolo Cozzi'
 author = 'Paolo Cozzi'
 
 # The full version, including alpha/beta/rc tags
-release = 'v0.2.2'
+release = 'v0.3.0.dev0'
 
 
 # -- General configuration ---------------------------------------------------

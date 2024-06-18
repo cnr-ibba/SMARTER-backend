@@ -33,7 +33,7 @@ class SupportedChipApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered chip
+              description: The desired chip
               content:
                 application/json:
                   schema:
@@ -49,7 +49,7 @@ class SupportedChipListApi(ListView):
 
     parser = reqparse.RequestParser()
     parser.add_argument('species', help="Species name")
-    parser.add_argument('manifacturer', help="Chip manifacturer")
+    parser.add_argument('manufacturer', help="Chip manufacturer")
     parser.add_argument('name', help="Chip name")
 
     def get_queryset(self):
@@ -82,16 +82,16 @@ class SupportedChipListApi(ListView):
             in: query
             type: string
             enum: ['Sheep', 'Goat']
-            description: The desidered species
+            description: The desired species
           - name: name
             in: query
             type: string
             description: Chip name
-          - name: manifacturer
+          - name: manufacturer
             in: query
             type: string
             enum: ['affymetrix', 'illumina']
-            description: Chip manifacturer
+            description: Chip manufacturer
         responses:
             '200':
               description: Chips to be returned

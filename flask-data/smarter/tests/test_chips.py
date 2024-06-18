@@ -129,11 +129,11 @@ class SupportedChipListTest(AuthMixin, BaseCase):
         self.assertListEqual(test['items'], [self.data[-2]])
         self.assertEqual(response.status_code, 200)
 
-    def test_get_chips_by_manifacturer(self):
+    def test_get_chips_by_manufacturer(self):
         response = self.client.get(
             self.test_endpoint,
             headers=self.headers,
-            query_string={'manifacturer': 'affymetrix'}
+            query_string={'manufacturer': 'affymetrix'}
         )
 
         test = response.json
