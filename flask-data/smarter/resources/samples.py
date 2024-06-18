@@ -232,7 +232,9 @@ class SampleSheepListApi(SampleListMixin, ListView):
         ---
         tags:
           - Samples
-        description: Query SMARTER data about samples
+
+        description: Query SMARTER data about Sheep samples
+
         parameters:
           - in: body
             name: body
@@ -251,14 +253,18 @@ class SampleSheepListApi(SampleListMixin, ListView):
                       type: object
                 geo_within_sphere:
                   type: array
-                  description: A list with coordinates and radius in Km
+                  description:
+                    A list with coordinates and radius in Km
+                    like [[9.18, 45.46], 10]
+                  items: []
+
         responses:
-            '200':
-              description: Samples to be returned
-              content:
-                application/json:
-                  schema:
-                    type: array
+          200:
+            description: A list of samples in the given area
+            content:
+              application/json:
+                schema:
+                  type: array
         """
         self.object_list = self.get_queryset()
         data = self.get_context_data()
@@ -384,7 +390,9 @@ class SampleGoatListApi(SampleListMixin, ListView):
         ---
         tags:
           - Samples
-        description: Query SMARTER data about samples
+
+        description: Query SMARTER data about Goat samples
+
         parameters:
           - in: body
             name: body
@@ -403,14 +411,18 @@ class SampleGoatListApi(SampleListMixin, ListView):
                       type: object
                 geo_within_sphere:
                   type: array
-                  description: A list with coordinates and radius in Km
+                  description:
+                    A list with coordinates and radius in Km
+                    like [[9.18, 45.46], 10]
+                  items: []
+
         responses:
-            '200':
-              description: Samples to be returned
-              content:
-                application/json:
-                  schema:
-                    type: array
+          200:
+            description: A list of samples in the given area
+            content:
+              application/json:
+                schema:
+                  type: array
         """
         self.object_list = self.get_queryset()
         data = self.get_context_data()

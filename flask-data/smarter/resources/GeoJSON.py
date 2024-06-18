@@ -318,7 +318,9 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
         ---
         tags:
           - GeoJSON
-        description: Query SMARTER data about samples
+
+        description: Query SMARTER data about sheep samples
+
         parameters:
           - in: body
             name: body
@@ -337,14 +339,18 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
                       type: object
                 geo_within_sphere:
                   type: array
-                  description: A list with coordinates and radius in Km
+                  description:
+                    A list with coordinates and radius in Km
+                    like [[9.18, 45.46], 10]
+                  items: []
+
         responses:
-            '200':
-              description: Samples to be returned
-              content:
-                application/json:
-                  schema:
-                    type: array
+          200:
+            description: Samples to be returned
+            content:
+              application/json:
+                schema:
+                  type: array
         """
 
         return self.get_context_data()
@@ -414,11 +420,13 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
 
     def post(self):
         """
-        Get a GeoJSON for Sheep samples
+        Get a GeoJSON for Goat samples
         ---
         tags:
           - GeoJSON
-        description: Query SMARTER data about samples
+
+        description: Query SMARTER data about Goat samples
+
         parameters:
           - in: body
             name: body
@@ -437,14 +445,18 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
                       type: object
                 geo_within_sphere:
                   type: array
-                  description: A list with coordinates and radius in Km
+                  description:
+                    A list with coordinates and radius in Km
+                    like [[9.18, 45.46], 10]
+                  items: []
+
         responses:
-            '200':
-              description: Samples to be returned
-              content:
-                application/json:
-                  schema:
-                    type: array
+          200:
+            description: Samples to be returned
+            content:
+              application/json:
+                schema:
+                  type: array
         """
 
         return self.get_context_data()

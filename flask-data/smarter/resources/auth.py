@@ -21,7 +21,27 @@ class LoginApi(Resource):
         ---
         tags:
           - Authorization
-        description: Return a message telling users to update their client
+
+        description:
+          This method is used to authenticate a user. It has been removed
+          after public release. Please update your Smarter API client to the
+          latest version.
+
+        parameters:
+          - in: body
+            name: body
+            description: JSON parameters.
+            schema:
+              required:
+              - username
+              - password
+              properties:
+                username:
+                  type: string
+                  description: Your username
+                password:
+                  type: string
+                  description: Your password
 
         responses:
           200:
