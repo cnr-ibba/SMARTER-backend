@@ -11,8 +11,7 @@ Accessing data using R
    see `SMARTER R package <https://cnr-ibba.github.io/r-smarter-api/>`_ for more information.
 
 Here are some examples on how to interact with SMARTER-backend API using ``R``.
-You will need to set up some utility functions in order to save your time by avoiding
-repeating stuff.
+You can find a similar example for ``Python`` in the :ref:`Accessing data using Python` section.
 
 Importing R libraries
 ---------------------
@@ -32,8 +31,8 @@ of the API response. ``dplyr`` is useful to manage
 dataframes, for examples when they have different columns (like response from
 SMARTER-backend)
 
-Deal with data and pagination
------------------------------
+Deal with data and pagination in R
+----------------------------------
 
 Next, before starting query SMARTER-backend, we can define more utility functions
 (as suggested by `Best practices for API packages <https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html>`_)
@@ -42,6 +41,8 @@ in order to deal with pagination and API errors. We will read our data with
 add them as columns in the resulting dataframe):
 
 .. code-block:: r
+
+   base_url <- "https://webserver.ibba.cnr.it"
 
    read_url <- function(url, query = list()) {
       # make a GET request to the API by combining parameters (if any)
@@ -75,7 +76,6 @@ add them as columns in the resulting dataframe):
       return(parsed)
    }
 
-
    get_smarter_data <- function(url, query = list()) {
       # do the request and parse data with our function
       parsed <- read_url(url, query)
@@ -104,7 +104,8 @@ add them as columns in the resulting dataframe):
       class = "smarter_api")
    }
 
-
+``base_url`` is defined for simplicity in order to make all our request to the
+same server.
 Our functions will take an ``url`` parameter, which will be our API endpoint,
 and a ``query`` parameter, which will be a list of parameters that will enhance our queries
 as described in :ref:`Query parameters`
@@ -119,8 +120,6 @@ deal with datasets objects by querying the *datasets* endpoint:
 
 .. code-block:: r
 
-   base_url <- "https://webserver.ibba.cnr.it"
-
    get_smarter_datasets <- function(query=list()) {
       url <-
          httr::modify_url(base_url, path = "/smarter-api/datasets")
@@ -133,11 +132,9 @@ deal with datasets objects by querying the *datasets* endpoint:
 
    all_datasets <- get_smarter_datasets()
 
-``base_url`` is defined for simplicity in order to make all our request to the
-same server.
 By calling the defined ``get_smarter_datasets`` function you will retrieve all
 datasets and you will store them in the ``all_datasets`` dataframe. Similarly,
-to deal with the Breed endpoint you could define the ``get_smarter_breeds`` function:
+to deal with the *Breed* endpoint you could define the ``get_smarter_breeds`` function:
 
 .. code-block:: r
 
@@ -156,7 +153,7 @@ to deal with the Breed endpoint you could define the ``get_smarter_breeds`` func
       get_smarter_breeds(query = list(species = "Goat"))
 
 ``get_smarter_breeds`` and ``get_smarter_datasets`` functions can be used to return
-all the SMARTER datasets and breeds. However you can pass additional parameters to
+all the SMARTER *datasets* and *breeds*. However you can pass additional parameters to
 the endpoint using the ``query`` parameter (which need to be a ``list``). For
 example, you could retrieve all the *genotypes* datasets using the ``type`` parameter:
 
@@ -244,14 +241,14 @@ to have a list of our samples in order to subset the full genotype file using ``
 
    selected_landrace_samples %>% select(smarter_id, breed_code)
 
-The same could be applied on variants endpoints in order to get information on
-variants. In the following example we will select the goat variants on chromosome
-*1* within *1-1000000* position in *ARS1* assembly:
+Here's another example that could be applied in order to get information on
+variants. In this case we will select the goat variants on chromosome
+*1* within *1-1000000* positions in *ARS1* assembly:
 
 .. code-block:: r
 
    get_smarter_variations <- function(species, assembly, query = list()) {
-      # mind that species is lowercase in endpoint url
+      # mind that species is lowercase in endpoint url, while assembly is uppercase
       species <- tolower(species)
       assembly <- toupper(assembly)
 

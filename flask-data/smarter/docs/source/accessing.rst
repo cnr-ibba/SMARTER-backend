@@ -78,8 +78,8 @@ page size with a get parameter, for example ``size=20``.
    try to retrieve all the results for a single query request: there could be
    a size limit or you can have issues in retrieve / process the results
 
-Examples
---------
+Examples with code
+------------------
 
 Here we list some patterns on how to interact with the SMARTER-backend, feel free
 to follow the method you prefer:
@@ -89,3 +89,7 @@ to follow the method you prefer:
 
    accessing/python
    accessing/r
+
+We have also a custom `R package <https://cnr-ibba.github.io/r-smarter-api/>`_
+that you can use to interact with the SMARTER-backend, you can find it on
+`GitHub <https://github.com/cnr-ibba/r-smarter-api/>`_.
