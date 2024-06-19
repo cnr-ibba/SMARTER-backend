@@ -87,6 +87,5 @@ to follow the method you prefer:
 .. toctree::
    :maxdepth: 4
 
-   accessing/thirdy-party
    accessing/python
    accessing/r
