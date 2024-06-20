@@ -6,6 +6,7 @@ Created on Fri May 21 15:06:11 2021
 @author: Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
 """
 
+import os
 import json
 import logging
 import unittest
@@ -18,8 +19,9 @@ from dateutil.parser import parse as parse_date
 from app import create_app
 from database.db import db, DB_ALIAS
 
-# start application with custom values
-app = create_app(config={'host': 'mongodb://mongo/test'})
+# start application an override the default configuration
+os.environ['MONGODB_SMARTER_DB'] = 'mongodb://mongo/test'
+app = create_app()
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
