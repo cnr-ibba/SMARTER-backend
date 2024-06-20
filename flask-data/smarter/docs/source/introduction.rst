@@ -111,7 +111,10 @@ supported, ``GET`` and ``POST``:
 More precisely, SMARTER data through the SMARTER-backend are read-only and
 ``GET`` and ``POST`` method are allowed in order to retrieve any type of SMARTER
 data object from the API. ``POST`` method are required to submit complex queries
-by providing a payload to certain endpoints.
+by providing a payload to certain endpoints, for example to retrieve samples
+relying on GPS data. For a detailed list of the available endpoints and the
+HTTP methods they support, please refer to the
+`swagger documentation <https://webserver.ibba.cnr.it/smarter-api/docs/>`_ available.
 
 Status codes
 ------------

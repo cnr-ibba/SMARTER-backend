@@ -219,7 +219,7 @@ endpoints relying on parameters:
       query = list(breed_code = "LNR")
    )
 
-As for the breed example, we can refine our query, for example by selecting
+We can refine our query, for example by selecting
 Landrace goat samples which have a locations (GPS coordinates) and phenotypes
 defined (mind to the double ``_`` in ``locations__exists`` and
 ``phenotype__exists``):

@@ -26,7 +26,8 @@ urls. Eventually, we will transform data into a ``pandas`` DataFrame.
 Deal with data and pagination in python
 ---------------------------------------
 
-We can define some utility functions to deal with data and pagination:
+We can define some utility functions to deal with data and pagination. Those
+functions are general and can be used to access any endpoint of the SMARTER API:
 
 .. code-block:: python
 
@@ -83,7 +84,7 @@ Read data with Python
 ---------------------
 
 Now we can read data from the API using the functions we defined before. We can
-get the data from the API and transform it into a pandas DataFrame. We can define
+get the data from the API and transform it into a ``pandas.DataFrame`` by creating
 a custom function in order to call the API with different parameters:
 
 .. code-block:: python
@@ -97,7 +98,7 @@ a custom function in order to call the API with different parameters:
       return pd.json_normalize(results)
 
 By calling the function ``get_smarter_datasets`` we can get the data from the API
-and transform it into a pandas DataFrame to collect all the *datasets* object from
+and transform it into a ``pandas.DataFrame`` to collect all the *datasets* object from
 the *Dataset* endpoint. Similarly, we can define a function to get the data from the
 *Breed* endpoint:
 
@@ -113,7 +114,7 @@ the *Dataset* endpoint. Similarly, we can define a function to get the data from
 
 ``get_smarter_breeds`` and ``get_smarter_datasets`` functions can be used to return
 all the SMARTER *datasets* and *breeds*. However you can pass additional parameters to
-the endpoint using the ``params`` parameter (which can be a dictionary or a list
+the endpoints using the ``params`` parameter (which can be a dictionary or a list
 of tuples, when specifying the same parameter multiple times). For
 example, you could retrieve all goats breeds using the ``species`` option:
 

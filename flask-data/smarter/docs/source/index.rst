@@ -9,8 +9,8 @@ Welcome to SMARTER-backend's documentation!
 This documentation describes how to install and interact with the SMARTER database
 backend. Briefly, the SMARTER database created and maintained with the
 `SMARTER-database <https://github.com/cnr-ibba/SMARTER-database>`_ project is
-made accessible to SMARTER partners using this API. This API is the same used
-by the `SMARTER-frontend <https://github.com/cnr-ibba/SMARTER-frontend>`_ in
+made accessible to the community using this API. This API is the same used
+by the `SMARTER-frontend <https://webserver.ibba.cnr.it/smarter/>`_ in
 order to access and browse SMARTER data using a web browser.
 
 SMARTER-backend is a `flask-API <https://flask.palletsprojects.com/en/2.0.x/>`_
@@ -24,10 +24,7 @@ the data they need using a `PLINK <https://zzz.bwh.harvard.edu/plink/>`_ command
 Documentation is organized as following: in :ref:`Introduction` we describe what
 SMARTER-backend is and we provide general information. In :ref:`Backend installation`
 we describe how to install a local instance of SMARTER-backend. Then in
-:ref:`Accessing SMARTER-backend` we describe how to programmatically access to data
-or how to inspect data using applications like `Postman <https://www.postman.com/>`_
-or `Talend Api Tester <https://chrome.google.com/webstore/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm>`_
-google-chrome extension.
+:ref:`Accessing SMARTER-backend` we describe how to programmatically access to data.
 
 .. toctree::
    :maxdepth: 2

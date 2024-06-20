@@ -26,9 +26,9 @@ official installation instructions for your operating system.
 Create a .env file
 ------------------
 
-Before running the application, you need to create a .env file in the root directory
+Before running the application, you need to create a ``.env`` file in the root directory
 of the project. This is required to set the environment variables needed by the
-application, like the database connection string. Create a .env file in the root
+application, like the database connection string. Create a ``.env`` file in the root
 directory of the project with the following content:
 
 .. code-block:: bash
