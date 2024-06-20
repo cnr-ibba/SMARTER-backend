@@ -12,7 +12,8 @@ from logging.config import dictConfig
 from logging.handlers import SMTPHandler
 
 from decouple import config
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, has_request_context, request
+from flask.logging import default_handler
 from flask_restful import Api
 from flask.json import JSONEncoder
 from flask_cors import CORS
@@ -57,9 +58,26 @@ mail_handler = SMTPHandler(
     secure=()
 )
 mail_handler.setLevel(logging.ERROR)
-mail_handler.setFormatter(logging.Formatter(
-    '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
-))
+
+
+class RequestFormatter(logging.Formatter):
+    def format(self, record):
+        if has_request_context():
+            record.url = request.url
+            record.remote_addr = request.remote_addr
+        else:
+            record.url = None
+            record.remote_addr = None
+
+        return super().format(record)
+
+
+formatter = RequestFormatter(
+    '[%(asctime)s] %(remote_addr)s requested %(url)s\n'
+    '%(levelname)s in %(module)s: %(message)s'
+)
+mail_handler.setFormatter(formatter)
+default_handler.setFormatter(formatter)
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -90,6 +108,7 @@ def create_app():
 
     # check debug mode
     if config('DEBUG', cast=bool, default=True):
+        # in debug mode, the default logging will be set to DEBUG level
         app.debug = True
 
     # deal with ObjectId in json responses
