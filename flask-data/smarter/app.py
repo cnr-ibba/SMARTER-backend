@@ -9,6 +9,7 @@ Created on Fri May 21 17:50:23 2021
 from bson import ObjectId
 import logging
 from logging.config import dictConfig
+from logging.handlers import SMTPHandler
 
 from decouple import config
 from flask import Flask, redirect, url_for
@@ -39,6 +40,26 @@ dictConfig({
         'handlers': ['wsgi']
     }
 })
+
+mail_handler = SMTPHandler(
+    mailhost=(
+        config('EMAIL_HOST', default='localhost'),
+        config('EMAIL_PORT', cast=int, default=1025)
+    ),
+    fromaddr=config('DEFAULT_FROM_EMAIL', default="server-error@example.com"),
+    toaddrs=[email.strip() for email in config(
+        'ADMINS', default="admin@example.com").split(',')],
+    subject='SMARTER-backend Application Error',
+    credentials=(
+        config('EMAIL_HOST_USER', default=None),
+        config('EMAIL_HOST_PASSWORD', default=None)
+    ),
+    secure=()
+)
+mail_handler.setLevel(logging.ERROR)
+mail_handler.setFormatter(logging.Formatter(
+    '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
+))
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -108,7 +129,10 @@ def create_app():
 
     # http://docs.mongoengine.org/projects/flask-mongoengine/en/latest/#configuration
     app.config['MONGODB_SETTINGS'] = {
-        'host': config('MONGODB_SMARTER_DB', default='mongodb://mongo/smarter'),
+        'host': config(
+            'MONGODB_SMARTER_DB',
+            default='mongodb://mongo/smarter'
+        ),
         'username': config('MONGODB_SMARTER_USER'),
         'password': config("MONGODB_SMARTER_PASS"),
         'authentication_source': 'admin',
@@ -128,6 +152,9 @@ def create_app():
     initialize_routes(api)
 
     app.logger.debug("Routes initialized")
+
+    if not app.debug:
+        app.logger.addHandler(mail_handler)
 
     # add a redirect for the index page
     @app.route('/smarter-api/')
