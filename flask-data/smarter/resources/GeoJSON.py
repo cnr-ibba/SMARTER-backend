@@ -10,7 +10,7 @@ from bson import ObjectId
 from bson.errors import InvalidId
 
 from flask import jsonify, current_app
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import SampleSheep, SampleGoat

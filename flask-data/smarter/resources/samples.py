@@ -7,7 +7,7 @@ Created on Fri Jun 18 16:04:11 2021
 """
 
 from flask import jsonify, current_app
-from flask_restful import reqparse
+from flask_restx import reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import SampleGoat, SampleSheep

@@ -10,7 +10,7 @@ import re
 
 from mongoengine.queryset import Q
 from flask import jsonify, current_app
-from flask_restful import reqparse
+from flask_restx import reqparse
 from flask_jwt_extended import jwt_required
 
 from database.models import Breed

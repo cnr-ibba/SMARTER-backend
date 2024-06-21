@@ -11,7 +11,7 @@ import datetime
 
 from flask import Response, request, current_app
 from flask_jwt_extended import create_access_token, decode_token
-from flask_restful import Resource
+from flask_restx import Resource
 from mongoengine.errors import DoesNotExist
 
 from database.models import User
@@ -54,7 +54,7 @@ class LoginApi(Resource):
             username = body.get('username')
             password = body.get('password')
 
-            # TODO: use a flask_restful method
+            # TODO: use a flask_restx method
             if not username or not password:
                 raise SchemaValidationError
 

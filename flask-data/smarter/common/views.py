@@ -10,7 +10,7 @@ This module is an attempt to define class based views like the django ones
 
 from mongoengine.errors import ValidationError, DoesNotExist
 from flask import request, url_for, current_app
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, reqparse
 from flask_mongoengine2.documents import BaseQuerySet as QuerySet
 from urllib.parse import urlencode
 
