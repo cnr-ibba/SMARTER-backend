@@ -9,7 +9,7 @@ Created on Thu Dec 16 12:40:09 2021
 from bson import ObjectId
 from bson.errors import InvalidId
 
-from flask import jsonify, current_app
+from flask import jsonify, current_app, request
 from flask_restful import Resource, reqparse
 
 from database.models import SampleSheep, SampleGoat
@@ -108,6 +108,9 @@ class GeoJSONListMixin(Resource):
     def parse_args(self) -> list:
         # reading request parameters
         kwargs = self.parser.parse_args(strict=True)
+
+        current_app.logger.debug(f"Got kwargs: {kwargs}")
+
         args = []
 
         # filter args
@@ -121,6 +124,8 @@ class GeoJSONListMixin(Resource):
         if 'geo_within_polygon' in kwargs:
             # get the geometry field
             geometry = kwargs.pop('geo_within_polygon')['geometry']
+
+            current_app.logger.debug(f"Got geometry: {geometry}")
 
             if 'locations' not in kwargs:
                 kwargs['locations'] = {}
@@ -458,5 +463,7 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
                 schema:
                   type: array
         """
+
+        current_app.logger.debug(f"Got a POST request: {request.json}")
 
         return self.get_context_data()
