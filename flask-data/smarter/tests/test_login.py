@@ -23,7 +23,7 @@ class TestUserLogin(BaseCase):
 
         # Then
         self.assertEqual(str, type(response.json['message']))
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(410, response.status_code)
 
     def test_login_with_invalid_user(self):
         # Given
@@ -45,7 +45,7 @@ class TestUserLogin(BaseCase):
             "Please update your Smarter API client to the latest version",
             response.json['message']
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(410, response.status_code)
 
     def test_login_with_invalid_password(self):
         # Given
@@ -67,7 +67,7 @@ class TestUserLogin(BaseCase):
             "Please update your Smarter API client to the latest version",
             response.json['message']
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(410, response.status_code)
 
     def test_login_with_missing_fields(self):
         # Given
@@ -87,4 +87,4 @@ class TestUserLogin(BaseCase):
             "Please update your Smarter API client to the latest version",
             response.json['message']
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(410, response.status_code)

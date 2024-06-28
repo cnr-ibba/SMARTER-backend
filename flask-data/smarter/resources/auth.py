@@ -44,8 +44,11 @@ class LoginApi(Resource):
                   description: Your password
 
         responses:
-          200:
-            description: A standard message
+          410:
+            description:
+              Token has been removed after public release
+              Please update your Smarter API client to the latest
+              version
         """
         try:
             # consume request body but don't do anything with it
@@ -59,7 +62,7 @@ class LoginApi(Resource):
                         "version")
                 }),
                 mimetype="application/json",
-                status=200)
+                status=410)
 
             return response
 
