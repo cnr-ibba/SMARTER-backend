@@ -23,7 +23,7 @@ from database.db import initialize_db, DB_ALIAS
 from resources.errors import errors
 from resources.routes import initialize_routes
 
-__version__ = "0.3.0.dev0"
+__version__ = "0.3.0"
 
 # https://flask.palletsprojects.com/en/2.0.x/logging/#basic-configuration
 dictConfig({

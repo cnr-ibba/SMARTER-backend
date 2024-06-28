@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "smarter-backend"
-version = "0.3.0.dev0"
+version = "0.3.0"
 description = "SMARTER Backend API"
 authors = ["Paolo Cozzi <bunop@libero.it>"]
 license = "GPLv3"
