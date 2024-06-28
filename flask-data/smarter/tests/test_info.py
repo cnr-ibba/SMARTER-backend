@@ -2,12 +2,12 @@
 import json
 import pathlib
 
-from .base import BaseCase, AuthMixin
+from .base import BaseCase
 
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
 
 
-class TestSmarterInfo(AuthMixin, BaseCase):
+class TestSmarterInfo(BaseCase):
     fixtures = [
         'user',
         'smarterInfo'

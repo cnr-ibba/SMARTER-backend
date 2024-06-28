@@ -12,7 +12,7 @@ import pathlib
 from dateutil.parser import parse as parse_date
 from bson import json_util
 
-from .base import BaseCase, AuthMixin
+from .base import BaseCase
 
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
 
@@ -43,7 +43,7 @@ class DateMixin():
         cls.data = json.loads(tmp)
 
 
-class VariantSheepTest(DateMixin, AuthMixin, BaseCase):
+class VariantSheepTest(DateMixin, BaseCase):
     fixtures = [
         'user',
         'variantSheep'
@@ -89,7 +89,7 @@ class VariantSheepTest(DateMixin, AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 404)
 
 
-class VariantSheepListMixin(DateMixin, AuthMixin):
+class VariantSheepListMixin(DateMixin):
     # print out all the differences
     maxDiff = None
 
@@ -361,7 +361,7 @@ class VariantSheepOAR3Test(VariantSheepListMixin, BaseCase):
             cls.data[i] = variant
 
 
-class VariantSheepOAR4Test(DateMixin, AuthMixin, BaseCase):
+class VariantSheepOAR4Test(DateMixin, BaseCase):
     fixtures = [
         'user',
         'smarterInfo',
@@ -410,7 +410,7 @@ class VariantSheepOAR4Test(DateMixin, AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 200)
 
 
-class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
+class VariantGoatTest(DateMixin, BaseCase):
     fixtures = [
         'user',
         'variantGoat'
@@ -456,7 +456,7 @@ class VariantGoatTest(DateMixin, AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 404)
 
 
-class VariantGoatListMixin(DateMixin, AuthMixin):
+class VariantGoatListMixin(DateMixin):
     # print out all the differences
     maxDiff = None
 
@@ -620,7 +620,7 @@ class VariantGoatARS1Test(VariantGoatListMixin, BaseCase):
             cls.data[i] = variant
 
 
-class VariantGoatCHI1Test(DateMixin, AuthMixin, BaseCase):
+class VariantGoatCHI1Test(DateMixin, BaseCase):
     fixtures = [
         'user',
         'smarterInfo',

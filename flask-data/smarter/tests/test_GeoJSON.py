@@ -9,12 +9,12 @@ Created on Thu Dec 16 12:43:33 2021
 import json
 import pathlib
 
-from .base import BaseCase, AuthMixin
+from .base import BaseCase
 
 FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"
 
 
-class SampleSheepTest(AuthMixin, BaseCase):
+class SampleSheepTest(BaseCase):
     fixtures = [
         'user',
         'sampleSheep'
@@ -55,7 +55,7 @@ class SampleSheepTest(AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 404)
 
 
-class SampleGoatTest(AuthMixin, BaseCase):
+class SampleGoatTest(BaseCase):
     fixtures = [
         'user',
         'sampleGoat'
@@ -110,7 +110,7 @@ class SampleGoatTest(AuthMixin, BaseCase):
         self.assertEqual(response.status_code, 404)
 
 
-class SampleSheepListTest(AuthMixin, BaseCase):
+class SampleSheepListTest(BaseCase):
     fixtures = [
         'user',
         'sampleSheep'
@@ -301,7 +301,7 @@ class SampleSheepListTest(AuthMixin, BaseCase):
         self.check_no_results(response)
 
 
-class SampleGoatListTest(AuthMixin, BaseCase):
+class SampleGoatListTest(BaseCase):
     fixtures = [
         'user',
         'sampleGoat'

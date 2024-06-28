@@ -15,7 +15,7 @@
 ARG APP_NAME=SMARTER-backend
 ARG APP_PATH=/opt/$APP_NAME
 ARG PYTHON_VERSION=3.11
-ARG POETRY_VERSION=1.6.1
+ARG POETRY_VERSION=1.8.3
 
 FROM python:${PYTHON_VERSION}
 
@@ -79,7 +79,11 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 # install required packages
 RUN apt-get update && apt-get install -y \
       libxml2 \
+      git \
       && rm -rf /var/lib/apt/lists/*
+
+# set safe directory for uwsgi
+RUN git config --global --add safe.directory /var/uwsgi
 
 # Set some useful variables
 ENV \

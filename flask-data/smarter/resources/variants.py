@@ -12,7 +12,6 @@ from urllib.parse import unquote
 
 from flask import jsonify, current_app
 from flask_restful import reqparse
-from flask_jwt_extended import jwt_required
 
 from database.models import VariantGoat, VariantSheep, SmarterInfo
 from common.views import ListView, ModelView
@@ -146,7 +145,6 @@ class VariantListMixin():
 class VariantSheepApi(ModelView):
     model = VariantSheep
 
-    @jwt_required()
     def get(self, id_):
         """
         Fetch a single Sheep SNP
@@ -162,7 +160,7 @@ class VariantSheepApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered SNP
+              description: The desired SNP
               content:
                 application/json:
                   schema:
@@ -177,7 +175,6 @@ class VariantSheepOAR3Api(VariantListMixin, ListView):
     model = VariantSheep
     assembly = "OAR3"
 
-    @jwt_required()
     def get(self):
         """
         Get SNPs on Sheep OAR3 Assembly
@@ -232,7 +229,6 @@ class VariantSheepOAR4Api(VariantListMixin, ListView):
     model = VariantSheep
     assembly = "OAR4"
 
-    @jwt_required()
     def get(self):
         """
         Get SNPs on Sheep OAR4 Assembly
@@ -285,7 +281,6 @@ class VariantSheepOAR4Api(VariantListMixin, ListView):
 class VariantGoatApi(ModelView):
     model = VariantGoat
 
-    @jwt_required()
     def get(self, id_):
         """
         Fetch a single Goat SNP
@@ -301,7 +296,7 @@ class VariantGoatApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered SNP
+              description: The desired SNP
               content:
                 application/json:
                   schema:
@@ -316,7 +311,6 @@ class VariantGoatCHI1Api(VariantListMixin, ListView):
     model = VariantGoat
     assembly = "CHI1"
 
-    @jwt_required()
     def get(self):
         """
         Get SNPs on Goat CHI1 Assembly
@@ -371,7 +365,6 @@ class VariantGoatARS1Api(VariantListMixin, ListView):
     model = VariantGoat
     assembly = "ARS1"
 
-    @jwt_required()
     def get(self):
         """
         Get SNPs on Goat ARS1 Assembly

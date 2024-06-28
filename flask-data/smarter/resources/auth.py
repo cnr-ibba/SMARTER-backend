@@ -7,26 +7,26 @@ Created on Thu May 27 11:16:46 2021
 """
 
 import json
-import datetime
 
 from flask import Response, request, current_app
-from flask_jwt_extended import create_access_token, decode_token
 from flask_restful import Resource
-from mongoengine.errors import DoesNotExist
 
-from database.models import User
-from resources.errors import (
-    UnauthorizedError, InternalServerError, SchemaValidationError)
+from resources.errors import InternalServerError
 
 
 class LoginApi(Resource):
     def post(self):
         """
-        User authenticate method.
+        Old User authenticate method. Has been removed after public release.
         ---
         tags:
           - Authorization
-        description: Authenticate user with supplied credentials.
+
+        description:
+          This method is used to authenticate a user. It has been removed
+          after public release. Please update your Smarter API client to the
+          latest version.
+
         parameters:
           - in: body
             name: body
@@ -42,62 +42,26 @@ class LoginApi(Resource):
                 password:
                   type: string
                   description: Your password
+
         responses:
           200:
-            description: User successfully logged in.
-          401:
-            description: User login failed.
+            description: A standard message
         """
         try:
-            body = request.get_json()
-
-            username = body.get('username')
-            password = body.get('password')
-
-            # TODO: use a flask_restful method
-            if not username or not password:
-                raise SchemaValidationError
-
-            user = User.objects.get(username=username)
-
-            # calling custom user function (which uses bcrypt)
-            authorized = user.check_password(password)
-
-            if not authorized:
-                raise UnauthorizedError
-
-            expires = datetime.timedelta(days=7)
-
-            access_token = create_access_token(
-                identity=str(user.id),
-                expires_delta=expires)
-
-            # read token data
-            claims = decode_token(access_token)
-
-            current_app.logger.info(f"New token generated for '{username}'")
+            # consume request body but don't do anything with it
+            _ = request.get_json()
 
             response = Response(
                 json.dumps({
-                    'token': access_token,
-                    'expires': str(
-                        datetime.datetime.fromtimestamp(claims['exp']))
+                    "token": "Token has been removed after public release",
+                    "message": (
+                        "Please update your Smarter API client to the latest "
+                        "version")
                 }),
                 mimetype="application/json",
                 status=200)
 
-            # add token to response headers - so SwaggerUI can use it
-            response.headers.extend({'jwt-token': access_token})
-
             return response
-
-        except (UnauthorizedError, DoesNotExist) as e:
-            current_app.logger.error(e)
-            raise UnauthorizedError
-
-        except SchemaValidationError as e:
-            current_app.logger.error(e)
-            raise SchemaValidationError
 
         except Exception as e:
             current_app.logger.error(e)

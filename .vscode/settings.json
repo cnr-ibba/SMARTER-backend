@@ -1,3 +1,17 @@
 {
-    "esbonio.sphinx.confDir": "${workspaceFolder}/flask-data/smarter/docs/source"
+    "esbonio.sphinx.confDir": "${workspaceFolder}/flask-data/smarter/docs/source",
+    "cSpell.words": [
+        "affymetrix",
+        "exitfirst",
+        "iname",
+        "INITDB",
+        "jsonify",
+        "mongodump",
+        "mongorestore",
+        "pytest",
+        "reqparse",
+        "showlocals",
+        "uwsgi",
+        "uwsgitop"
+    ]
 }

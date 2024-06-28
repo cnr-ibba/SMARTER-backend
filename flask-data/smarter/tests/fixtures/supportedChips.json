@@ -5,7 +5,7 @@
     },
     "name": "IlluminaOvineSNP50",
     "species": "Sheep",
-    "manifacturer": "illumina",
+    "manufacturer": "illumina",
     "n_of_snps": 54241
   },
   {
@@ -14,7 +14,7 @@
     },
     "name": "IlluminaOvineHDSNP",
     "species": "Sheep",
-    "manifacturer": "illumina",
+    "manufacturer": "illumina",
     "n_of_snps": 606006
   },
   {
@@ -23,7 +23,7 @@
     },
     "name": "IlluminaGoatSNP50",
     "species": "Goat",
-    "manifacturer": "illumina",
+    "manufacturer": "illumina",
     "n_of_snps": 59727
   },
   {
@@ -32,7 +32,7 @@
     },
     "name": "AffymetrixAxiomOviCan",
     "species": "Sheep",
-    "manifacturer": "affymetrix",
+    "manufacturer": "affymetrix",
     "n_of_snps": 56793
   }
 ]

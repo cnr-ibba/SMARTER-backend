@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "smarter-backend"
-version = "0.3.0"
+version = "0.3.0.dev0"
 description = "SMARTER Backend API"
 authors = ["Paolo Cozzi <bunop@libero.it>"]
 license = "GPLv3"
@@ -12,8 +12,6 @@ python = "^3.9"
 uwsgi = "^2.0.22"
 uwsgitop = "^0.11"
 flask-restful = "^0.3.10"
-flask-bcrypt = "^1.0.1"
-flask-jwt-extended = "^4.5.2"
 flask-cors = "^4.0.0"
 python-dateutil = "^2.8.2"
 flake8 = "^6.1.0"
@@ -29,6 +27,7 @@ flask-mongoengine = "^1.0.0"
 werkzeug = "~2.0"
 coveralls = "^3.3.1"
 coverage = "5.*"
+python-decouple = "^3.8"
 
 [build-system]
 requires = ["poetry-core"]

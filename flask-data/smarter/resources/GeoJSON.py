@@ -9,9 +9,8 @@ Created on Thu Dec 16 12:40:09 2021
 from bson import ObjectId
 from bson.errors import InvalidId
 
-from flask import jsonify, current_app
+from flask import jsonify, current_app, request
 from flask_restful import Resource, reqparse
-from flask_jwt_extended import jwt_required
 
 from database.models import SampleSheep, SampleGoat
 from resources.errors import MongoEngineValidationError, ObjectsNotExistsError
@@ -109,6 +108,9 @@ class GeoJSONListMixin(Resource):
     def parse_args(self) -> list:
         # reading request parameters
         kwargs = self.parser.parse_args(strict=True)
+
+        current_app.logger.debug(f"Got kwargs: {kwargs}")
+
         args = []
 
         # filter args
@@ -122,6 +124,8 @@ class GeoJSONListMixin(Resource):
         if 'geo_within_polygon' in kwargs:
             # get the geometry field
             geometry = kwargs.pop('geo_within_polygon')['geometry']
+
+            current_app.logger.debug(f"Got geometry: {geometry}")
 
             if 'locations' not in kwargs:
                 kwargs['locations'] = {}
@@ -200,7 +204,6 @@ class GeoJSONListMixin(Resource):
 class SampleSheepGeoJSONApi(GeoJSONMixin, Resource):
     model = SampleSheep
 
-    @jwt_required()
     def get(self, id_):
         """
         Get a single GeoJSON for Sheep
@@ -228,7 +231,6 @@ class SampleSheepGeoJSONApi(GeoJSONMixin, Resource):
 class SampleGoatGeoJSONApi(GeoJSONMixin, Resource):
     model = SampleGoat
 
-    @jwt_required()
     def get(self, id_):
         """
         Get a single GeoJSON for Goat
@@ -256,7 +258,6 @@ class SampleGoatGeoJSONApi(GeoJSONMixin, Resource):
 class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
     model = SampleSheep
 
-    @jwt_required()
     def get(self):
         """
         Get a GeoJSON for Sheep samples
@@ -316,14 +317,15 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
 
         return self.get_context_data()
 
-    @jwt_required()
     def post(self):
         """
         Get a GeoJSON for Sheep samples
         ---
         tags:
           - GeoJSON
-        description: Query SMARTER data about samples
+
+        description: Query SMARTER data about sheep samples
+
         parameters:
           - in: body
             name: body
@@ -342,14 +344,18 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
                       type: object
                 geo_within_sphere:
                   type: array
-                  description: A list with coordinates and radius in Km
+                  description:
+                    A list with coordinates and radius in Km
+                    like [[9.18, 45.46], 10]
+                  items: []
+
         responses:
-            '200':
-              description: Samples to be returned
-              content:
-                application/json:
-                  schema:
-                    type: array
+          200:
+            description: Samples to be returned
+            content:
+              application/json:
+                schema:
+                  type: array
         """
 
         return self.get_context_data()
@@ -358,7 +364,6 @@ class SampleSheepGeoJSONListApi(GeoJSONListMixin, Resource):
 class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
     model = SampleGoat
 
-    @jwt_required()
     def get(self):
         """
         Get a GeoJSON for Goat samples
@@ -418,14 +423,15 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
 
         return self.get_context_data()
 
-    @jwt_required()
     def post(self):
         """
-        Get a GeoJSON for Sheep samples
+        Get a GeoJSON for Goat samples
         ---
         tags:
           - GeoJSON
-        description: Query SMARTER data about samples
+
+        description: Query SMARTER data about Goat samples
+
         parameters:
           - in: body
             name: body
@@ -444,14 +450,20 @@ class SampleGoatGeoJSONListApi(GeoJSONListMixin, Resource):
                       type: object
                 geo_within_sphere:
                   type: array
-                  description: A list with coordinates and radius in Km
+                  description:
+                    A list with coordinates and radius in Km
+                    like [[9.18, 45.46], 10]
+                  items: []
+
         responses:
-            '200':
-              description: Samples to be returned
-              content:
-                application/json:
-                  schema:
-                    type: array
+          200:
+            description: Samples to be returned
+            content:
+              application/json:
+                schema:
+                  type: array
         """
+
+        current_app.logger.debug(f"Got a POST request: {request.json}")
 
         return self.get_context_data()

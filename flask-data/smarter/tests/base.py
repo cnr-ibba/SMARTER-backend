@@ -6,6 +6,7 @@ Created on Fri May 21 15:06:11 2021
 @author: Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
 """
 
+import os
 import json
 import logging
 import unittest
@@ -18,8 +19,9 @@ from dateutil.parser import parse as parse_date
 from app import create_app
 from database.db import db, DB_ALIAS
 
-# start application with custom values
-app = create_app(config={'host': 'mongodb://mongo/test'})
+# start application an override the default configuration
+os.environ['MONGODB_SMARTER_DB'] = 'mongodb://mongo/test'
+app = create_app()
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -94,51 +96,11 @@ class BaseCase(unittest.TestCase):
                 except BulkWriteError as e:
                     logger.error(f"Cannot insert data: {e}")
 
+        # create and empty header attributes (for compatibility)
+        cls.headers = {}
+
     @classmethod
     def tearDownClass(cls):
         # Delete Database collections after the test is complete
         for collection in cls.db.list_collection_names():
             cls.db.drop_collection(collection)
-
-
-class AuthMixin():
-    test_endpoint = None
-    auth_endpoint = "/smarter-api/auth/login"
-
-    @classmethod
-    def setUpClass(cls):
-        # need to call other methods (for example, load fixture for auth)
-        super().setUpClass()
-
-        payload = json.dumps({
-            'username': 'test',
-            'password': 'password'
-        })
-
-        # authenticate to database
-        response = cls.client.post(
-            cls.auth_endpoint,
-            headers={"Content-Type": "application/json"},
-            data=payload)
-
-        # read token and prepare headers
-        cls.token = response.json['token']
-
-        # don't set content-type: application/json if you aren't posting JSON
-        # https://stackoverflow.com/a/47286909/4385116
-        cls.headers = {
-            "Authorization": f"Bearer {cls.token}"
-        }
-
-    def test_without_login(self, method='get', data=None):
-        method = getattr(self.client, method)
-
-        response = method(
-            self.test_endpoint,
-            headers={},
-            data=data
-        )
-
-        self.assertEqual(
-            "Missing Authorization Header", response.json['message'])
-        self.assertEqual(401, response.status_code)

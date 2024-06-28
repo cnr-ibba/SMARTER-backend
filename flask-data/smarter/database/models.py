@@ -10,8 +10,6 @@ import logging
 
 from enum import Enum
 
-from flask_bcrypt import check_password_hash
-
 from .db import db, DB_ALIAS
 
 # Get an instance of a logger
@@ -37,19 +35,6 @@ def complement(genotype: str):
 
 class SmarterDBException(Exception):
     pass
-
-
-class User(db.Document):
-    username = db.StringField(required=True, unique=True)
-    password = db.StringField(required=True, min_length=6)
-
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
-
-    meta = {
-        'db_alias': DB_ALIAS,
-        'collection': 'user'
-    }
 
 
 class SmarterInfo(db.Document):
@@ -96,7 +81,7 @@ class Country(db.Document):
 class SupportedChip(db.Document):
     name = db.StringField(required=True, unique=True)
     species = db.StringField(required=True)
-    manifacturer = db.StringField()
+    manufacturer = db.StringField()
     n_of_snps = db.IntField(default=0)
 
     meta = {

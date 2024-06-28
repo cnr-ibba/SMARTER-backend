@@ -20,11 +20,11 @@ sys.path.insert(0, project_dir)
 # -- Project information -----------------------------------------------------
 
 project = 'SMARTER-backend'
-copyright = '2021, Paolo Cozzi'
+copyright = '2021-2024, Paolo Cozzi'
 author = 'Paolo Cozzi'
 
 # The full version, including alpha/beta/rc tags
-release = 'v0.2.2'
+release = 'v0.3.0.dev0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -52,7 +52,7 @@ exclude_patterns = []
 
 # Link to other projects’ documentation
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3.9', None),
+    'python': ('https://docs.python.org/3.11', None),
     'mongoengine': ('https://docs.mongoengine.org/', None),
     'pymongo': ('https://pymongo.readthedocs.io/en/stable/', None)
 }

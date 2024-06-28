@@ -8,7 +8,6 @@ Created on Fri Jun 18 16:04:11 2021
 
 from flask import jsonify, current_app
 from flask_restful import reqparse
-from flask_jwt_extended import jwt_required
 
 from database.models import SampleGoat, SampleSheep
 from common.views import ListView, ModelView
@@ -117,7 +116,6 @@ class SampleListMixin():
 class SampleSheepApi(ModelView):
     model = SampleSheep
 
-    @jwt_required()
     def get(self, id_):
         """
         Fetch a single Sheep sample
@@ -133,7 +131,7 @@ class SampleSheepApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered sample
+              description: The desired sample
               content:
                 application/json:
                   schema:
@@ -147,7 +145,6 @@ class SampleSheepListApi(SampleListMixin, ListView):
     endpoint = 'samplesheeplistapi'
     model = SampleSheep
 
-    @jwt_required()
     def get(self):
         """
         Get samples information for Sheep
@@ -229,14 +226,15 @@ class SampleSheepListApi(SampleListMixin, ListView):
         data = self.get_context_data()
         return jsonify(**data)
 
-    @jwt_required()
     def post(self):
         """
         Get samples information for Sheep
         ---
         tags:
           - Samples
-        description: Query SMARTER data about samples
+
+        description: Query SMARTER data about Sheep samples
+
         parameters:
           - in: body
             name: body
@@ -255,14 +253,18 @@ class SampleSheepListApi(SampleListMixin, ListView):
                       type: object
                 geo_within_sphere:
                   type: array
-                  description: A list with coordinates and radius in Km
+                  description:
+                    A list with coordinates and radius in Km
+                    like [[9.18, 45.46], 10]
+                  items: []
+
         responses:
-            '200':
-              description: Samples to be returned
-              content:
-                application/json:
-                  schema:
-                    type: array
+          200:
+            description: A list of samples in the given area
+            content:
+              application/json:
+                schema:
+                  type: array
         """
         self.object_list = self.get_queryset()
         data = self.get_context_data()
@@ -272,7 +274,6 @@ class SampleSheepListApi(SampleListMixin, ListView):
 class SampleGoatApi(ModelView):
     model = SampleGoat
 
-    @jwt_required()
     def get(self, id_):
         """
         Fetch a single Goat sample
@@ -288,7 +289,7 @@ class SampleGoatApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered sample
+              description: The desired sample
               content:
                 application/json:
                   schema:
@@ -302,7 +303,6 @@ class SampleGoatListApi(SampleListMixin, ListView):
     endpoint = 'samplegoatlistapi'
     model = SampleGoat
 
-    @jwt_required()
     def get(self):
         """
         Get samples information for Goat
@@ -384,14 +384,15 @@ class SampleGoatListApi(SampleListMixin, ListView):
         data = self.get_context_data()
         return jsonify(**data)
 
-    @jwt_required()
     def post(self):
         """
         Get samples information for Goat
         ---
         tags:
           - Samples
-        description: Query SMARTER data about samples
+
+        description: Query SMARTER data about Goat samples
+
         parameters:
           - in: body
             name: body
@@ -410,14 +411,18 @@ class SampleGoatListApi(SampleListMixin, ListView):
                       type: object
                 geo_within_sphere:
                   type: array
-                  description: A list with coordinates and radius in Km
+                  description:
+                    A list with coordinates and radius in Km
+                    like [[9.18, 45.46], 10]
+                  items: []
+
         responses:
-            '200':
-              description: Samples to be returned
-              content:
-                application/json:
-                  schema:
-                    type: array
+          200:
+            description: A list of samples in the given area
+            content:
+              application/json:
+                schema:
+                  type: array
         """
         self.object_list = self.get_queryset()
         data = self.get_context_data()

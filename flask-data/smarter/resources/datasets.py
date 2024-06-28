@@ -11,7 +11,6 @@ import re
 from mongoengine.queryset import Q
 from flask import jsonify, current_app
 from flask_restful import reqparse
-from flask_jwt_extended import jwt_required
 
 from database.models import Dataset
 from common.views import ListView, ModelView
@@ -71,7 +70,6 @@ class DatasetListApi(ListView):
 
         return queryset
 
-    @jwt_required()
     def get(self):
         """
         Get information on datasets
@@ -84,7 +82,7 @@ class DatasetListApi(ListView):
             in: query
             type: string
             enum: ['Sheep', 'Goat']
-            description: The desidered species
+            description: The desired species
           - name: type
             in: query
             type: array
@@ -120,7 +118,6 @@ class DatasetListApi(ListView):
 class DatasetApi(ModelView):
     model = Dataset
 
-    @jwt_required()
     def get(self, id_):
         """
         Fetch a single dataset
@@ -136,7 +133,7 @@ class DatasetApi(ModelView):
             required: true
         responses:
             '200':
-              description: The desidered dataset
+              description: The desired dataset
               content:
                 application/json:
                   schema:
