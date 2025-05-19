@@ -100,16 +100,10 @@ COPY --from=0 ${APP_PATH} ${APP_PATH}
 # Set poetry APP directory as VOLUME
 VOLUME ${APP_PATH}
 
-# Expose the default port
-EXPOSE 8000
-
-# This environment variable force stdin, stdout and stderr to be totally unbuffered
-ENV PYTHONUNBUFFERED 1
-
 # Create directory for a uwsgi project
 RUN mkdir /var/uwsgi/
 
-# Set corrent working directory
+# Set current working directory
 WORKDIR /var/uwsgi/
 
 # Set uwsgi directory as VOLUME
@@ -119,7 +113,7 @@ VOLUME /var/uwsgi/
 EXPOSE 5000
 
 # This environment variable force stdin, stdout and stderr to be totally unbuffered
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 # Execute a default command
 CMD ["/bin/bash"]
