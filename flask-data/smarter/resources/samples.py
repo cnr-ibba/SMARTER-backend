@@ -92,8 +92,9 @@ class SampleListMixin():
                             validated_ids.append(ObjectId(id_))
                         except (InvalidId, TypeError, ValueError):
                             raise MongoEngineValidationError(
-                                f"'{id_}' is not a valid ObjectId, "
-                                "it must be a 12-byte input or a 24-character hex string"
+                              f"'{value[0] if value else 'unknown'}' is not "
+                              "a valid ObjectId, it must be a 12-byte input "
+                              "or a 24-character hex string"
                             )
                     value = validated_ids
 
