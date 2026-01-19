@@ -74,56 +74,52 @@ class SampleListMixin():
       location='json'
     )
 
-    def get_queryset(self):
-        # parse request arguments and deal with generic arguments
-        args, kwargs = self.parse_args()
+    def _validate_dataset_ids(self, dataset_ids):
+        """Validate that all dataset IDs are valid ObjectIds."""
+        validated_ids = []
+        for id_ in dataset_ids:
+            try:
+                validated_ids.append(ObjectId(id_))
+            except (InvalidId, TypeError, ValueError):
+                raise MongoEngineValidationError(
+                    f"'{id_}' is not a valid ObjectId, it must be a "
+                    "12-byte input or a 24-character hex string"
+                )
+        return validated_ids
 
-        # mind to list arguments
+    def _process_list_arguments(self, kwargs):
+        """Process list arguments and convert them to __in filters."""
         for key in ['breed', 'breed_code', 'chip_name', 'country', 'dataset']:
             if key in kwargs:
                 value = kwargs.pop(key)
-
-                # validate ObjectId for dataset field
                 if key == 'dataset':
-                    # ensure all dataset IDs are valid ObjectIds and report the specific invalid ID
-                    validated_ids = []
-                    for id_ in value:
-                        try:
-                            validated_ids.append(ObjectId(id_))
-                        except (InvalidId, TypeError, ValueError):
-                            raise MongoEngineValidationError(
-                              f"'{value[0] if value else 'unknown'}' is not "
-                              "a valid ObjectId, it must be a 12-byte input "
-                              "or a 24-character hex string"
-                            )
-                    value = validated_ids
-
-                # add a new key to kwargs dictionary
+                    value = self._validate_dataset_ids(value)
                 kwargs[f'{key}__in'] = value
 
+    def _process_geo_arguments(self, kwargs):
+        """Process geographical query arguments."""
         if 'geo_within_polygon' in kwargs:
-            # get the geometry field
             geometry = kwargs.pop('geo_within_polygon')['geometry']
-
-            # add a new key to kwargs dictionary
             kwargs['locations__geo_within'] = geometry
 
         if 'geo_within_sphere' in kwargs:
             value = kwargs.pop('geo_within_sphere')
-
-            # convert radius in radians (Km expected)
-            value[-1] = value[-1] / 6378.1
-
-            # add a new key to kwargs dictionary
+            value[-1] = value[-1] / 6378.1  # convert radius to radians
             kwargs['locations__geo_within_sphere'] = value
+
+    def get_queryset(self):
+        # parse request arguments and deal with generic arguments
+        args, kwargs = self.parse_args()
+
+        # process list and geographical arguments
+        self._process_list_arguments(kwargs)
+        self._process_geo_arguments(kwargs)
 
         current_app.logger.info(f"{args}, {kwargs}")
 
-        if args or kwargs:
-            queryset = self.model.objects.filter(*args, **kwargs)
-
-        else:
-            queryset = self.model.objects.all()
+        # build queryset
+        queryset = (self.model.objects.filter(*args, **kwargs)
+                    if args or kwargs else self.model.objects.all())
 
         if self.order_by:
             queryset = queryset.order_by(self.order_by)
