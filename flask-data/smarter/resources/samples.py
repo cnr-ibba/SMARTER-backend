@@ -90,9 +90,12 @@ class SampleListMixin():
                         validated_ids = [ObjectId(id_) for id_ in value]
                         value = validated_ids
                     except (InvalidId, TypeError, ValueError) as e:
+                        current_app.logger.warning(
+                            f"Invalid ObjectId in dataset filter: {e}")
                         raise MongoEngineValidationError(
-                            f"'{value[0] if value else 'unknown'}' is not a valid ObjectId, "
-                            "it must be a 12-byte input or a 24-character hex string"
+                            f"'{value[0] if value else 'unknown'}' is not "
+                            "a valid ObjectId, it must be a 12-byte input "
+                            "or a 24-character hex string"
                         )
 
                 # add a new key to kwargs dictionary
