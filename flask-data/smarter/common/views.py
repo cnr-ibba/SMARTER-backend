@@ -47,7 +47,7 @@ class ModelView(Resource):
                 raise ObjectsNotExistsError
 
             except ValidationError as e:
-                current_app.logger.error(e)
+                current_app.logger.warning(e)
                 raise MongoEngineValidationError
 
         return obj
