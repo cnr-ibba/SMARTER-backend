@@ -42,7 +42,50 @@ dictConfig({
     }
 })
 
-mail_handler = SMTPHandler(
+
+class LoggingSMTPHandler(SMTPHandler):
+    """Custom SMTP handler that logs when emails are sent"""
+
+    def emit(self, record):
+        """
+        Emit a record and log the email sending action.
+        If using localhost, simulate email by logging the content.
+        """
+        # Check if we're using localhost (development mode)
+        is_localhost = (
+            isinstance(self.mailhost, tuple) and
+            self.mailhost[0] == 'localhost'
+        ) or self.mailhost == 'localhost'
+
+        if is_localhost:
+            # Simulate email by logging the full content
+            msg = self.format(record)
+            logging.warning(
+                f"\n{'='*60}\n"
+                f"SIMULATED EMAIL (localhost mode)\n"
+                f"{'='*60}\n"
+                f"From: {self.fromaddr}\n"
+                f"To: {', '.join(self.toaddrs)}\n"
+                f"Subject: {self.getSubject(record)}\n"
+                f"{'-'*60}\n"
+                f"{msg}\n"
+                f"{'='*60}\n"
+            )
+        else:
+            # Real SMTP server configured
+            try:
+                logging.info(
+                    f"Sending error email to {', '.join(self.toaddrs)} "
+                    f"for {record.levelname}: {record.getMessage()[:100]}"
+                )
+                super().emit(record)
+                logging.info("Error email sent successfully")
+            except Exception as e:
+                logging.error(f"Failed to send error email: {e}")
+                self.handleError(record)
+
+
+mail_handler = LoggingSMTPHandler(
     mailhost=(
         config('EMAIL_HOST', default='localhost'),
         config('EMAIL_PORT', cast=int, default=1025)
