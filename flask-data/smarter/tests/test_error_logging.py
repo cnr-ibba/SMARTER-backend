@@ -126,7 +126,7 @@ class TestErrorLogging(BaseCase):
                 # Verify that we attempted to send (called parent's emit)
                 mock_emit.assert_called_once()
 
-                # Verify that we logged the attempt Before and after send
+                # Verify that we logged the attempt before and after send
                 self.assertEqual(mock_info.call_count, 2)
 
                 # First call should be about sending

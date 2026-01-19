@@ -46,6 +46,10 @@ dictConfig({
 class LoggingSMTPHandler(SMTPHandler):
     """Custom SMTP handler that logs when emails are sent"""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.logger = logging.getLogger(__name__)
+
     def emit(self, record):
         """
         Emit a record and log the email sending action.
@@ -60,7 +64,7 @@ class LoggingSMTPHandler(SMTPHandler):
         if is_localhost:
             # Simulate email by logging the full content
             msg = self.format(record)
-            logging.warning(
+            self.logger.warning(
                 f"\n{'='*60}\n"
                 f"SIMULATED EMAIL (localhost mode)\n"
                 f"{'='*60}\n"
@@ -74,14 +78,14 @@ class LoggingSMTPHandler(SMTPHandler):
         else:
             # Real SMTP server configured
             try:
-                logging.info(
+                self.logger.info(
                     f"Sending error email to {', '.join(self.toaddrs)} "
                     f"for {record.levelname}: {record.getMessage()[:100]}"
                 )
                 super().emit(record)
-                logging.info("Error email sent successfully")
+                self.logger.info("Error email sent successfully")
             except Exception as e:
-                logging.error(f"Failed to send error email: {e}")
+                self.logger.error(f"Failed to send error email: {e}")
                 self.handleError(record)
 
 
