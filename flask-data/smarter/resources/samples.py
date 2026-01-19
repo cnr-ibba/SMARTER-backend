@@ -8,9 +8,12 @@ Created on Fri Jun 18 16:04:11 2021
 
 from flask import jsonify, current_app
 from flask_restful import reqparse
+from bson import ObjectId
+from bson.errors import InvalidId
 
 from database.models import SampleGoat, SampleSheep
 from common.views import ListView, ModelView
+from resources.errors import MongoEngineValidationError
 
 
 class SampleListMixin():
@@ -79,6 +82,18 @@ class SampleListMixin():
         for key in ['breed', 'breed_code', 'chip_name', 'country', 'dataset']:
             if key in kwargs:
                 value = kwargs.pop(key)
+
+                # validate ObjectId for dataset field
+                if key == 'dataset':
+                    try:
+                        # ensure all dataset IDs are valid ObjectIds
+                        validated_ids = [ObjectId(id_) for id_ in value]
+                        value = validated_ids
+                    except (InvalidId, TypeError, ValueError) as e:
+                        raise MongoEngineValidationError(
+                            f"'{value[0] if value else 'unknown'}' is not a valid ObjectId, "
+                            "it must be a 12-byte input or a 24-character hex string"
+                        )
 
                 # add a new key to kwargs dictionary
                 kwargs[f'{key}__in'] = value

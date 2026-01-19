@@ -154,7 +154,7 @@ class ListView(Resource):
     def get_context_data(self):
         qs = self.object_list
 
-        current_app.logger.debug(f"Got {qs}")
+        current_app.logger.debug(f"Got queryset for {self.__class__.__name__}")
 
         # get a shallow copy of an immutable dict
         params = request.args.copy()

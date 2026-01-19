@@ -150,7 +150,7 @@ def create_app():
     api = Api(app, errors=errors)
 
     # check debug mode
-    if config('DEBUG', cast=bool, default=True):
+    if config('DEBUG', cast=bool, default=False):
         # in debug mode, the default logging will be set to DEBUG level
         app.debug = True
 
