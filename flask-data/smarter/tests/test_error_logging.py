@@ -76,8 +76,8 @@ class TestErrorLogging(BaseCase):
             exc_info=None,
         )
 
-        # Patch logging.warning to capture the simulated email
-        with patch("logging.warning") as mock_warning:
+        # Patch the handler's logger to capture the simulated email
+        with patch.object(handler.logger, "warning") as mock_warning:
             handler.emit(record)
 
             # Verify that logging.warning was called (simulated email)
@@ -117,7 +117,7 @@ class TestErrorLogging(BaseCase):
 
         # Patch the parent SMTPHandler.emit to avoid actually sending email
         with patch("logging.handlers.SMTPHandler.emit") as mock_emit:
-            with patch("logging.info") as mock_info:
+            with patch.object(handler.logger, "info") as mock_info:
                 # Mock the emit to simulate successful send
                 mock_emit.return_value = None
 
