@@ -162,9 +162,20 @@ def create_app():
         "swagger": "2.0",
         "info": {
             "title": "SMARTER-backend API",
-            "description": "REST API for SMARTER data",
+            "description": (
+                "REST API service to interact and access SMARTER data. "
+                "Provides methods to retrieve information on breeds, samples, "
+                "variants, datasets and countries for Sheep and Goat species. "
+                "Data is returned in JSON format and can be filtered using "
+                "various query parameters. This is the same API used by the "
+                "SMARTER-frontend web application."
+            ),
             "termsOfService": None,
             "version": __version__
+        },
+        "externalDocs": {
+            "description": "Full API Documentation",
+            "url": "https://smarter-backend.readthedocs.io/en/latest/"
         },
         "basePath": "/smarter-api/",  # base bash for blueprint registration
     }
