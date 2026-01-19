@@ -105,4 +105,19 @@ docker-compose run --rm uwsgi flake8
 
 # test like CI
 docker-compose run --no-deps --rm uwsgi sh -c 'coverage run --source='.' -m pytest && flake8'
+
+# build sphinx documentation
+docker-compose run --rm uwsgi sh -c 'cd docs && make html'
 ```
+
+## Citation
+
+To cite SMARTER data in publications, please use:
+
+> Cozzi P, Manunza A, Ramirez-Diaz J, Tsartsianidou V, Gkagkavouzis K,
+> Peraza P, Johansson A, Arranz J, Freire F, Kusza S, Biscarini F,
+> Peters L, Tosser-Klopp G, Ciappesoni G, Triantafyllidis A, Rupp R,
+> Servin B, Stella A (2024). “SMARTER-database: a tool to integrate SNP
+> array datasets for sheep and goat breeds.” *GigaByte*.
+> <doi:10.46471/gigabyte.139> <https://doi.org/10.46471/gigabyte.139>,
+> <https://github.com/cnr-ibba/SMARTER-database>.
