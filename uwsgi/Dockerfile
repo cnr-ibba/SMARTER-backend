@@ -1,6 +1,6 @@
 
 #
-# VERSION 0.3
+# VERSION 0.3.1
 # DOCKER-VERSION  24.0.6
 # AUTHOR:         Paolo Cozzi <paolo.cozzi@ibba.cnr.it>
 # DESCRIPTION:    A flask container working with mongoengine
@@ -21,7 +21,7 @@ FROM python:${PYTHON_VERSION}
 
 LABEL maintainer="Paolo Cozzi <paolo.cozzi@ibba.cnr.it>" \
       description="A flask container working with mongoengine" \
-      version="0.3"
+      version="0.3.1"
 
 # Import ARGs which I need in this build stage
 # IMPORTANT!: without this redefinition, you can't use variables defined
@@ -63,7 +63,7 @@ FROM python:${PYTHON_VERSION}-slim
 
 LABEL maintainer="Paolo Cozzi <paolo.cozzi@ibba.cnr.it>" \
       description="A flask container working with mongoengine" \
-      version="0.3"
+      version="0.3.1"
 
 # Import ARGs which I need in this build stage
 # IMPORTANT!: without this redefinition, you can't use variables defined
@@ -80,6 +80,7 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 RUN apt-get update && apt-get install -y \
       libxml2 \
       git \
+      make \
       && rm -rf /var/lib/apt/lists/*
 
 # set safe directory for uwsgi

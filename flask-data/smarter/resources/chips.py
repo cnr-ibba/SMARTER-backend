@@ -54,7 +54,7 @@ class SupportedChipListApi(ListView):
         # parse request arguments and deal with generic arguments
         args, kwargs = self.parse_args()
 
-        current_app.logger.info(f"{args}, {kwargs}")
+        current_app.logger.debug(f"{args}, {kwargs}")
 
         if args or kwargs:
             queryset = self.model.objects.filter(*args, **kwargs)

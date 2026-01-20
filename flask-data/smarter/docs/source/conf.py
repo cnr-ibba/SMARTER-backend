@@ -20,11 +20,11 @@ sys.path.insert(0, project_dir)
 # -- Project information -----------------------------------------------------
 
 project = 'SMARTER-backend'
-copyright = '2021-2024, Paolo Cozzi'
+copyright = '2021-2026, Paolo Cozzi'
 author = 'Paolo Cozzi'
 
 # The full version, including alpha/beta/rc tags
-release = 'v0.3.0'
+release = 'v0.3.1'
 
 
 # -- General configuration ---------------------------------------------------

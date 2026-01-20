@@ -278,6 +278,18 @@ class SampleSheepListTest(BaseCase):
         self.assertListEqual(test['items'], [self.data[0]])
         self.assertEqual(response.status_code, 200)
 
+    def test_get_samples_by_invalid_dataset_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'dataset': 'invalid-dataset-id'}
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("is not a valid ObjectId", test['message'])
+
     def test_get_samples_by_multiple_dataset_ids(self):
         response = self.client.get(
             self.test_endpoint + (
@@ -645,6 +657,18 @@ class SampleGoatListTest(BaseCase):
         self.assertIsInstance(test['items'], list)
         self.assertEqual(len(test['items']), 0)
         self.assertEqual(response.status_code, 200)
+
+    def test_get_samples_by_invalid_dataset_id(self):
+        response = self.client.get(
+            self.test_endpoint,
+            headers=self.headers,
+            query_string={'dataset': 'invalid-dataset-id'}
+        )
+
+        test = response.json
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("is not a valid ObjectId", test['message'])
 
     def test_get_samples_by_locations__exists(self):
         response = self.client.get(

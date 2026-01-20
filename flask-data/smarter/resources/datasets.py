@@ -57,7 +57,7 @@ class DatasetListApi(ListView):
             pattern = re.compile(pattern, re.IGNORECASE)
             args = [Q(file=pattern) | Q(contents=pattern)]
 
-        current_app.logger.info(f"{args}, {kwargs}")
+        current_app.logger.debug(f"{args}, {kwargs}")
 
         if args or kwargs:
             queryset = self.model.objects.filter(*args, **kwargs)

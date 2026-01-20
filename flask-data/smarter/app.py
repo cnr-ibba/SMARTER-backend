@@ -23,7 +23,7 @@ from database.db import initialize_db, DB_ALIAS
 from resources.errors import errors
 from resources.routes import initialize_routes
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 # https://flask.palletsprojects.com/en/2.0.x/logging/#basic-configuration
 dictConfig({
@@ -42,7 +42,54 @@ dictConfig({
     }
 })
 
-mail_handler = SMTPHandler(
+
+class LoggingSMTPHandler(SMTPHandler):
+    """Custom SMTP handler that logs when emails are sent"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.logger = logging.getLogger(__name__)
+
+    def emit(self, record):
+        """
+        Emit a record and log the email sending action.
+        If using localhost, simulate email by logging the content.
+        """
+        # Check if we're using localhost (development mode)
+        is_localhost = (
+            isinstance(self.mailhost, tuple) and
+            self.mailhost[0] == 'localhost'
+        ) or self.mailhost == 'localhost'
+
+        if is_localhost:
+            # Simulate email by logging the full content
+            msg = self.format(record)
+            self.logger.warning(
+                f"\n{'='*60}\n"
+                f"SIMULATED EMAIL (localhost mode)\n"
+                f"{'='*60}\n"
+                f"From: {self.fromaddr}\n"
+                f"To: {', '.join(self.toaddrs)}\n"
+                f"Subject: {self.getSubject(record)}\n"
+                f"{'-'*60}\n"
+                f"{msg}\n"
+                f"{'='*60}\n"
+            )
+        else:
+            # Real SMTP server configured
+            try:
+                self.logger.info(
+                    f"Sending error email to {', '.join(self.toaddrs)} "
+                    f"for {record.levelname}: {record.getMessage()[:100]}"
+                )
+                super().emit(record)
+                self.logger.info("Error email sent successfully")
+            except Exception as e:
+                self.logger.error(f"Failed to send error email: {e}")
+                self.handleError(record)
+
+
+mail_handler = LoggingSMTPHandler(
     mailhost=(
         config('EMAIL_HOST', default='localhost'),
         config('EMAIL_PORT', cast=int, default=1025)
@@ -107,7 +154,7 @@ def create_app():
     api = Api(app, errors=errors)
 
     # check debug mode
-    if config('DEBUG', cast=bool, default=True):
+    if config('DEBUG', cast=bool, default=False):
         # in debug mode, the default logging will be set to DEBUG level
         app.debug = True
 
@@ -119,11 +166,22 @@ def create_app():
         "swagger": "2.0",
         "info": {
             "title": "SMARTER-backend API",
-            "description": "REST API for SMARTER data",
+            "description": (
+                "REST API service to interact and access SMARTER data. "
+                "Provides methods to retrieve information on breeds, samples, "
+                "variants, datasets and countries for Sheep and Goat species. "
+                "Data is returned in JSON format and can be filtered using "
+                "various query parameters. This is the same API used by the "
+                "SMARTER-frontend web application."
+            ),
             "termsOfService": None,
             "version": __version__
         },
-        "basePath": "/smarter-api/",  # base bash for blueprint registration
+        "externalDocs": {
+            "description": "Full API Documentation",
+            "url": "https://smarter-backend.readthedocs.io/en/latest/"
+        },
+        "basePath": "/smarter-api/",  # base path for blueprint registration
     }
 
     swagger_config = {

@@ -51,7 +51,7 @@ class GeoJSONMixin():
             ])
 
         except InvalidId as exc:
-            current_app.logger.error(exc)
+            current_app.logger.warning(exc)
             raise MongoEngineValidationError
 
         try:

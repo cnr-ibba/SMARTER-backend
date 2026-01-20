@@ -77,7 +77,7 @@ class VariantListMixin():
         # add the $elemMatch clause if necessary
         kwargs = self.__prepare_match(kwargs)
 
-        current_app.logger.info(f"{args}, {kwargs}")
+        current_app.logger.debug(f"{args}, {kwargs}")
 
         if args or kwargs:
             queryset = self.model.objects.filter(*args, **kwargs)
