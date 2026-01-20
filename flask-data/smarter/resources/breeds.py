@@ -49,7 +49,7 @@ class BreedListApi(ListView):
                 # add a new key to kwargs dictionary
                 kwargs[f'{key}__in'] = value
 
-        current_app.logger.info(f"{args}, {kwargs}")
+        current_app.logger.debug(f"{args}, {kwargs}")
 
         if args or kwargs:
             queryset = self.model.objects.filter(*args, **kwargs)

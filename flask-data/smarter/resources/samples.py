@@ -115,7 +115,7 @@ class SampleListMixin():
         self._process_list_arguments(kwargs)
         self._process_geo_arguments(kwargs)
 
-        current_app.logger.info(f"{args}, {kwargs}")
+        current_app.logger.debug(f"{args}, {kwargs}")
 
         # build queryset
         queryset = (self.model.objects.filter(*args, **kwargs)
