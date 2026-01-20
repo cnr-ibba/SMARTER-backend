@@ -181,7 +181,7 @@ def create_app():
             "description": "Full API Documentation",
             "url": "https://smarter-backend.readthedocs.io/en/latest/"
         },
-        "basePath": "/smarter-api/",  # base bash for blueprint registration
+        "basePath": "/smarter-api/",  # base path for blueprint registration
     }
 
     swagger_config = {
